@@ -1,0 +1,198 @@
+export type IntentType =
+  | 'Brand Search'
+  | 'Category Search'
+  | 'Nearby Search'
+  | 'POI Search'
+  | 'Address Suggestion'
+  | 'Location Search'
+  | 'Discovery Search'
+  | 'Navigation'
+  | 'Attribute Search'
+  | 'Coordinate Search'
+  | 'Ambiguous';
+
+export interface AutocompleteRecord {
+  suggestionId: string;
+  inputPrefix: string;
+  suggestionText: string;
+  suggestionType: IntentType;
+  score: number;
+  queryFrequency: number;
+}
+
+export interface PoiRecord {
+  poiId: string;
+  poiName: string;
+  category: string;
+  brand: string;
+  address: string;
+  city: string;
+  latitude: number;
+  longitude: number;
+  rating: number;
+  reviewCount: number;
+  popularityScore: number;
+  tags: string[];
+}
+
+export interface AbbreviationRecord {
+  abbreviation: string;
+  expandedForm: string;
+  type: string;
+}
+
+export interface PopularQueryRecord {
+  queryId: string;
+  queryText: string;
+  intentType: IntentType;
+  monthlyFrequency: number;
+  region: string;
+}
+
+export interface EvaluationCase {
+  caseId: string;
+  inputPrefix: string;
+  expectedSuggestionType: string;
+  expectedTopSuggestions: string[];
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  skillsTested: string;
+}
+
+export interface TascoDataset {
+  autocomplete: AutocompleteRecord[];
+  pois: PoiRecord[];
+  abbreviations: AbbreviationRecord[];
+  popularQueries: PopularQueryRecord[];
+  evaluationCases: EvaluationCase[];
+}
+
+export interface QueryUnderstanding {
+  original: string;
+  normalized: string;
+  expanded: string;
+  expansions: string[];
+  tokens: string[];
+}
+
+export interface QueryEntity {
+  kind:
+    | 'brand'
+    | 'category'
+    | 'poi'
+    | 'street'
+    | 'city'
+    | 'district'
+    | 'attribute'
+    | 'proximity'
+    | 'navigation'
+    | 'coordinate'
+    | 'address';
+  value: string;
+  source: 'query' | 'abbreviation' | 'poi-dataset' | 'template' | 'agent' | 'alias-memory';
+  confidence: number;
+}
+
+export interface ScoreFactors {
+  lexical: number;
+  intent: number;
+  source: number;
+  popularity: number;
+  poiQuality: number;
+  locality: number;
+  personalization: number;
+  diversity: number;
+}
+
+export interface Suggestion {
+  id: string;
+  text: string;
+  normalizedText: string;
+  type: IntentType;
+  score: number;
+  source: 'autocomplete' | 'poi' | 'popular-query' | 'template';
+  matched: string[];
+  poiId?: string;
+  metadata: {
+    reason: string;
+    city?: string;
+    address?: string;
+    brand?: string;
+    category?: string;
+    factors: ScoreFactors;
+  };
+}
+
+export type AgenticRewriteProvider =
+  | 'disabled'
+  | 'local-rewrite-agent'
+  | 'hosted-mini'
+  | 'local-hermes'
+  | 'offline-reasoner';
+
+export type AgenticRewriteSource = 'agent' | 'alias-memory' | 'manual' | 'evaluation';
+
+export interface AgenticRewriteProposal {
+  rewrites: string[];
+  intent: IntentType;
+  entities: QueryEntity[];
+  confidence: number;
+  evidence: string[];
+  provider: AgenticRewriteProvider;
+  source: AgenticRewriteSource;
+}
+
+export interface AliasMemoryRecord {
+  rawQuery: string;
+  rewrite: string;
+  intent: IntentType;
+  entities: QueryEntity[];
+  scope: 'user' | 'session' | 'global-candidate';
+  source: AgenticRewriteSource;
+  acceptedCount: number;
+  rejectedCount: number;
+  status: 'candidate' | 'approved' | 'rejected';
+  lastSeenAt: string;
+}
+
+export interface SuggestRequest {
+  q: string;
+  city?: string;
+  userId?: string;
+  limit?: number;
+  agentic?: boolean;
+  agenticProvider?: AgenticRewriteProvider;
+  aliasMemory?: AliasMemoryRecord[];
+}
+
+export interface SuggestResponse {
+  query: string;
+  normalizedQuery: string;
+  expandedQuery: string;
+  intent: {
+    type: IntentType;
+    confidence: number;
+  };
+  suggestions: Suggestion[];
+  latencyMs: number;
+  diagnostics: {
+    expansions: string[];
+    entities: QueryEntity[];
+    candidateCount: number;
+    agentic: {
+      triggered: boolean;
+      provider: AgenticRewriteProvider;
+      reason: string;
+      appliedRewrite?: string;
+      source?: AgenticRewriteSource;
+      proposal?: AgenticRewriteProposal;
+      aliasMemoryHits?: AliasMemoryRecord[];
+    };
+    datasetRows: {
+      autocomplete: number;
+      pois: number;
+      abbreviations: number;
+      popularQueries: number;
+      evaluationCases: number;
+    };
+  };
+}
