@@ -111,6 +111,36 @@ describe('suggest', () => {
     expect(response.suggestions[0].metadata.factors.personalization).toBeGreaterThan(0);
   });
 
+  it('keeps non-personalized ranking free of profile boosts', () => {
+    const response = suggest(testDataset, { q: 'cafe', limit: 3 });
+
+    expect(response.suggestions[0].metadata.factors.personalization).toBe(0);
+    expect(response.suggestions[0].metadata.personalizationReason).toBeUndefined();
+  });
+
+  it('explains simulated profile boosts for matching candidates only', () => {
+    const baseline = suggest(testDataset, { q: 'cafe', limit: 5 });
+    const personalized = suggest(testDataset, { q: 'cafe', userId: 'coffee-loyal', limit: 5 });
+    const baselineCoffee = baseline.suggestions.find((suggestion) => suggestion.text === 'Highlands Coffee Nguyễn Huệ');
+    const boostedCoffee = personalized.suggestions.find((suggestion) => suggestion.text === 'Highlands Coffee Nguyễn Huệ');
+
+    expect(boostedCoffee?.metadata.factors.personalization).toBe(1);
+    expect(boostedCoffee?.metadata.personalizationReason).toBe('Coffee loyalist: coffee category and cafe-brand preference');
+    expect(boostedCoffee?.score ?? 0).toBeGreaterThan(baselineCoffee?.score ?? 0);
+
+    const unknown = suggest(testDataset, { q: 'cafe', userId: 'unknown-profile', limit: 3 });
+    expect(unknown.suggestions[0].metadata.factors.personalization).toBe(0);
+    expect(unknown.suggestions[0].metadata.personalizationReason).toBeUndefined();
+  });
+
+  it('keeps personalization independent from the optional agentic path', () => {
+    const response = suggest(testDataset, { q: 'caphe', userId: 'coffee-loyal', limit: 5, agentic: false });
+
+    expect(response.diagnostics.agentic.provider).toBe('disabled');
+    expect(response.suggestions[0].metadata.factors.personalization).toBe(1);
+    expect(response.suggestions[0].metadata.personalizationReason).toContain('Coffee loyalist');
+  });
+
   it('extracts entities for category, brand, city, and attribute queries', () => {
     const hotelResponse = suggest(testDataset, { q: 'ks da nang', limit: 5 });
     expect(hotelResponse.diagnostics.entities).toEqual(

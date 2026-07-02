@@ -25,8 +25,54 @@ interface CandidateDraft {
   entityBoost?: number;
 }
 
+interface SimulatedProfile {
+  id: string;
+  label: string;
+  preferences: Array<{
+    terms: string[];
+    reason: string;
+    boost: number;
+  }>;
+}
+
 const MAX_QUERY_FREQUENCY = 15000;
 const MAX_REVIEWS = 10000;
+
+const SIMULATED_PROFILES: SimulatedProfile[] = [
+  {
+    id: 'coffee-loyal',
+    label: 'Coffee loyalist',
+    preferences: [
+      {
+        terms: ['cafe', 'ca phe', 'coffee', 'highlands', 'cong ca phe', 'phuc long'],
+        reason: 'coffee category and cafe-brand preference',
+        boost: 1,
+      },
+    ],
+  },
+  {
+    id: 'danang-traveler',
+    label: 'Da Nang traveler',
+    preferences: [
+      {
+        terms: ['da nang', 'khach san', 'hotel', 'gan bien', 'my khe', 'san bay'],
+        reason: 'Da Nang travel and hotel preference',
+        boost: 1,
+      },
+    ],
+  },
+  {
+    id: 'commuter',
+    label: 'Daily commuter',
+    preferences: [
+      {
+        terms: ['atm', 'xang', 'cay xang', 'tram xang', 'san bay', 'duong den', 'chi duong'],
+        reason: 'commuter preference for route, fuel, ATM, and airport tasks',
+        boost: 1,
+      },
+    ],
+  },
+];
 
 const CATEGORY_TERMS = new Map<string, IntentType>([
   ['cafe', 'Category Search'],
@@ -517,7 +563,8 @@ function rankAndMerge(
   const merged = new Map<string, Suggestion>();
 
   for (const draft of drafts) {
-    const factors = scoreFactors(draft, predictedIntent, request);
+    const personalization = personalizationBoost(request.userId, draft);
+    const factors = scoreFactors(draft, predictedIntent, request, personalization.boost);
     const score = weightedScore(factors);
     const normalizedText = normalizeText(draft.text);
     const existing = merged.get(normalizedText);
@@ -536,6 +583,7 @@ function rankAndMerge(
         address: draft.poi?.address,
         brand: draft.poi?.brand,
         category: draft.poi?.category,
+        personalizationReason: personalization.reason,
         factors,
       },
     };
@@ -554,10 +602,14 @@ function rankAndMerge(
     }));
 }
 
-function scoreFactors(draft: CandidateDraft, predictedIntent: IntentType, request: SuggestRequest): ScoreFactors {
+function scoreFactors(
+  draft: CandidateDraft,
+  predictedIntent: IntentType,
+  request: SuggestRequest,
+  personalizationBoostValue: number,
+): ScoreFactors {
   const poi = draft.poi;
   const cityMatch = request.city && poi ? normalizeText(poi.city).includes(normalizeText(request.city)) : false;
-  const simulatedProfile = request.userId ? simulatedPreferenceBoost(request.userId, draft) : 0;
   const factors: ScoreFactors = {
     lexical: draft.baseScore,
     intent: draft.type === predictedIntent ? 1 : 0.55,
@@ -565,7 +617,7 @@ function scoreFactors(draft: CandidateDraft, predictedIntent: IntentType, reques
     popularity: clamp01(draft.frequencyScore),
     poiQuality: poi ? clamp01((poi.rating / 5) * 0.45 + (poi.reviewCount / MAX_REVIEWS) * 0.25 + (poi.popularityScore / 100) * 0.3) : 0.68,
     locality: cityMatch ? 1 : request.city ? 0.45 : 0.7,
-    personalization: simulatedProfile,
+    personalization: personalizationBoostValue,
     diversity: draft.source === 'template' ? 0.92 : 0.66,
   };
   if (draft.entityBoost) {
@@ -587,13 +639,32 @@ function weightedScore(factors: ScoreFactors): number {
   );
 }
 
-function simulatedPreferenceBoost(userId: string, draft: CandidateDraft): number {
+function personalizationBoost(userId: string | undefined, draft: CandidateDraft): { boost: number; reason?: string } {
+  if (!userId) {
+    return { boost: 0 };
+  }
+  const profile = findSimulatedProfile(userId);
+  if (!profile) {
+    return { boost: 0 };
+  }
+  const haystack = normalizeText(
+    `${draft.text} ${draft.type} ${draft.reason} ${draft.poi?.category ?? ''} ${draft.poi?.brand ?? ''} ${
+      draft.poi?.city ?? ''
+    } ${draft.poi?.address ?? ''} ${draft.poi?.tags.join(' ') ?? ''}`,
+  );
+  const match = profile.preferences.find((preference) => containsAny(haystack, preference.terms));
+  if (!match) {
+    return { boost: 0 };
+  }
+  return {
+    boost: match.boost,
+    reason: `${profile.label}: ${match.reason}`,
+  };
+}
+
+function findSimulatedProfile(userId: string): SimulatedProfile | undefined {
   const normalizedUser = normalizeText(userId);
-  const text = normalizeText(`${draft.text} ${draft.poi?.category ?? ''} ${draft.poi?.city ?? ''}`);
-  if (normalizedUser.includes('coffee') && containsAny(text, ['cafe', 'ca phe', 'coffee'])) return 1;
-  if (normalizedUser.includes('danang') && containsAny(text, ['da nang', 'khach san'])) return 1;
-  if (normalizedUser.includes('commuter') && containsAny(text, ['atm', 'xang', 'san bay'])) return 1;
-  return 0.55;
+  return SIMULATED_PROFILES.find((profile) => normalizeText(profile.id) === normalizedUser);
 }
 
 function containsAny(text: string, needles: string[]): boolean {

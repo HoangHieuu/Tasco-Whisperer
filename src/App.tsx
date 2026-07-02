@@ -253,6 +253,9 @@ function SuggestionRow({ suggestion, index, debug }: { suggestion: Suggestion; i
       <div className="suggestion-main">
         <h2>{suggestion.text}</h2>
         <p>{suggestion.metadata.reason}</p>
+        {suggestion.metadata.personalizationReason ? (
+          <span className="personalization-note">{suggestion.metadata.personalizationReason}</span>
+        ) : null}
         {suggestion.metadata.address ? <span className="address">{suggestion.metadata.address}</span> : null}
       </div>
       <div className="suggestion-meta">

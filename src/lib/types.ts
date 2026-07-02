@@ -118,6 +118,7 @@ export interface Suggestion {
     address?: string;
     brand?: string;
     category?: string;
+    personalizationReason?: string;
     factors: ScoreFactors;
   };
 }

@@ -363,6 +363,20 @@ h1 {
   font-size: 13px;
 }
 
+.personalization-note {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 6px;
+  border: 1px solid rgba(24, 132, 81, 0.22);
+  border-radius: 8px;
+  padding: 3px 7px;
+  background: #ecf8f2;
+  color: var(--green-dark);
+  font-size: 12px;
+  line-height: 1.25;
+}
+
 .address {
   display: block;
   margin-top: 5px;

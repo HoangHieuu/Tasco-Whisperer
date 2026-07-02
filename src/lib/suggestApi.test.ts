@@ -106,6 +106,7 @@ describe('handleSuggestApiRequest', () => {
     expect(result.status).toBe(200);
     expect(body.suggestions).toHaveLength(3);
     expect(body.suggestions[0].metadata.factors.personalization).toBeGreaterThan(0);
+    expect(body.suggestions[0].metadata.personalizationReason).toContain('Daily commuter');
     expect(result.log.userId).toBe('commuter');
   });
 
