@@ -1,0 +1,2309 @@
+{
+  "generatedAt": "2026-07-02T18:43:08.131Z",
+  "baseline": {
+    "total": 60,
+    "top1Accuracy": 0.883,
+    "top3Recall": 1,
+    "top5Recall": 1,
+    "intentAccuracy": 0.517,
+    "mrr": 0.922,
+    "averageLatencyMs": 9.6,
+    "p95LatencyMs": 14,
+    "maxLatencyMs": 16,
+    "byDifficulty": {
+      "Easy": {
+        "total": 16,
+        "top3": 16,
+        "top3Recall": 1
+      },
+      "Medium": {
+        "total": 25,
+        "top3": 25,
+        "top3Recall": 1
+      },
+      "Hard": {
+        "total": 19,
+        "top3": 19,
+        "top3Recall": 1
+      }
+    },
+    "byExpectedType": {
+      "Brand Search": {
+        "total": 6,
+        "intentHits": 4,
+        "top3": 6,
+        "intentAccuracy": 0.667,
+        "top3Recall": 1
+      },
+      "Category Search": {
+        "total": 11,
+        "intentHits": 5,
+        "top3": 11,
+        "intentAccuracy": 0.455,
+        "top3Recall": 1
+      },
+      "Nearby Search": {
+        "total": 7,
+        "intentHits": 6,
+        "top3": 7,
+        "intentAccuracy": 0.857,
+        "top3Recall": 1
+      },
+      "Address Suggestion": {
+        "total": 4,
+        "intentHits": 3,
+        "top3": 4,
+        "intentAccuracy": 0.75,
+        "top3Recall": 1
+      },
+      "POI Search": {
+        "total": 9,
+        "intentHits": 5,
+        "top3": 9,
+        "intentAccuracy": 0.556,
+        "top3Recall": 1
+      },
+      "Discovery Search": {
+        "total": 17,
+        "intentHits": 2,
+        "top3": 17,
+        "intentAccuracy": 0.118,
+        "top3Recall": 1
+      },
+      "Ambiguous": {
+        "total": 2,
+        "intentHits": 2,
+        "top3": 2,
+        "intentAccuracy": 1,
+        "top3Recall": 1
+      },
+      "Attribute Search": {
+        "total": 1,
+        "intentHits": 1,
+        "top3": 1,
+        "intentAccuracy": 1,
+        "top3Recall": 1
+      },
+      "Navigation": {
+        "total": 2,
+        "intentHits": 2,
+        "top3": 2,
+        "intentAccuracy": 1,
+        "top3Recall": 1
+      },
+      "Coordinate Search": {
+        "total": 1,
+        "intentHits": 1,
+        "top3": 1,
+        "intentAccuracy": 1,
+        "top3Recall": 1
+      }
+    }
+  },
+  "weakCases": [
+    {
+      "caseId": "PUB001",
+      "inputPrefix": "vin",
+      "difficulty": "Easy",
+      "expectedIntentType": "Brand Search",
+      "predictedIntentType": "POI Search",
+      "expected": [
+        "Vincom Center",
+        "Vinmec",
+        "Vinpearl"
+      ],
+      "actual": [
+        "Vinpearl",
+        "vincom đồng khởi",
+        "Vincom Center",
+        "Vinmec",
+        "Vincom Center Đồng Khởi",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Vinmec Times City",
+        "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Brand Search, predicted POI Search"
+      ],
+      "topSuggestion": {
+        "text": "Vinpearl",
+        "type": "Brand Search",
+        "source": "autocomplete",
+        "score": 0.773,
+        "reason": "historical autocomplete pair",
+        "factors": {
+          "lexical": 1.08,
+          "intent": 0.55,
+          "source": 0.95,
+          "popularity": 0.6064666666666667,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.66
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "poi",
+            "value": "Vincom Center Đồng Khởi",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Vinmec Times City",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Vincom ATM Võ Nguyên Giáp TP.HCM",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Vincom Cây xăng Điện Biên Phủ Nha Trang",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "brand",
+            "value": "Vincom",
+            "source": "poi-dataset",
+            "confidence": 0.78
+          },
+          {
+            "kind": "brand",
+            "value": "Vinmec",
+            "source": "poi-dataset",
+            "confidence": 0.78
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 10,
+        "latencyMs": 7
+      }
+    },
+    {
+      "caseId": "PUB003",
+      "inputPrefix": "atm",
+      "difficulty": "Easy",
+      "expectedIntentType": "Nearby Search",
+      "predictedIntentType": "POI Search",
+      "expected": [
+        "ATM Vietcombank gần nhất",
+        "ATM BIDV gần đây",
+        "ATM gần sân bay"
+      ],
+      "actual": [
+        "ATM Vietcombank gần nhất",
+        "ATM BIDV gần đây",
+        "ATM gần sân bay",
+        "atm vcb gần nhất",
+        "Highlands Coffee ATM Pasteur Nha Trang",
+        "ATM Vietcombank Nguyễn Huệ",
+        "WinMart ATM Pasteur Hải Phòng",
+        "Vietcombank ATM Nguyễn Huệ Đà Lạt"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Nearby Search, predicted POI Search"
+      ],
+      "topSuggestion": {
+        "text": "ATM Vietcombank gần nhất",
+        "type": "Nearby Search",
+        "source": "autocomplete",
+        "score": 0.766,
+        "reason": "historical autocomplete pair",
+        "factors": {
+          "lexical": 1.1199999999999999,
+          "intent": 0.55,
+          "source": 0.95,
+          "popularity": 0.41213333333333335,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.66
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "poi",
+            "value": "ATM Vietcombank Nguyễn Huệ",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Vietcombank ATM Trần Duy Hưng Hà Nội",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Vincom ATM Võ Nguyên Giáp TP.HCM",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "CGV ATM Hai Bà Trưng Đà Nẵng",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "WinMart ATM Pasteur Hải Phòng",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Highlands Coffee ATM Pasteur Nha Trang",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Vietcombank ATM Nguyễn Huệ Đà Lạt",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "category",
+            "value": "ATM",
+            "source": "abbreviation",
+            "confidence": 0.82
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 11,
+        "latencyMs": 7
+      }
+    },
+    {
+      "caseId": "PUB007",
+      "inputPrefix": "bv bach",
+      "difficulty": "Easy",
+      "expectedIntentType": "POI Search",
+      "predictedIntentType": "Nearby Search",
+      "expected": [
+        "Bệnh viện Bạch Mai"
+      ],
+      "actual": [
+        "Bệnh viện Bạch Mai",
+        "Đại học Bách Khoa Hà Nội",
+        "Đại học Bách Khoa",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Vinmec Times City",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Bệnh viện Điện Biên Phủ Nha Trang"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected POI Search, predicted Nearby Search"
+      ],
+      "topSuggestion": {
+        "text": "Bệnh viện Bạch Mai",
+        "type": "POI Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "hospital abbreviation plus POI completion",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "poi",
+            "value": "Bệnh viện Bạch Mai",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "category",
+            "value": "Bệnh viện",
+            "source": "abbreviation",
+            "confidence": 0.82
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 15,
+        "latencyMs": 10
+      }
+    },
+    {
+      "caseId": "PUB010",
+      "inputPrefix": "coffee near",
+      "difficulty": "Medium",
+      "expectedIntentType": "Discovery Search",
+      "predictedIntentType": "Nearby Search",
+      "expected": [
+        "Coffee near me",
+        "Quán cà phê gần đây"
+      ],
+      "actual": [
+        "Quán cà phê gần đây",
+        "Coffee near me",
+        "Trạm xăng gần đây",
+        "ATM Vietcombank gần nhất",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "ATM BIDV gần đây"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Discovery Search, predicted Nearby Search"
+      ],
+      "topSuggestion": {
+        "text": "Quán cà phê gần đây",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "mixed language nearby cafe intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "proximity",
+            "value": "gần đây",
+            "source": "query",
+            "confidence": 0.9
+          },
+          {
+            "kind": "category",
+            "value": "cà phê",
+            "source": "abbreviation",
+            "confidence": 0.82
+          },
+          {
+            "kind": "category",
+            "value": "gần đây",
+            "source": "abbreviation",
+            "confidence": 0.82
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 38,
+        "latencyMs": 11
+      }
+    },
+    {
+      "caseId": "PUB014",
+      "inputPrefix": "quan an khu",
+      "difficulty": "Medium",
+      "expectedIntentType": "Discovery Search",
+      "predictedIntentType": "Category Search",
+      "expected": [
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây"
+      ],
+      "actual": [
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Quán ăn Hà Nội",
+        "Nhà hàng phù hợp cho trẻ em",
+        "Quán ăn vặt gần đây",
+        "Quán cà phê gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Discovery Search, predicted Category Search"
+      ],
+      "topSuggestion": {
+        "text": "Quán ăn mở cửa khuya",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "food discovery and attribute intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [],
+        "agentic": {
+          "triggered": true,
+          "provider": "local-rewrite-agent",
+          "reason": "local rewrite agent found no validated rewrite",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 30,
+        "latencyMs": 9
+      }
+    },
+    {
+      "caseId": "PUB016",
+      "inputPrefix": "hotel da n",
+      "difficulty": "Medium",
+      "expectedIntentType": "Discovery Search",
+      "predictedIntentType": "Category Search",
+      "expected": [
+        "Khách sạn Đà Nẵng gần biển",
+        "Hotel Đà Nẵng"
+      ],
+      "actual": [
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn Đà Nẵng",
+        "Khách sạn gần biển Mỹ Khê",
+        "Khách sạn gần biển Đà Nẵng",
+        "Hotel Đà Nẵng",
+        "Khách sạn gần đây",
+        "Sân bay Nội Bài",
+        "Khách sạn Nguyễn Huệ TP.HCM"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Discovery Search, predicted Category Search"
+      ],
+      "topSuggestion": {
+        "text": "Khách sạn Đà Nẵng gần biển",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "hotel plus coastal Da Nang intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "category",
+            "value": "khách sạn",
+            "source": "abbreviation",
+            "confidence": 0.82
+          },
+          {
+            "kind": "city",
+            "value": "đà nẵng",
+            "source": "abbreviation",
+            "confidence": 0.82
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 34,
+        "latencyMs": 11
+      }
+    },
+    {
+      "caseId": "PUB017",
+      "inputPrefix": "san bay n",
+      "difficulty": "Easy",
+      "expectedIntentType": "POI Search",
+      "predictedIntentType": "Category Search",
+      "expected": [
+        "Sân bay Nội Bài"
+      ],
+      "actual": [
+        "Sân bay Nội Bài",
+        "Bệnh viện gần sân bay",
+        "Chỉ đường đến sân bay Nội Bài",
+        "Chỉ đường đến sân bay Tân Sơn Nhất",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Khách sạn Mường Thanh Đà Nẵng",
+        "Khách sạn Lý Thường Kiệt Hải Phòng",
+        "Khách sạn Pasteur Đà Nẵng"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected POI Search, predicted Category Search"
+      ],
+      "topSuggestion": {
+        "text": "Sân bay Nội Bài",
+        "type": "POI Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "airport POI completion",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "poi",
+            "value": "Sân bay Nội Bài",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 13,
+        "latencyMs": 5
+      }
+    },
+    {
+      "caseId": "PUB021",
+      "inputPrefix": "quan cafe hoc",
+      "difficulty": "Hard",
+      "expectedIntentType": "Discovery Search",
+      "predictedIntentType": "Category Search",
+      "expected": [
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi"
+      ],
+      "actual": [
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê gần đây",
+        "Trường Đại học Bách Khoa Hà Nội"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Discovery Search, predicted Category Search"
+      ],
+      "topSuggestion": {
+        "text": "Quán cà phê phù hợp học tập",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "semantic cafe attribute intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "category",
+            "value": "cà phê",
+            "source": "abbreviation",
+            "confidence": 0.82
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 29,
+        "latencyMs": 11
+      }
+    },
+    {
+      "caseId": "PUB022",
+      "inputPrefix": "12 ngu",
+      "difficulty": "Medium",
+      "expectedIntentType": "Address Suggestion",
+      "predictedIntentType": "POI Search",
+      "expected": [
+        "12 Nguyễn Huệ, Quận 1, TP.HCM"
+      ],
+      "actual": [
+        "Nguyễn Huệ, Quận 1, TP.HCM",
+        "Highlands Coffee Nguyễn Huệ",
+        "12 Nguyễn Huệ, Quận 1, TP.HCM",
+        "Bãi biển Mỹ Khê",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Phúc Long Trung tâm thương mại Nguyễn Trãi TP.HCM",
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Address Suggestion, predicted POI Search"
+      ],
+      "topSuggestion": {
+        "text": "Nguyễn Huệ, Quận 1, TP.HCM",
+        "type": "Address Suggestion",
+        "source": "template",
+        "score": 0.833,
+        "reason": "street and address completion",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "poi",
+            "value": "Highlands Coffee Nguyễn Huệ",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "ATM Vietcombank Nguyễn Huệ",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Galaxy Cinema Nguyễn Du",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Cây xăng Petrolimex Nguyễn Trãi",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Lotteria Nguyễn Văn Linh",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Khách sạn Nguyễn Huệ TP.HCM",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Vincom ATM Võ Nguyên Giáp TP.HCM",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Phúc Long Trung tâm thương mại Nguyễn Trãi TP.HCM",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Nhà hàng Nguyễn Huệ Đà Nẵng",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 36,
+        "latencyMs": 9
+      }
+    },
+    {
+      "caseId": "PUB027",
+      "inputPrefix": "ha noi an",
+      "difficulty": "Medium",
+      "expectedIntentType": "Discovery Search",
+      "predictedIntentType": "POI Search",
+      "expected": [
+        "Quán ăn Hà Nội",
+        "Ăn đêm Hà Nội"
+      ],
+      "actual": [
+        "Sân bay Nội Bài",
+        "ATM gần sân bay Nội Bài",
+        "Quán ăn Hà Nội",
+        "Ăn đêm Hà Nội",
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Nhà hàng phù hợp cho trẻ em",
+        "Quán ăn vặt gần đây"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Discovery Search, predicted POI Search",
+        "expected suggestion was not ranked first"
+      ],
+      "topSuggestion": {
+        "text": "Sân bay Nội Bài",
+        "type": "POI Search",
+        "source": "template",
+        "score": 0.923,
+        "reason": "airport POI completion",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 1,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "poi",
+            "value": "Sân bay Nội Bài",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Trường Đại học Bách Khoa Hà Nội",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Lotte Mart Quán cà phê Lê Lợi Hà Nội",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Nhà hàng Lý Thường Kiệt Hà Nội",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Khách sạn Lý Thường Kiệt Hà Nội",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Vietcombank ATM Trần Duy Hưng Hà Nội",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Bệnh viện Lý Thường Kiệt Hà Nội",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Vietcombank Trung tâm thương mại Điện Biên Phủ Hà Nội",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "CGV Cây xăng Pasteur Hà Nội",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "city",
+            "value": "Hà Nội",
+            "source": "query",
+            "confidence": 0.88
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 9,
+        "latencyMs": 5
+      }
+    },
+    {
+      "caseId": "PUB028",
+      "inputPrefix": "da lat check",
+      "difficulty": "Medium",
+      "expectedIntentType": "Discovery Search",
+      "predictedIntentType": "POI Search",
+      "expected": [
+        "Địa điểm check-in đẹp ở Đà Lạt"
+      ],
+      "actual": [
+        "Địa điểm check-in đẹp ở Đà Lạt",
+        "Bãi biển Mỹ Khê",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Khách sạn Lý Thường Kiệt Hải Phòng",
+        "Nhà hàng Phan Chu Trinh Đà Lạt",
+        "CGV Trung tâm thương mại Nguyễn Huệ Đà Lạt",
+        "Khách sạn Võ Nguyên Giáp Đà Lạt"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Discovery Search, predicted POI Search"
+      ],
+      "topSuggestion": {
+        "text": "Địa điểm check-in đẹp ở Đà Lạt",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "Da Lat check-in discovery",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "city",
+            "value": "Đà Lạt",
+            "source": "query",
+            "confidence": 0.88
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 17,
+        "latencyMs": 9
+      }
+    },
+    {
+      "caseId": "PUB029",
+      "inputPrefix": "rooftop q1",
+      "difficulty": "Hard",
+      "expectedIntentType": "Discovery Search",
+      "predictedIntentType": "Category Search",
+      "expected": [
+        "Rooftop Quận 1",
+        "Quán bar rooftop Quận 1"
+      ],
+      "actual": [
+        "Rooftop Quận 1",
+        "Quán bar rooftop Quận 1",
+        "Quán cà phê gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Cộng Cà Phê Hồ Gươm",
+        "Rooftop Chill Skybar"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Discovery Search, predicted Category Search"
+      ],
+      "topSuggestion": {
+        "text": "Rooftop Quận 1",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "rooftop attribute plus district intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "district",
+            "value": "Quận 1",
+            "source": "abbreviation",
+            "confidence": 0.82
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 22,
+        "latencyMs": 10
+      }
+    },
+    {
+      "caseId": "PUB030",
+      "inputPrefix": "cafe wifi",
+      "difficulty": "Medium",
+      "expectedIntentType": "Attribute Search",
+      "predictedIntentType": "Attribute Search",
+      "expected": [
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc"
+      ],
+      "actual": [
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê gần đây",
+        "Cà phê mở cửa 24/7"
+      ],
+      "failureReasons": [
+        "expected suggestion was not ranked first"
+      ],
+      "topSuggestion": {
+        "text": "Quán cà phê phù hợp học tập",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "semantic cafe attribute intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "category",
+            "value": "cà phê",
+            "source": "abbreviation",
+            "confidence": 0.82
+          },
+          {
+            "kind": "attribute",
+            "value": "Wi-Fi",
+            "source": "query",
+            "confidence": 0.8
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 24,
+        "latencyMs": 10
+      }
+    },
+    {
+      "caseId": "PUB032",
+      "inputPrefix": "halal hcm",
+      "difficulty": "Hard",
+      "expectedIntentType": "Category Search",
+      "predictedIntentType": "POI Search",
+      "expected": [
+        "Nhà hàng halal TP.HCM"
+      ],
+      "actual": [
+        "Nhà hàng halal TP.HCM",
+        "Chợ Bến Thành",
+        "Vincom Center Đồng Khởi",
+        "Nhà hàng Pizza 4P's Bến Nghé",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Phúc Long Trung tâm thương mại Nguyễn Trãi TP.HCM",
+        "Galaxy Cinema Nguyễn Du"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Category Search, predicted POI Search"
+      ],
+      "topSuggestion": {
+        "text": "Nhà hàng halal TP.HCM",
+        "type": "Category Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "special food attribute plus city",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "city",
+            "value": "TP.HCM",
+            "source": "abbreviation",
+            "confidence": 0.82
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 21,
+        "latencyMs": 10
+      }
+    },
+    {
+      "caseId": "PUB033",
+      "inputPrefix": "bien my",
+      "difficulty": "Medium",
+      "expectedIntentType": "POI Search",
+      "predictedIntentType": "Attribute Search",
+      "expected": [
+        "Bãi biển Mỹ Khê"
+      ],
+      "actual": [
+        "Bãi biển Mỹ Khê",
+        "Bãi biển Mỹ Khê Đà Nẵng"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected POI Search, predicted Attribute Search"
+      ],
+      "topSuggestion": {
+        "text": "Bãi biển Mỹ Khê",
+        "type": "POI Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "beach POI completion",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "poi",
+            "value": "AEON Mall Long Biên",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Bãi biển Mỹ Khê",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Vietcombank Trung tâm thương mại Điện Biên Phủ Hà Nội",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Nhà hàng Điện Biên Phủ TP.HCM",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Bệnh viện Điện Biên Phủ Nha Trang",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "The Coffee House Trung tâm thương mại Điện Biên Phủ Nha Trang",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "poi",
+            "value": "Vincom Cây xăng Điện Biên Phủ Nha Trang",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          },
+          {
+            "kind": "attribute",
+            "value": "gần biển",
+            "source": "query",
+            "confidence": 0.78
+          },
+          {
+            "kind": "street",
+            "value": "Điện Biên Phủ",
+            "source": "poi-dataset",
+            "confidence": 0.78
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 3,
+        "latencyMs": 5
+      }
+    },
+    {
+      "caseId": "PUB034",
+      "inputPrefix": "my khe hotel",
+      "difficulty": "Hard",
+      "expectedIntentType": "Discovery Search",
+      "predictedIntentType": "Category Search",
+      "expected": [
+        "Khách sạn gần biển Mỹ Khê"
+      ],
+      "actual": [
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn Đà Nẵng",
+        "Khách sạn gần biển Mỹ Khê",
+        "Khách sạn gần biển Đà Nẵng",
+        "Hotel Đà Nẵng",
+        "Khách sạn gần đây",
+        "Sân bay Nội Bài",
+        "Khách sạn Nguyễn Huệ TP.HCM"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Discovery Search, predicted Category Search",
+        "expected suggestion was not ranked first"
+      ],
+      "topSuggestion": {
+        "text": "Khách sạn Đà Nẵng gần biển",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "hotel plus coastal Da Nang intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "category",
+            "value": "khách sạn",
+            "source": "abbreviation",
+            "confidence": 0.82
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 24,
+        "latencyMs": 11
+      }
+    },
+    {
+      "caseId": "PUB038",
+      "inputPrefix": "cong cafe",
+      "difficulty": "Easy",
+      "expectedIntentType": "Brand Search",
+      "predictedIntentType": "Category Search",
+      "expected": [
+        "Cộng Cà Phê gần đây",
+        "Cộng Cà Phê Hồ Gươm"
+      ],
+      "actual": [
+        "Cộng Cà Phê Hồ Gươm",
+        "Cộng Cà Phê gần đây",
+        "Quán cà phê gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Highlands Coffee Nguyễn Huệ",
+        "The Coffee House Trần Duy Hưng"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Brand Search, predicted Category Search"
+      ],
+      "topSuggestion": {
+        "text": "Cộng Cà Phê Hồ Gươm",
+        "type": "Brand Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "brand suggestion",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "category",
+            "value": "cà phê",
+            "source": "abbreviation",
+            "confidence": 0.82
+          },
+          {
+            "kind": "brand",
+            "value": "Cộng Cà Phê",
+            "source": "poi-dataset",
+            "confidence": 0.78
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 15,
+        "latencyMs": 10
+      }
+    },
+    {
+      "caseId": "PUB039",
+      "inputPrefix": "ho guom cafe",
+      "difficulty": "Medium",
+      "expectedIntentType": "Discovery Search",
+      "predictedIntentType": "Category Search",
+      "expected": [
+        "Quán cà phê gần Hồ Gươm"
+      ],
+      "actual": [
+        "Quán cà phê gần Hồ Gươm",
+        "Quán cà phê gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Highlands Coffee Nguyễn Huệ",
+        "The Coffee House Trần Duy Hưng",
+        "Lotte Mart Quán cà phê Phan Chu Trinh Hải Phòng"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Discovery Search, predicted Category Search"
+      ],
+      "topSuggestion": {
+        "text": "Quán cà phê gần Hồ Gươm",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "alias plus nearby cafe intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "category",
+            "value": "cà phê",
+            "source": "abbreviation",
+            "confidence": 0.82
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 14,
+        "latencyMs": 11
+      }
+    },
+    {
+      "caseId": "PUB041",
+      "inputPrefix": "sua xe gan",
+      "difficulty": "Medium",
+      "expectedIntentType": "Category Search",
+      "predictedIntentType": "Nearby Search",
+      "expected": [
+        "Tiệm sửa xe gần đây"
+      ],
+      "actual": [
+        "Trà sữa gần đây",
+        "Trà sữa ngon",
+        "Tiệm sửa xe gần đây",
+        "Trạm xăng gần đây",
+        "ATM Vietcombank gần nhất",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "ATM BIDV gần đây"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Category Search, predicted Nearby Search",
+        "expected suggestion was not ranked first"
+      ],
+      "topSuggestion": {
+        "text": "Trà sữa gần đây",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "milk tea slang/category intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [],
+        "agentic": {
+          "triggered": true,
+          "provider": "local-rewrite-agent",
+          "reason": "local rewrite agent found no validated rewrite",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 31,
+        "latencyMs": 9
+      }
+    },
+    {
+      "caseId": "PUB046",
+      "inputPrefix": "xang tren duong",
+      "difficulty": "Hard",
+      "expectedIntentType": "Discovery Search",
+      "predictedIntentType": "Nearby Search",
+      "expected": [
+        "Cây xăng trên đường đi",
+        "Trạm dừng có cây xăng"
+      ],
+      "actual": [
+        "Cây xăng gần đây",
+        "Trạm xăng gần đây",
+        "Cây xăng trên đường đi",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
+        "The Coffee House Cây xăng Lý Thường Kiệt Đà Nẵng",
+        "Cây xăng Petrolimex Nguyễn Trãi",
+        "CGV Cây xăng Pasteur Hà Nội"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Discovery Search, predicted Nearby Search",
+        "expected suggestion was not ranked first"
+      ],
+      "topSuggestion": {
+        "text": "Cây xăng gần đây",
+        "type": "Nearby Search",
+        "source": "template",
+        "score": 0.923,
+        "reason": "gas station nearby or route intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 1,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "category",
+            "value": "xăng",
+            "source": "abbreviation",
+            "confidence": 0.82
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 13,
+        "latencyMs": 10
+      }
+    },
+    {
+      "caseId": "PUB047",
+      "inputPrefix": "quan an tre em",
+      "difficulty": "Medium",
+      "expectedIntentType": "Discovery Search",
+      "predictedIntentType": "Category Search",
+      "expected": [
+        "Nhà hàng phù hợp cho trẻ em"
+      ],
+      "actual": [
+        "Nhà hàng phù hợp cho trẻ em",
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Quán ăn Hà Nội",
+        "Quán ăn vặt gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Discovery Search, predicted Category Search"
+      ],
+      "topSuggestion": {
+        "text": "Nhà hàng phù hợp cho trẻ em",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "family-friendly food attribute intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [],
+        "agentic": {
+          "triggered": true,
+          "provider": "local-rewrite-agent",
+          "reason": "local rewrite agent found no validated rewrite",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 16,
+        "latencyMs": 6
+      }
+    },
+    {
+      "caseId": "PUB048",
+      "inputPrefix": "cf lam viec",
+      "difficulty": "Hard",
+      "expectedIntentType": "Discovery Search",
+      "predictedIntentType": "Category Search",
+      "expected": [
+        "Cà phê làm việc",
+        "Quán cà phê có Wi-Fi"
+      ],
+      "actual": [
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Discovery Search, predicted Category Search",
+        "expected suggestion was not ranked first"
+      ],
+      "topSuggestion": {
+        "text": "Quán cà phê phù hợp học tập",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "semantic cafe attribute intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "category",
+            "value": "cà phê",
+            "source": "abbreviation",
+            "confidence": 0.82
+          },
+          {
+            "kind": "attribute",
+            "value": "làm việc",
+            "source": "query",
+            "confidence": 0.76
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 24,
+        "latencyMs": 11
+      }
+    },
+    {
+      "caseId": "PUB051",
+      "inputPrefix": "spa gan day",
+      "difficulty": "Easy",
+      "expectedIntentType": "Category Search",
+      "predictedIntentType": "Nearby Search",
+      "expected": [
+        "Spa gần đây"
+      ],
+      "actual": [
+        "Spa gần đây",
+        "Trạm xăng gần đây",
+        "ATM Vietcombank gần nhất",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "ATM BIDV gần đây",
+        "Cây xăng gần đây"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Category Search, predicted Nearby Search"
+      ],
+      "topSuggestion": {
+        "text": "Spa gần đây",
+        "type": "Category Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "wellness category intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "proximity",
+            "value": "gần đây",
+            "source": "query",
+            "confidence": 0.9
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 29,
+        "latencyMs": 9
+      }
+    },
+    {
+      "caseId": "PUB053",
+      "inputPrefix": "sieuthi gan",
+      "difficulty": "Easy",
+      "expectedIntentType": "Category Search",
+      "predictedIntentType": "Nearby Search",
+      "expected": [
+        "Siêu thị gần đây"
+      ],
+      "actual": [
+        "Siêu thị gần đây",
+        "Trạm xăng gần đây",
+        "ATM Vietcombank gần nhất",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "ATM BIDV gần đây",
+        "Cây xăng gần đây",
+        "Bệnh viện Trần Duy Hưng Hải Phòng"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Category Search, predicted Nearby Search"
+      ],
+      "topSuggestion": {
+        "text": "Siêu thị gần đây",
+        "type": "Category Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "supermarket nearby category",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "category",
+            "value": "siêu thị",
+            "source": "abbreviation",
+            "confidence": 0.82
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 31,
+        "latencyMs": 10
+      }
+    },
+    {
+      "caseId": "PUB055",
+      "inputPrefix": "cafe yen tinh",
+      "difficulty": "Medium",
+      "expectedIntentType": "Discovery Search",
+      "predictedIntentType": "Category Search",
+      "expected": [
+        "Quán cà phê yên tĩnh"
+      ],
+      "actual": [
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Discovery Search, predicted Category Search"
+      ],
+      "topSuggestion": {
+        "text": "Quán cà phê yên tĩnh",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "quiet cafe attribute intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "category",
+            "value": "cà phê",
+            "source": "abbreviation",
+            "confidence": 0.82
+          },
+          {
+            "kind": "attribute",
+            "value": "yên tĩnh",
+            "source": "query",
+            "confidence": 0.76
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 27,
+        "latencyMs": 11
+      }
+    },
+    {
+      "caseId": "PUB056",
+      "inputPrefix": "hotel near beach danang",
+      "difficulty": "Hard",
+      "expectedIntentType": "Discovery Search",
+      "predictedIntentType": "Nearby Search",
+      "expected": [
+        "Khách sạn gần biển Đà Nẵng"
+      ],
+      "actual": [
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn Đà Nẵng",
+        "Khách sạn gần biển Đà Nẵng",
+        "Hotel Đà Nẵng",
+        "Khách sạn gần biển Mỹ Khê",
+        "Bãi biển Mỹ Khê",
+        "Trạm xăng gần đây",
+        "ATM Vietcombank gần nhất"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Discovery Search, predicted Nearby Search",
+        "expected suggestion was not ranked first"
+      ],
+      "topSuggestion": {
+        "text": "Khách sạn Đà Nẵng gần biển",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "hotel plus coastal Da Nang intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "proximity",
+            "value": "gần đây",
+            "source": "query",
+            "confidence": 0.9
+          },
+          {
+            "kind": "category",
+            "value": "gần đây",
+            "source": "abbreviation",
+            "confidence": 0.82
+          },
+          {
+            "kind": "category",
+            "value": "khách sạn",
+            "source": "abbreviation",
+            "confidence": 0.82
+          },
+          {
+            "kind": "city",
+            "value": "đà nẵng",
+            "source": "abbreviation",
+            "confidence": 0.82
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 50,
+        "latencyMs": 14
+      }
+    },
+    {
+      "caseId": "PUB057",
+      "inputPrefix": "bến xe miền đông",
+      "difficulty": "Hard",
+      "expectedIntentType": "POI Search",
+      "predictedIntentType": "Nearby Search",
+      "expected": [
+        "Bến xe Miền Đông mới",
+        "Bến xe Miền Đông cũ"
+      ],
+      "actual": [
+        "Bến xe Miền Đông mới",
+        "Bến xe Miền Đông cũ",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Bệnh viện Bạch Mai",
+        "Vinmec Times City",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Bệnh viện Điện Biên Phủ Nha Trang"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected POI Search, predicted Nearby Search"
+      ],
+      "topSuggestion": {
+        "text": "Bến xe Miền Đông mới",
+        "type": "POI Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "bus station ambiguity",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "poi",
+            "value": "Bến xe Miền Đông mới",
+            "source": "poi-dataset",
+            "confidence": 0.9
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 21,
+        "latencyMs": 10
+      }
+    },
+    {
+      "caseId": "PUB058",
+      "inputPrefix": "hoc vien gan day",
+      "difficulty": "Medium",
+      "expectedIntentType": "Category Search",
+      "predictedIntentType": "Nearby Search",
+      "expected": [
+        "Học viện gần đây",
+        "Trung tâm đào tạo gần đây"
+      ],
+      "actual": [
+        "Học viện gần đây",
+        "Trung tâm đào tạo gần đây",
+        "Trạm xăng gần đây",
+        "ATM Vietcombank gần nhất",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Trường Đại học Bách Khoa Hà Nội",
+        "Bệnh viện Trần Duy Hưng TP.HCM"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Category Search, predicted Nearby Search"
+      ],
+      "topSuggestion": {
+        "text": "Học viện gần đây",
+        "type": "Category Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "education synonym category",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "proximity",
+            "value": "gần đây",
+            "source": "query",
+            "confidence": 0.9
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 37,
+        "latencyMs": 10
+      }
+    },
+    {
+      "caseId": "PUB059",
+      "inputPrefix": "do an vat",
+      "difficulty": "Medium",
+      "expectedIntentType": "Category Search",
+      "predictedIntentType": "Discovery Search",
+      "expected": [
+        "Quán ăn vặt gần đây"
+      ],
+      "actual": [
+        "Quán ăn vặt gần đây",
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Quán ăn Hà Nội",
+        "Nhà hàng phù hợp cho trẻ em"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Category Search, predicted Discovery Search"
+      ],
+      "topSuggestion": {
+        "text": "Quán ăn vặt gần đây",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.923,
+        "reason": "food discovery and attribute intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 1,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [],
+        "agentic": {
+          "triggered": true,
+          "provider": "local-rewrite-agent",
+          "reason": "local rewrite agent found no validated rewrite",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 6,
+        "latencyMs": 8
+      }
+    },
+    {
+      "caseId": "PUB060",
+      "inputPrefix": "cafe dep song ao",
+      "difficulty": "Hard",
+      "expectedIntentType": "Discovery Search",
+      "predictedIntentType": "Category Search",
+      "expected": [
+        "Quán cà phê đẹp để check-in"
+      ],
+      "actual": [
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM"
+      ],
+      "failureReasons": [
+        "intent mismatch: expected Discovery Search, predicted Category Search"
+      ],
+      "topSuggestion": {
+        "text": "Quán cà phê đẹp để check-in",
+        "type": "Discovery Search",
+        "source": "template",
+        "score": 0.833,
+        "reason": "photo-friendly cafe discovery intent",
+        "factors": {
+          "lexical": 1.18,
+          "intent": 0.55,
+          "source": 0.92,
+          "popularity": 0.82,
+          "poiQuality": 0.68,
+          "locality": 0.7,
+          "personalization": 0,
+          "diversity": 0.92
+        }
+      },
+      "diagnostics": {
+        "entities": [
+          {
+            "kind": "category",
+            "value": "cà phê",
+            "source": "abbreviation",
+            "confidence": 0.82
+          }
+        ],
+        "agentic": {
+          "triggered": false,
+          "provider": "local-rewrite-agent",
+          "reason": "deterministic result is strong enough",
+          "aliasMemoryHits": []
+        },
+        "candidateCount": 29,
+        "latencyMs": 12
+      }
+    }
+  ],
+  "proposals": [
+    {
+      "id": "intent-rebalance-highest-mismatch",
+      "type": "intent-rule",
+      "title": "Review Category Search cases that should be Discovery Search",
+      "rationale": "10 weak cases share the same intent mismatch pattern.",
+      "confidence": 0.88,
+      "affectedCaseIds": [
+        "PUB014",
+        "PUB016",
+        "PUB021",
+        "PUB029",
+        "PUB034",
+        "PUB039",
+        "PUB047",
+        "PUB048",
+        "PUB055",
+        "PUB060"
+      ],
+      "evidence": [
+        "PUB014: \"quan an khu\"",
+        "PUB016: \"hotel da n\"",
+        "PUB021: \"quan cafe hoc\"",
+        "PUB029: \"rooftop q1\"",
+        "PUB034: \"my khe hotel\""
+      ],
+      "proposedChange": {
+        "expectedIntent": "Discovery Search",
+        "currentPredictedIntent": "Category Search",
+        "action": "inspect entity and template votes before changing runtime intent rules"
+      },
+      "requiresAcceptance": true
+    },
+    {
+      "id": "ranking-promote-expected-present",
+      "type": "ranking-weight",
+      "title": "Review ranking weights where expected suggestions are present but not first",
+      "rationale": "30 cases retrieved an expected suggestion but ranked another candidate first.",
+      "confidence": 0.88,
+      "affectedCaseIds": [
+        "PUB001",
+        "PUB003",
+        "PUB007",
+        "PUB010",
+        "PUB014",
+        "PUB016",
+        "PUB017",
+        "PUB021",
+        "PUB022",
+        "PUB027",
+        "PUB028",
+        "PUB029",
+        "PUB030",
+        "PUB032",
+        "PUB033",
+        "PUB034",
+        "PUB038",
+        "PUB039",
+        "PUB041",
+        "PUB046",
+        "PUB047",
+        "PUB048",
+        "PUB051",
+        "PUB053",
+        "PUB055",
+        "PUB056",
+        "PUB057",
+        "PUB058",
+        "PUB059",
+        "PUB060"
+      ],
+      "evidence": [
+        "PUB001: expected [Vincom Center | Vinmec | Vinpearl], got [Vinpearl | vincom đồng khởi | Vincom Center]",
+        "PUB003: expected [ATM Vietcombank gần nhất | ATM BIDV gần đây | ATM gần sân bay], got [ATM Vietcombank gần nhất | ATM BIDV gần đây | ATM gần sân bay]",
+        "PUB007: expected [Bệnh viện Bạch Mai], got [Bệnh viện Bạch Mai | Đại học Bách Khoa Hà Nội | Đại học Bách Khoa]",
+        "PUB010: expected [Coffee near me | Quán cà phê gần đây], got [Quán cà phê gần đây | Coffee near me | Trạm xăng gần đây]",
+        "PUB014: expected [Quán ăn mở cửa khuya | Ăn đêm gần đây], got [Quán ăn mở cửa khuya | Ăn đêm gần đây | Quán ăn Hà Nội]"
+      ],
+      "proposedChange": {
+        "action": "compare lexical, intent, source, popularity, and diversity factors for expected-present cases",
+        "guardrail": "do not lower top3/top5 recall while improving top1"
+      },
+      "requiresAcceptance": true
+    },
+    {
+      "id": "alias-memory-candidates",
+      "type": "alias",
+      "title": "Promote repeated compact or typo forms into alias-memory candidates",
+      "rationale": "8 weak cases look like compact prefixes or typo variants of expected dataset terms.",
+      "confidence": 0.86,
+      "affectedCaseIds": [
+        "PUB010",
+        "PUB016",
+        "PUB017",
+        "PUB022",
+        "PUB051",
+        "PUB053",
+        "PUB057",
+        "PUB058"
+      ],
+      "evidence": [
+        "PUB010: \"coffee near\" can map toward \"Coffee near me\"",
+        "PUB016: \"hotel da n\" can map toward \"Khách sạn Đà Nẵng gần biển\"",
+        "PUB017: \"san bay n\" can map toward \"Sân bay Nội Bài\"",
+        "PUB022: \"12 ngu\" can map toward \"12 Nguyễn Huệ, Quận 1, TP.HCM\"",
+        "PUB051: \"spa gan day\" can map toward \"Spa gần đây\""
+      ],
+      "proposedChange": {
+        "action": "create candidate alias-memory records for developer review",
+        "candidates": [
+          {
+            "rawQuery": "coffee near",
+            "rewrite": "Coffee near me",
+            "expectedIntent": "Discovery Search"
+          },
+          {
+            "rawQuery": "hotel da n",
+            "rewrite": "Khách sạn Đà Nẵng gần biển",
+            "expectedIntent": "Discovery Search"
+          },
+          {
+            "rawQuery": "san bay n",
+            "rewrite": "Sân bay Nội Bài",
+            "expectedIntent": "POI Search"
+          },
+          {
+            "rawQuery": "12 ngu",
+            "rewrite": "12 Nguyễn Huệ, Quận 1, TP.HCM",
+            "expectedIntent": "Address Suggestion"
+          },
+          {
+            "rawQuery": "spa gan day",
+            "rewrite": "Spa gần đây",
+            "expectedIntent": "Category Search"
+          }
+        ]
+      },
+      "requiresAcceptance": true
+    },
+    {
+      "id": "watch-hard-cases",
+      "type": "evaluation-watch",
+      "title": "Track hard-case failures separately during tuning",
+      "rationale": "9 weak cases are marked Hard and should remain visible during ranking or alias changes.",
+      "confidence": 0.72,
+      "affectedCaseIds": [
+        "PUB021",
+        "PUB029",
+        "PUB032",
+        "PUB034",
+        "PUB046",
+        "PUB048",
+        "PUB056",
+        "PUB057",
+        "PUB060"
+      ],
+      "evidence": [
+        "PUB021: intent mismatch: expected Discovery Search, predicted Category Search",
+        "PUB029: intent mismatch: expected Discovery Search, predicted Category Search",
+        "PUB032: intent mismatch: expected Category Search, predicted POI Search",
+        "PUB034: intent mismatch: expected Discovery Search, predicted Category Search; expected suggestion was not ranked first",
+        "PUB046: intent mismatch: expected Discovery Search, predicted Nearby Search; expected suggestion was not ranked first"
+      ],
+      "proposedChange": {
+        "action": "preserve a hard-case watchlist in future before/after reports"
+      },
+      "requiresAcceptance": true
+    }
+  ],
+  "notes": [
+    "This report is advisory. Proposals require developer acceptance before code or config changes.",
+    "The deterministic autocomplete path remains the runtime source of truth."
+  ]
+}

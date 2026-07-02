@@ -11,6 +11,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "eval": "tsx scripts/evaluate.ts",
+    "tune:agentic": "tsx scripts/agenticTuning.ts",
     "check": "npm run test && npm run eval && npm run api:smoke && npm run build"
   },
   "dependencies": {
