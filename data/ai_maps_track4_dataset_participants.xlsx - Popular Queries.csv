@@ -1,0 +1,11 @@
+query_id,query_text,intent_type,monthly_frequency,region
+PQ001,quán cà phê gần đây,Category Search,12000,TP.HCM
+PQ002,atm vcb gần nhất,Nearby Search,8900,Đà Nẵng
+PQ003,chợ bến thành,POI Search,15000,Hà Nội
+PQ004,khách sạn đà nẵng gần biển,Discovery Search,7600,TP.HCM
+PQ005,cây xăng gần đây,Nearby Search,9800,Đà Nẵng
+PQ006,bệnh viện gần nhất,Nearby Search,5400,Đà Nẵng
+PQ007,vincom đồng khởi,POI Search,6200,TP.HCM
+PQ008,ăn đêm gần đây,Discovery Search,4700,TP.HCM
+PQ009,quán cafe học bài,Discovery Search,5200,Hà Nội
+PQ010,sân bay nội bài,POI Search,11200,Toàn quốc

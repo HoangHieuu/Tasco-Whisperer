@@ -1,0 +1,61 @@
+case_id,input_prefix,expected_suggestion_type,expected_top_suggestions,difficulty,skills_tested
+PUB001,vin,Brand Suggestions,Vincom Center; Vinmec; Vinpearl,Easy,Brand Suggestion; Ranking
+PUB002,cafe,Category Suggestions,Quán cà phê gần đây; Highlands Coffee; Cà phê mở cửa 24/7,Easy,Category; Intent Prediction
+PUB003,atm,Nearby Suggestions,ATM Vietcombank gần nhất; ATM BIDV gần đây; ATM gần sân bay,Easy,Nearby; Category
+PUB004,nguyen h,Address Suggestions,"Nguyễn Huệ, Quận 1, TP.HCM; Highlands Coffee Nguyễn Huệ",Medium,Address; POI
+PUB005,ben th,POI Suggestions,Chợ Bến Thành; Khách sạn gần Chợ Bến Thành,Easy,POI; Discovery
+PUB006,ks d,Category Suggestions,Khách sạn Đà Nẵng; Khách sạn gần biển Đà Nẵng,Medium,Abbreviation; Location
+PUB007,bv bach,POI Suggestions,Bệnh viện Bạch Mai,Easy,Abbreviation; POI
+PUB008,cay x,Nearby Suggestions,Cây xăng gần đây,Easy,Missing Accent; Nearby
+PUB009,pho th,POI Suggestions,Phở Thìn Lò Đúc,Medium,POI Completion
+PUB010,coffee near,Discovery Search,Coffee near me; Quán cà phê gần đây,Medium,Mixed Language
+PUB011,nguyen huee,Address Suggestions,"Nguyễn Huệ, Quận 1, TP.HCM",Medium,Typo Handling
+PUB012,vincom dong k,POI Suggestions,Vincom Center Đồng Khởi,Medium,POI Completion
+PUB013,atm vcb q,Nearby Suggestions,ATM Vietcombank Quận 1; ATM Vietcombank Quận 7,Hard,Abbreviation; Nearby; Ranking
+PUB014,quan an khu,Discovery Search,Quán ăn mở cửa khuya; Ăn đêm gần đây,Medium,Intent Prediction
+PUB015,tra sua ng,Discovery Search,Trà sữa gần đây; Trà sữa ngon,Medium,Slang; Category
+PUB016,hotel da n,Discovery Search,Khách sạn Đà Nẵng gần biển; Hotel Đà Nẵng,Medium,Mixed Language; Location
+PUB017,san bay n,POI Suggestions,Sân bay Nội Bài,Easy,POI Completion
+PUB018,noi bai atm,Nearby Suggestions,ATM gần sân bay Nội Bài,Hard,Reference Location; Nearby
+PUB019,galaxy,Ambiguous,Galaxy Cinema; Samsung Galaxy Store; Galaxy Hotel,Hard,Ambiguity
+PUB020,big c,Ambiguous,GO! / Big C; Big C Thăng Long; Big C Miền Đông,Hard,Brand Alias; Ambiguity
+PUB021,quan cafe hoc,Discovery Search,Quán cà phê phù hợp học tập; Cafe có Wi-Fi,Hard,Intent Prediction; Semantic
+PUB022,12 ngu,Address Suggestions,"12 Nguyễn Huệ, Quận 1, TP.HCM",Medium,Address
+PUB023,12 nguyen hue q,Address Suggestions,"12 Nguyễn Huệ, Quận 1, TP.HCM",Hard,Address; Abbreviation
+PUB024,trạm x,Nearby Suggestions,Trạm xăng gần đây; Cây xăng gần đây,Easy,Synonym
+PUB025,win,Brand Suggestions,WinMart; WinMart+ gần đây,Easy,Brand Suggestion
+PUB026,lotte,Brand Suggestions,Lotte Mart; Lotteria; Lotte Cinema,Medium,Brand Ambiguity
+PUB027,ha noi an,Discovery Search,Quán ăn Hà Nội; Ăn đêm Hà Nội,Medium,Location; Category
+PUB028,da lat check,Discovery Search,Địa điểm check-in đẹp ở Đà Lạt,Medium,Discovery
+PUB029,rooftop q1,Discovery Search,Rooftop Quận 1; Quán bar rooftop Quận 1,Hard,Abbreviation; Attribute
+PUB030,cafe wifi,Attribute Search,Quán cà phê có Wi-Fi; Cafe làm việc,Medium,Attribute
+PUB031,quan chay,Category Search,Nhà hàng chay gần đây; Quán chay,Easy,Category
+PUB032,halal hcm,Category Search,Nhà hàng halal TP.HCM,Hard,Special Attribute; Location
+PUB033,bien my,POI Suggestions,Bãi biển Mỹ Khê,Medium,POI Completion
+PUB034,my khe hotel,Discovery Search,Khách sạn gần biển Mỹ Khê,Hard,Mixed Language; Location
+PUB035,dai hoc bach,POI Suggestions,Đại học Bách Khoa Hà Nội,Medium,POI Completion
+PUB036,dh bk,POI Suggestions,Đại học Bách Khoa,Hard,Abbreviation
+PUB037,phuc long,Brand Suggestions,Phúc Long gần đây; Phúc Long Coffee & Tea,Easy,Brand
+PUB038,cong cafe,Brand Suggestions,Cộng Cà Phê gần đây; Cộng Cà Phê Hồ Gươm,Easy,Brand
+PUB039,ho guom cafe,Discovery Search,Quán cà phê gần Hồ Gươm,Medium,Alias; Nearby
+PUB040,pizza 4,Brand Suggestions,Pizza 4P's; Pizza 4P's Bến Nghé,Easy,Brand
+PUB041,sua xe gan,Category Search,Tiệm sửa xe gần đây,Medium,Category Completion
+PUB042,gara oto,Category Search,Garage ô tô gần đây,Medium,Missing Accent; Category
+PUB043,duong den ben,Navigation,Chỉ đường đến Chợ Bến Thành; Chỉ đường đến bến xe,Hard,Navigation; Ambiguity
+PUB044,chi duong san,Navigation,Chỉ đường đến sân bay Nội Bài; Chỉ đường đến sân bay Tân Sơn Nhất,Hard,Navigation; Ambiguity
+PUB045,10.77,Coordinate Search,"10.7769,106.7009",Hard,Coordinate
+PUB046,xang tren duong,Discovery Search,Cây xăng trên đường đi; Trạm dừng có cây xăng,Hard,Natural Language
+PUB047,quan an tre em,Discovery Search,Nhà hàng phù hợp cho trẻ em,Medium,Intent; Attribute
+PUB048,cf lam viec,Discovery Search,Cà phê làm việc; Quán cà phê có Wi-Fi,Hard,Abbreviation; Semantic
+PUB049,atm bidv,Nearby Suggestions,ATM BIDV gần đây,Easy,Brand; Category
+PUB050,benh vien gan san,Nearby Suggestions,Bệnh viện gần sân bay,Hard,Nearby; Location
+PUB051,spa gan day,Category Search,Spa gần đây,Easy,Category
+PUB052,gym 24,Discovery Search,Phòng gym mở cửa 24/7,Medium,Attribute
+PUB053,sieuthi gan,Category Search,Siêu thị gần đây,Easy,Typo/Missing Accent
+PUB054,quan nuong q7,Category Search,Quán nướng Quận 7,Medium,Category; Abbreviation
+PUB055,cafe yen tinh,Discovery Search,Quán cà phê yên tĩnh,Medium,Semantic
+PUB056,hotel near beach danang,Discovery Search,Khách sạn gần biển Đà Nẵng,Hard,English; Location
+PUB057,bến xe miền đông,POI Suggestions,Bến xe Miền Đông mới; Bến xe Miền Đông cũ,Hard,Ambiguity
+PUB058,hoc vien gan day,Category Search,Học viện gần đây; Trung tâm đào tạo gần đây,Medium,Synonym
+PUB059,do an vat,Category Search,Quán ăn vặt gần đây,Medium,Missing Accent; Category
+PUB060,cafe dep song ao,Discovery Search,Quán cà phê đẹp để check-in,Hard,Slang; Semantic

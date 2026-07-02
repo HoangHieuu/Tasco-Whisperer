@@ -1,0 +1,25 @@
+suggestion_id,input_prefix,suggestion_text,suggestion_type,score,query_frequency
+SUG001,vin,Vincom Center,Brand Search,0.98,3355
+SUG002,vin,Vinmec,Brand Search,0.95,565
+SUG003,vin,Vinpearl,Brand Search,0.92,9097
+SUG004,cafe,Quán cà phê gần đây,Category Search,0.97,6265
+SUG005,cafe,Highlands Coffee,Brand Search,0.94,1332
+SUG006,cafe,Cà phê mở cửa 24/7,Discovery Search,0.88,8383
+SUG007,atm,ATM Vietcombank gần nhất,Nearby Search,0.96,6182
+SUG008,atm,ATM BIDV gần đây,Nearby Search,0.91,4863
+SUG009,atm,ATM gần sân bay,Nearby Search,0.86,2806
+SUG010,nguyen hue,"Nguyễn Huệ, Quận 1, TP.HCM",Address Suggestion,0.95,8176
+SUG011,nguyen hue,Highlands Coffee Nguyễn Huệ,POI Suggestion,0.9,6413
+SUG012,nguyen hue,Phố đi bộ Nguyễn Huệ,POI Suggestion,0.89,9202
+SUG013,ben thanh,Chợ Bến Thành,POI Suggestion,0.98,6793
+SUG014,ben thanh,Khách sạn gần Chợ Bến Thành,Discovery Search,0.88,3715
+SUG015,ks,Khách sạn gần đây,Category Search,0.95,9126
+SUG016,ks,Khách sạn Đà Nẵng gần biển,Discovery Search,0.9,9794
+SUG017,bv,Bệnh viện gần đây,Category Search,0.96,496
+SUG018,bv bach,Bệnh viện Bạch Mai,POI Suggestion,0.98,8997
+SUG019,xang,Cây xăng gần đây,Nearby Search,0.96,1950
+SUG020,trạm xăng,Trạm xăng gần đây,Nearby Search,0.95,7577
+SUG021,pho,Phở gần đây,Category Search,0.94,2960
+SUG022,pho thin,Phở Thìn Lò Đúc,POI Suggestion,0.97,8966
+SUG023,da nang,Khách sạn Đà Nẵng,Location Search,0.91,9086
+SUG024,da nang,Bãi biển Mỹ Khê Đà Nẵng,POI Suggestion,0.89,2113

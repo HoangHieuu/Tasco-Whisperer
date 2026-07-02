@@ -1,0 +1,63 @@
+poi_id,poi_name,category,brand,address,city,latitude,longitude,rating,review_count,popularity_score,tags
+POI001,Highlands Coffee Nguyễn Huệ,Quán cà phê,Highlands Coffee,"86 Nguyễn Huệ, Quận 1, TP.HCM",TP.HCM,10.7759,106.7031,4.3,1250,88,wifi;yên tĩnh;làm việc;takeaway
+POI002,Chợ Bến Thành,Chợ,,"Lê Lợi, Quận 1, TP.HCM",TP.HCM,10.772,106.698,4.4,9800,98,du lịch;mua sắm;biểu tượng
+POI003,Vincom Center Đồng Khởi,Trung tâm thương mại,Vincom,"72 Lê Thánh Tôn, Quận 1, TP.HCM",TP.HCM,10.7781,106.702,4.5,6500,96,mua sắm;ăn uống;giải trí
+POI004,ATM Vietcombank Nguyễn Huệ,ATM,Vietcombank,"Nguyễn Huệ, Quận 1, TP.HCM",TP.HCM,10.7751,106.7035,4.1,310,75,atm;ngân hàng;24/7
+POI005,Bệnh viện Bạch Mai,Bệnh viện,,"78 Giải Phóng, Đống Đa, Hà Nội",Hà Nội,21.0018,105.8412,4.1,3200,92,y tế;cấp cứu;bệnh viện
+POI006,Sân bay Nội Bài,Sân bay,,"Phú Minh, Sóc Sơn, Hà Nội",Hà Nội,21.2187,105.8042,4.2,8400,99,sân bay;di chuyển;du lịch
+POI007,The Coffee House Trần Duy Hưng,Quán cà phê,The Coffee House,"117 Trần Duy Hưng, Cầu Giấy, Hà Nội",Hà Nội,21.016,105.7945,4.2,780,82,wifi;làm việc;nhóm
+POI008,Vinmec Times City,Bệnh viện,Vinmec,"458 Minh Khai, Hai Bà Trưng, Hà Nội",Hà Nội,20.9954,105.868,4.5,2100,91,y tế;bệnh viện;quốc tế
+POI009,Galaxy Cinema Nguyễn Du,Rạp chiếu phim,Galaxy Cinema,"116 Nguyễn Du, Quận 1, TP.HCM",TP.HCM,10.7728,106.6938,4.2,4300,86,phim;giải trí
+POI010,Khách sạn Mường Thanh Đà Nẵng,Khách sạn,Mường Thanh,"270 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng",Đà Nẵng,16.061,108.2446,4.1,1950,84,khách sạn;gần biển;hồ bơi
+POI011,Cây xăng Petrolimex Nguyễn Trãi,Cây xăng,Petrolimex,"Nguyễn Trãi, Thanh Xuân, Hà Nội",Hà Nội,20.9939,105.8037,4,560,72,xăng;toilet;24/7
+POI012,Phở Thìn Lò Đúc,Nhà hàng,Phở Thìn,"13 Lò Đúc, Hai Bà Trưng, Hà Nội",Hà Nội,21.0183,105.8557,4.3,3500,90,phở;ăn sáng;địa phương
+POI013,Cộng Cà Phê Hồ Gươm,Quán cà phê,Cộng Cà Phê,"32 Lê Thái Tổ, Hoàn Kiếm, Hà Nội",Hà Nội,21.0288,105.852,4.2,2800,89,cafe;view đẹp;du lịch
+POI014,Nhà hàng Pizza 4P's Bến Nghé,Nhà hàng,Pizza 4P's,"8 Thủ Khoa Huân, Quận 1, TP.HCM",TP.HCM,10.7745,106.6997,4.6,5400,94,ý;gia đình;hẹn hò
+POI015,Bến xe Miền Đông mới,Bến xe,,"501 Hoàng Hữu Nam, TP Thủ Đức, TP.HCM",TP.HCM,10.8798,106.8142,3.9,1800,80,bến xe;liên tỉnh
+POI016,Trường Đại học Bách Khoa Hà Nội,Đại học,,"1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội",Hà Nội,21.0055,105.8435,4.6,6100,93,đại học;giáo dục
+POI017,Lotteria Nguyễn Văn Linh,Nhà hàng,Lotteria,"Nguyễn Văn Linh, Quận 7, TP.HCM",TP.HCM,10.729,106.7018,4,650,70,fast food;gia đình
+POI018,AEON Mall Long Biên,Trung tâm thương mại,AEON Mall,"27 Cổ Linh, Long Biên, Hà Nội",Hà Nội,21.0276,105.8991,4.5,7200,95,mua sắm;ăn uống;gia đình
+POI019,Bãi biển Mỹ Khê,Bãi biển,,"Võ Nguyên Giáp, Sơn Trà, Đà Nẵng",Đà Nẵng,16.0616,108.2474,4.6,12000,99,biển;du lịch;check-in
+POI020,Rooftop Chill Skybar,Quán bar,Chill Skybar,"76A Lê Lai, Quận 1, TP.HCM",TP.HCM,10.7715,106.6944,4.3,2300,87,rooftop;hẹn hò;view đẹp
+POI021,Lotte Mart Quán cà phê Lê Lợi Hà Nội,Quán cà phê,Lotte Mart,"3 Nguyễn Huệ, Hà Nội",Hà Nội,18.122483,106.093898,3.9,4213,54,gần biển;view đẹp;check-in
+POI022,Nhà hàng Lý Thường Kiệt Hà Nội,Nhà hàng,,"189 Pasteur, Hà Nội",Hà Nội,10.77193,106.894736,4.6,5953,94,24/7;nhanh;tiện lợi
+POI023,Khách sạn Lý Thường Kiệt Hà Nội,Khách sạn,,"112 Hai Bà Trưng, Hà Nội",Hà Nội,13.550282,106.550855,4.5,1373,57,gia đình;trẻ em;đặt bàn
+POI024,Vietcombank ATM Trần Duy Hưng Hà Nội,ATM,Vietcombank,"261 Nguyễn Huệ, Hà Nội",Hà Nội,12.624835,108.176233,4.6,856,59,gần biển;view đẹp;check-in
+POI025,Bệnh viện Lý Thường Kiệt Hà Nội,Bệnh viện,,"291 Lý Thường Kiệt, Hà Nội",Hà Nội,19.408625,107.727147,4.2,2433,59,yên tĩnh;làm việc;ổ cắm
+POI026,Vietcombank Trung tâm thương mại Điện Biên Phủ Hà Nội,Trung tâm thương mại,Vietcombank,"137 Hai Bà Trưng, Hà Nội",Hà Nội,13.386466,106.708262,4.3,3017,50,24/7;nhanh;tiện lợi
+POI027,CGV Cây xăng Pasteur Hà Nội,Cây xăng,CGV,"19 Hai Bà Trưng, Hà Nội",Hà Nội,10.967843,106.520246,4.7,2303,64,24/7;nhanh;tiện lợi
+POI028,Vincom Quán cà phê Phan Chu Trinh TP.HCM,Quán cà phê,Vincom,"17 Nguyễn Trãi, TP.HCM",TP.HCM,20.187033,108.293037,3.7,4523,99,gần biển;view đẹp;check-in
+POI029,Nhà hàng Điện Biên Phủ TP.HCM,Nhà hàng,,"270 Pasteur, TP.HCM",TP.HCM,15.041322,107.93941,4.5,827,82,24/7;nhanh;tiện lợi
+POI030,Khách sạn Nguyễn Huệ TP.HCM,Khách sạn,,"225 Phan Chu Trinh, TP.HCM",TP.HCM,12.134265,105.788016,4.2,4507,94,gia đình;trẻ em;đặt bàn
+POI031,Vincom ATM Võ Nguyên Giáp TP.HCM,ATM,Vincom,"263 Điện Biên Phủ, TP.HCM",TP.HCM,16.61047,108.219859,4.7,4530,57,gia đình;trẻ em;đặt bàn
+POI032,Bệnh viện Trần Duy Hưng TP.HCM,Bệnh viện,,"132 Lý Thường Kiệt, TP.HCM",TP.HCM,13.699327,105.916895,4.2,5429,94,gần biển;view đẹp;check-in
+POI033,Phúc Long Trung tâm thương mại Nguyễn Trãi TP.HCM,Trung tâm thương mại,Phúc Long,"85 Hai Bà Trưng, TP.HCM",TP.HCM,12.053481,107.583304,4.8,230,93,gia đình;trẻ em;đặt bàn
+POI034,BIDV Cây xăng Trần Duy Hưng TP.HCM,Cây xăng,BIDV,"219 Võ Nguyên Giáp, TP.HCM",TP.HCM,18.743693,106.458457,4,2751,76,wifi;đậu xe;mở cửa khuya
+POI035,Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng,Quán cà phê,Highlands Coffee,"285 Phan Chu Trinh, Đà Nẵng",Đà Nẵng,13.560676,107.952817,3.9,5319,89,24/7;nhanh;tiện lợi
+POI036,Nhà hàng Nguyễn Huệ Đà Nẵng,Nhà hàng,,"206 Phan Chu Trinh, Đà Nẵng",Đà Nẵng,17.460514,108.205384,4.5,5499,80,24/7;nhanh;tiện lợi
+POI037,Khách sạn Pasteur Đà Nẵng,Khách sạn,,"286 Phan Chu Trinh, Đà Nẵng",Đà Nẵng,19.307822,106.056478,4,967,64,24/7;nhanh;tiện lợi
+POI038,CGV ATM Hai Bà Trưng Đà Nẵng,ATM,CGV,"27 Nguyễn Huệ, Đà Nẵng",Đà Nẵng,14.058462,106.818024,4.5,1798,51,gia đình;trẻ em;đặt bàn
+POI039,Bệnh viện Trần Duy Hưng Đà Nẵng,Bệnh viện,,"137 Hai Bà Trưng, Đà Nẵng",Đà Nẵng,12.92629,107.265724,4.4,5050,99,yên tĩnh;làm việc;ổ cắm
+POI040,Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng,Trung tâm thương mại,Vincom,"199 Võ Nguyên Giáp, Đà Nẵng",Đà Nẵng,20.814684,106.812269,3.7,1754,85,yên tĩnh;làm việc;ổ cắm
+POI041,The Coffee House Cây xăng Lý Thường Kiệt Đà Nẵng,Cây xăng,The Coffee House,"168 Võ Nguyên Giáp, Đà Nẵng",Đà Nẵng,19.075076,107.063697,4.4,5575,66,24/7;nhanh;tiện lợi
+POI042,Lotte Mart Quán cà phê Phan Chu Trinh Hải Phòng,Quán cà phê,Lotte Mart,"171 Nguyễn Trãi, Hải Phòng",Hải Phòng,14.210046,107.520243,4.3,2014,64,wifi;đậu xe;mở cửa khuya
+POI043,Nhà hàng Nguyễn Huệ Hải Phòng,Nhà hàng,,"256 Phan Chu Trinh, Hải Phòng",Hải Phòng,13.661377,107.082082,4.6,1575,85,wifi;đậu xe;mở cửa khuya
+POI044,Khách sạn Lý Thường Kiệt Hải Phòng,Khách sạn,,"48 Lê Lợi, Hải Phòng",Hải Phòng,10.703541,107.236103,4.5,5327,67,gần biển;view đẹp;check-in
+POI045,WinMart ATM Pasteur Hải Phòng,ATM,WinMart,"114 Trần Duy Hưng, Hải Phòng",Hải Phòng,20.72172,106.123179,4.2,2037,70,yên tĩnh;làm việc;ổ cắm
+POI046,Bệnh viện Trần Duy Hưng Hải Phòng,Bệnh viện,,"257 Pasteur, Hải Phòng",Hải Phòng,19.782922,105.812659,4.4,463,94,gần biển;view đẹp;check-in
+POI047,BIDV Trung tâm thương mại Võ Nguyên Giáp Hải Phòng,Trung tâm thương mại,BIDV,"191 Lý Thường Kiệt, Hải Phòng",Hải Phòng,15.189802,106.845501,4.6,5279,64,gia đình;trẻ em;đặt bàn
+POI048,Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng,Cây xăng,Lotte Mart,"282 Nguyễn Huệ, Hải Phòng",Hải Phòng,12.722595,105.78724,4.6,5733,99,gần biển;view đẹp;check-in
+POI049,Highlands Coffee Quán cà phê Lê Lợi Nha Trang,Quán cà phê,Highlands Coffee,"273 Lý Thường Kiệt, Nha Trang",Nha Trang,19.316457,107.207504,3.7,444,56,wifi;đậu xe;mở cửa khuya
+POI050,Nhà hàng Nguyễn Huệ Nha Trang,Nhà hàng,,"190 Pasteur, Nha Trang",Nha Trang,17.533657,105.989294,4.7,1543,79,24/7;nhanh;tiện lợi
+POI051,Khách sạn Nguyễn Trãi Nha Trang,Khách sạn,,"278 Điện Biên Phủ, Nha Trang",Nha Trang,11.539393,105.887463,4.6,3034,53,yên tĩnh;làm việc;ổ cắm
+POI052,Highlands Coffee ATM Pasteur Nha Trang,ATM,Highlands Coffee,"77 Điện Biên Phủ, Nha Trang",Nha Trang,20.221467,106.074283,4.5,3743,76,wifi;đậu xe;mở cửa khuya
+POI053,Bệnh viện Điện Biên Phủ Nha Trang,Bệnh viện,,"104 Hai Bà Trưng, Nha Trang",Nha Trang,11.498907,106.714211,4.3,2284,69,gần biển;view đẹp;check-in
+POI054,The Coffee House Trung tâm thương mại Điện Biên Phủ Nha Trang,Trung tâm thương mại,The Coffee House,"115 Lê Lợi, Nha Trang",Nha Trang,19.447296,106.083314,3.8,2080,89,gia đình;trẻ em;đặt bàn
+POI055,Vincom Cây xăng Điện Biên Phủ Nha Trang,Cây xăng,Vincom,"97 Phan Chu Trinh, Nha Trang",Nha Trang,17.564424,107.135374,4.7,2035,60,gia đình;trẻ em;đặt bàn
+POI056,Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt,Quán cà phê,Petrolimex,"98 Lý Thường Kiệt, Đà Lạt",Đà Lạt,16.715465,106.219019,3.7,3033,93,yên tĩnh;làm việc;ổ cắm
+POI057,Nhà hàng Phan Chu Trinh Đà Lạt,Nhà hàng,,"193 Nguyễn Huệ, Đà Lạt",Đà Lạt,15.370755,108.10737,4.7,5296,51,gia đình;trẻ em;đặt bàn
+POI058,Khách sạn Võ Nguyên Giáp Đà Lạt,Khách sạn,,"261 Võ Nguyên Giáp, Đà Lạt",Đà Lạt,13.626477,108.115056,3.8,1836,60,gần biển;view đẹp;check-in
+POI059,Vietcombank ATM Nguyễn Huệ Đà Lạt,ATM,Vietcombank,"65 Phan Chu Trinh, Đà Lạt",Đà Lạt,16.647506,106.268689,4.7,2522,66,yên tĩnh;làm việc;ổ cắm
+POI060,Bệnh viện Lê Lợi Đà Lạt,Bệnh viện,,"6 Nguyễn Huệ, Đà Lạt",Đà Lạt,15.597986,106.688541,4.4,5907,58,gần biển;view đẹp;check-in
+POI061,CGV Trung tâm thương mại Nguyễn Huệ Đà Lạt,Trung tâm thương mại,CGV,"282 Phan Chu Trinh, Đà Lạt",Đà Lạt,17.327877,108.132284,3.8,2194,62,wifi;đậu xe;mở cửa khuya
+POI062,BIDV Cây xăng Pasteur Đà Lạt,Cây xăng,BIDV,"236 Phan Chu Trinh, Đà Lạt",Đà Lạt,15.835428,106.732245,3.9,1809,50,wifi;đậu xe;mở cửa khuya
