@@ -53,7 +53,8 @@ and update story/proof records as work moves from planned to implemented.
 - `SPEC.md` exists and defines the Tasco Whisperer product.
 - Harness DB is initialized locally.
 - Planned stories US-001 through US-018 are seeded in the Harness story matrix.
-- US-001 through US-008 and US-010 through US-014 have working proof.
+- US-001 through US-015 have working proof; US-016 is still planned for the
+  next agentic layer.
 - The app runs as a React/Vite TypeScript demo with a deterministic local
   autocomplete engine, validated rewrite correction path, and local API
   service.
@@ -106,6 +107,7 @@ popular query fallback suggestions.
 ```bash
 npm run test
 npm run eval
+npm run tune:agentic
 npm run api:smoke
 npm run build
 npm run check
@@ -119,15 +121,20 @@ Current public evaluation baseline:
 - Top-5 recall: 100%.
 - Intent accuracy: 51.7%.
 - MRR: 0.922.
-- P95 latency: 13 ms.
+- P95 latency: 17 ms.
 
 This is a Phase 5 local demo baseline. It uses Vietnamese normalization,
 abbreviation expansion, deterministic compact-prefix typeahead, entity
 extraction, semantic templates, transparent score factors, simulated profile
 boosts, a local `/api/suggest` HTTP service, and a validated agentic rewrite
-path for low-confidence variants such as `caphe -> cà phê`. The rewrite
-provider is local and structured today; hosted or Hermes-class providers remain
-optional plug-ins.
+path for low-confidence variants such as `caphe -> cà phê`. Simulated profiles
+include `coffee-loyal`, `danang-traveler`, and `commuter`, and boosted
+suggestions expose the reason in metadata. The rewrite provider is local and
+structured today; hosted or Hermes-class providers remain optional plug-ins.
+`npm run tune:agentic` exports advisory weak-case tuning reports to
+`reports/agentic-tuning/latest.json` and `reports/agentic-tuning/latest.md`;
+proposals require explicit developer acceptance before changing runtime
+ranking, templates, or alias memory.
 
 ## Demo Inputs
 
@@ -159,10 +166,9 @@ iOS integration.
 
 Continue Phase 5:
 
-1. Persist accepted alias-memory records beyond request fixtures.
-2. Add an offline agentic evaluation/tuning report for failed public cases.
-3. Add a grounded explanation/narrator layer that uses only returned metadata.
-4. Prepare the final README example gallery and submission packaging.
+1. Add a grounded explanation/narrator layer that uses only returned metadata.
+2. Persist accepted alias-memory records beyond request fixtures.
+3. Prepare the final README example gallery and submission packaging.
 
 ## Repository Structure
 
