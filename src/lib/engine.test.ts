@@ -247,6 +247,24 @@ describe('suggest', () => {
     );
   });
 
+  it('uses enriched POI attributes in ranking explanations', () => {
+    const response = suggest(testDataset, { q: 'highlands', limit: 5 });
+    const poiSuggestion = response.suggestions.find((suggestion) => suggestion.text === 'Highlands Coffee Nguyễn Huệ');
+
+    expect(poiSuggestion).toEqual(
+      expect.objectContaining({
+        source: 'poi',
+        metadata: expect.objectContaining({
+          reason: expect.stringContaining('enriched evidence'),
+          enrichedAttributes: expect.arrayContaining([
+            expect.objectContaining({ key: 'tag:wifi', label: 'Có Wi-Fi' }),
+            expect.objectContaining({ key: 'quality:good-rating' }),
+          ]),
+        }),
+      }),
+    );
+  });
+
   it('classifies coordinate-style prefixes', () => {
     const response = suggest(testDataset, { q: '10.77', limit: 3 });
     expect(response.intent.type).toBe('Coordinate Search');

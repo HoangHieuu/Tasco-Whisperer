@@ -105,6 +105,47 @@ export interface ScoreFactors {
 
 export type RankingWeights = Record<keyof ScoreFactors, number>;
 
+export type EnrichmentSource =
+  | 'provided-dataset'
+  | 'local-derived'
+  | 'local-mock'
+  | 'live-upstream'
+  | 'reconciled';
+
+export interface FieldProvenance {
+  source: EnrichmentSource;
+  confidence: number;
+  evidence: string[];
+  generated: boolean;
+  verifiedRealWorld: boolean;
+  note?: string;
+}
+
+export interface EnrichedAttribute {
+  key: string;
+  label: string;
+  value?: string | number | boolean;
+  source: EnrichmentSource;
+  confidence: number;
+  evidence: string[];
+}
+
+export interface FieldReconciliation {
+  field: string;
+  localValue: unknown;
+  liveValue: unknown;
+  winner: 'local-fallback' | 'live';
+  confidence: number;
+  reason: string;
+}
+
+export interface PlaceEnrichment {
+  fields: Record<string, FieldProvenance>;
+  attributes: EnrichedAttribute[];
+  reconciliations: FieldReconciliation[];
+  summaryEvidence: string[];
+}
+
 export interface BehaviorEvent {
   userId: string;
   query: string;
@@ -132,6 +173,7 @@ export interface Suggestion {
     brand?: string;
     category?: string;
     personalizationReason?: string;
+    enrichedAttributes?: EnrichedAttribute[];
     factors: ScoreFactors;
   };
 }

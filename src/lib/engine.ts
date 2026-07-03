@@ -1,4 +1,5 @@
 import { resolveAgenticCorrection } from './agentic';
+import { rankingEvidenceForPoi } from './enrichment';
 import { expandQuery, fuzzyIncludes, normalizeText } from './normalize';
 import { generatedPatternCandidates } from './generatedPatterns';
 import {
@@ -383,6 +384,10 @@ function fromPois(dataset: TascoDataset, understanding: QueryUnderstanding, requ
     if (matched.length === 0 && !categoryHit) {
       return [];
     }
+    const enrichedAttributes = rankingEvidenceForPoi(poi);
+    const enrichmentReason = enrichedAttributes.length
+      ? `; enriched evidence: ${enrichedAttributes.map((attribute) => attribute.label).join(', ')}`
+      : '';
     return {
       id: poi.poiId,
       text: poi.poiName,
@@ -392,7 +397,7 @@ function fromPois(dataset: TascoDataset, understanding: QueryUnderstanding, requ
       poi,
       baseScore: cityHit ? 0.76 : 0.62,
       frequencyScore: poi.popularityScore / 100,
-      reason: `matched ${poi.category}${poi.city ? ` in ${poi.city}` : ''}`,
+      reason: `matched ${poi.category}${poi.city ? ` in ${poi.city}` : ''}${enrichmentReason}`,
     };
   });
 }
@@ -830,6 +835,7 @@ function rankAndMerge(
         brand: draft.poi?.brand,
         category: draft.poi?.category,
         personalizationReason: personalization.reason,
+        enrichedAttributes: draft.poi ? rankingEvidenceForPoi(draft.poi) : undefined,
         factors,
       },
     };
