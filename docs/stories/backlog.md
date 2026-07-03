@@ -15,6 +15,7 @@ front. Create a detailed story file only when a slice enters implementation.
 | E04 API And Demo | US-011 to US-013 | Autocomplete API, T Maps-style demo UI, and iPhone Mirroring presentation script. | implemented |
 | E05 Agentic AI Layer | US-014 to US-016 | Optional agents for hard-case understanding, validated rewrite memory, failure analysis, tuning, and explanations. | in_progress |
 | E06 Submission | US-017 to US-018 | README, example gallery, deployment, and final smoke proof. | planned |
+| E07 Generalization | US-019 to US-025 | Move beyond fixture-heavy rules with Vietnamese segmentation, semantic retrieval, alias memory, embeddings, optional LLM provider, behavior feedback, and measured ranking tuning. | implemented |
 
 ## Planned Stories
 
@@ -38,3 +39,10 @@ front. Create a detailed story file only when a slice enters implementation.
 | US-016 | Explainable suggestion narrator | Phase 5 | normal | Explanation grounding tests. |
 | US-017 | Submission README and example gallery | Phase 6 | normal | README review and example outputs. |
 | US-018 | Deployable demo | Phase 6 | normal | Local or deployed smoke proof. |
+| US-019 | Generalized Vietnamese query intelligence | Phase 7 | normal | implemented: compact syllable segmentation and guarded Telex/VNI cleanup tests. |
+| US-020 | Semantic retrieval source | Phase 7 | normal | implemented: semantic-lite candidates feed existing ranker with tests. |
+| US-021 | Persistent alias memory | Phase 7 | normal | implemented: alias memory upsert/promotion/serialization and CLI proof. |
+| US-022 | Local embedding retrieval and kNN intent | Phase 7 | normal | implemented: local vector index, kNN retrieval, and intent voting with deterministic fallback. |
+| US-023 | Optional async LLM rewrite provider | Phase 7 | normal | implemented: endpoint-configured hosted/local provider adapter validates structured rewrites before use. |
+| US-024 | Behavior feedback personalization | Phase 7 | normal | implemented: local selected-suggestion events boost future matching suggestions with explainable metadata. |
+| US-025 | Ranking weight tuning scaffold | Phase 7 | normal | implemented: optional ranking weights and `npm run rank:tune` preset comparison report. |

@@ -1,8 +1,10 @@
 # Agentic Learning And Correction Contract
 
-This document defines the agentic layer for hard Vietnamese query variants such
-as `caphe -> cà phê`. It is the living product contract for US-014 and related
-future personalization/tuning work.
+This document defines the agentic layer for hard Vietnamese query variants.
+Basic compact forms such as `caphe -> ca phe` are now handled by deterministic
+Vietnamese query intelligence before the agent runs. The agentic layer is for
+cases that remain weak after deterministic segmentation, Telex/VNI cleanup,
+lexical retrieval, and semantic retrieval.
 
 ## Problem
 
@@ -22,7 +24,7 @@ patterns without calling an LLM every time.
 
 ```text
 user prefix
-  -> deterministic normalize/retrieve/rank
+  -> deterministic normalize/segment/decode/retrieve/rank
   -> if confident: return suggestions
   -> if low confidence/no result:
        agentic rewrite proposal
@@ -31,6 +33,10 @@ user prefix
        -> show suggestions + debug evidence
        -> record accepted/rejected correction
        -> promote validated aliases
+  -> selected suggestion:
+       store local behavior event
+       boost future matching suggestions for that profile
+       keep global promotion behind evaluation/developer approval
 ```
 
 The deterministic path remains the only required real-time path. Agentic
@@ -47,7 +53,9 @@ Run the agentic correction path only when at least one condition is true:
 - The query contains no spaces and resembles a known multi-token category,
   such as `caphe`, `khachsan`, `benhvien`, `nhahang`, `trasua`, or `cayxang`.
 
-Do not call the agent when deterministic results are already strong.
+Do not call the agent when deterministic results are already strong. Also do
+not call it when algorithmic syllable segmentation or Telex/VNI cleanup already
+produced candidates.
 
 ## Agent Output Contract
 
@@ -100,7 +108,15 @@ Do not put a heavy remote model on every keystroke.
 
 ## Alias Memory
 
-Accepted corrections should be stored as alias-memory records:
+Accepted corrections are stored as alias-memory records. The repo includes
+`src/lib/aliasMemory.ts` for upsert/promotion logic and
+`npm run alias:memory` for local JSON persistence:
+
+```bash
+npm run alias:memory -- --rawQuery cf --rewrite "cà phê" --intent "Category Search"
+```
+
+Alias-memory fields:
 
 | Field | Meaning |
 | --- | --- |
@@ -126,6 +142,13 @@ Promotion rules:
 
 Personalization should adapt ranking, not silently rewrite everything.
 
+The demo now supports two personalization paths:
+
+- simulated profiles such as `coffee-loyal`, `danang-traveler`, and
+  `commuter`
+- local behavior events from selected suggestions, stored in browser local
+  storage and passed to the engine as `behaviorEvents`
+
 Example:
 
 - If a user repeatedly accepts coffee suggestions after `caphe`, store
@@ -133,6 +156,14 @@ Example:
 - If many users accept the same correction, promote it as a global candidate.
 - If the user often chooses Highlands or Cộng Cà Phê, boost matching brands
   after the category rewrite has been validated.
+
+## Ranking Tuning
+
+Ranking remains transparent. Runtime callers can pass
+`SuggestRequest.rankingWeights`, and `npm run rank:tune` compares named presets
+against the public evaluation suite. With the current synthetic 60-case public
+set, this is a reproducible tuning assistant rather than a production-trained
+ranker.
 
 ## Federated Learning Position
 
@@ -147,7 +178,7 @@ Potential future design:
 - Updates require poisoning controls and rollback.
 
 For the hackathon, the credible version is local alias memory with explicit
-promotion, not live federated model training.
+promotion plus local behavior feedback, not live federated model training.
 
 ## Acceptance Fixtures
 
@@ -174,11 +205,12 @@ Negative examples:
 
 ## Validation Targets
 
-US-014 is implemented only when:
+US-014 and the generalized roadmap are implemented only when:
 
 - Agent output parsing tests pass.
 - Deterministic fallback works with provider disabled.
-- `caphe` returns coffee suggestions through agent rewrite or learned alias.
+- `caphe` returns coffee suggestions through deterministic segmentation,
+  agent rewrite, or learned alias.
 - Positive and negative rewrite fixtures pass.
 - Evaluation report shows before/after impact for hard or low-confidence cases.
 - Debug metadata shows whether a rewrite came from agent output or alias memory.

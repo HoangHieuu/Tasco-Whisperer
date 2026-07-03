@@ -14,17 +14,20 @@ and durable Harness proof.
 - Demo UI modeled after the T Maps search experience.
 - Offline evaluation runner over the provided public evaluation dataset.
 - iPhone Mirroring demo script showing the real T Maps app context.
-- Agentic layer for validated hard-case query rewrites, plus future tuning and
-  explainable suggestions.
+- Agentic layer for validated hard-case query rewrites, failure analysis,
+  measured tuning, and explainable suggestions.
+- Generalized query-intelligence roadmap for compact Vietnamese segmentation,
+  Telex/VNI cleanup, semantic retrieval, persistent alias memory, behavior
+  feedback, measured ranking weights, and optional hard-case LLM providers.
 
 ## Core Domains
 
 - Query normalization.
-- Vietnamese abbreviation and typo handling.
+- Vietnamese abbreviation, compact syllable, Telex/VNI, and typo handling.
 - Intent and entity prediction.
-- Candidate retrieval from autocomplete, POI, popular-query, and abbreviation
-  datasets.
-- Suggestion ranking and personalization.
+- Candidate retrieval from autocomplete, POI, popular-query, abbreviation, and
+  semantic evidence sources.
+- Suggestion ranking, behavior feedback, and personalization.
 - Evaluation and demo proof.
 
 ## Current Source Files
@@ -41,6 +44,8 @@ and durable Harness proof.
   checklist.
 - `docs/product/agentic-learning.md`: agentic rewrite, alias-memory, model
   provider, and self-improvement contract.
+- `docs/product/generalization-roadmap.md`: tiered roadmap for moving beyond
+  fixture-heavy rules.
 - `docs/decisions/0008-agentic-correction-loop.md`: durable architecture
   decision for hybrid deterministic plus optional agentic correction.
 - `docs/TEST_MATRIX.md`: planned proof matrix.
@@ -49,24 +54,29 @@ and durable Harness proof.
 ## Current Scope
 
 The current repo has a Phase 5 local demo baseline: dataset loading,
-normalization, entity-aware intent prediction, candidate generation,
-transparent ranking, browser demo, public evaluation runner, local autocomplete
-API, and a validated local rewrite-agent path for compact Vietnamese variants
-such as `caphe -> cà phê`. Remaining hackathon slices should focus on
-persistent alias memory, offline tuning reports, grounded explanations, and
-final submission polish.
+normalization, algorithmic compact Vietnamese segmentation, Telex/VNI cleanup,
+entity-aware intent prediction, lexical and semantic candidate generation,
+transparent ranking, configurable ranking weights, browser demo, public
+evaluation runner, local autocomplete API, local behavior-feedback
+personalization, persistent alias-memory utilities, local embedding kNN intent
+voting, and validated local/hosted rewrite-agent provider adapters. Remaining
+hackathon slices should focus on grounded explanations and final submission
+polish.
 
 ## Agentic Learning Direction
 
-The implemented correction loop handles hard Vietnamese variants such as
-`caphe` without turning every keystroke into an LLM request. The accepted
+The implemented deterministic layer now handles hard Vietnamese variants such
+as `caphe` without turning every keystroke into an LLM request. The accepted
 direction remains not LLM-on-every-keystroke and not live self-training. The
 system uses:
 
 - deterministic autocomplete by default
-- agentic rewrite only for low-confidence/no-result cases
+- algorithmic compact segmentation and Telex/VNI cleanup before agentic rewrite
+- semantic retrieval as an additional evidence source
+- agentic rewrite only for low-confidence/no-result cases that remain hard
 - structured and validated agent output
-- request-level alias memory for accepted corrections, with persistent storage
-  still future work
+- persistent alias-memory utilities for accepted corrections
+- local behavior events for profile-specific ranking boosts
+- explicit ranking-weight presets measured by evaluation
 - developer/evaluation approval before global alias promotion
 - optional Hermes-class local provider only after Vietnamese quality proof

@@ -18,6 +18,9 @@ Read these first:
   criteria, validation targets, and tool strategy.
 - `Problem.md`: original hackathon challenge statement.
 - `docs/product/overview.md`: short product contract.
+- `docs/product/generalization-roadmap.md`: roadmap for moving beyond
+  fixture-heavy rules into segmentation, semantic retrieval, alias memory, and
+  optional hard-case model providers.
 - `docs/stories/backlog.md`: candidate epics and planned user stories.
 - `docs/TEST_MATRIX.md`: behavior-to-proof matrix.
 
@@ -53,11 +56,13 @@ and update story/proof records as work moves from planned to implemented.
 - `SPEC.md` exists and defines the Tasco Whisperer product.
 - Harness DB is initialized locally.
 - Planned stories US-001 through US-018 are seeded in the Harness story matrix.
-- US-001 through US-015 have working proof; US-016 is still planned for the
-  next agentic layer.
+- US-001 through US-015 and US-019 through US-025 have working proof; US-016
+  through US-018 remain planned packaging/explanation slices.
 - The app runs as a React/Vite TypeScript demo with a deterministic local
-  autocomplete engine, validated rewrite correction path, and local API
-  service.
+  autocomplete engine, Vietnamese segmentation/Telex cleanup, semantic
+  candidate retrieval, persistent alias-memory utilities, validated rewrite
+  correction path, behavior-feedback personalization, configurable ranking
+  weights, and local API service.
 
 ## Setup
 
@@ -107,7 +112,9 @@ popular query fallback suggestions.
 ```bash
 npm run test
 npm run eval
+npm run rank:tune
 npm run tune:agentic
+npm run alias:memory -- --rawQuery cf --rewrite "cà phê" --intent "Category Search"
 npm run api:smoke
 npm run build
 npm run check
@@ -116,21 +123,31 @@ npm run check
 Current public evaluation baseline:
 
 - 60 cases run.
-- Top-1 accuracy: 88.3%.
+- Top-1 accuracy: 90%.
 - Top-3 recall: 100%.
 - Top-5 recall: 100%.
-- Intent accuracy: 51.7%.
-- MRR: 0.922.
-- P95 latency: 17 ms.
+- Intent accuracy: 66.7%.
+- MRR: 0.933.
+- P95 latency: 26 ms.
 
 This is a Phase 5 local demo baseline. It uses Vietnamese normalization,
-abbreviation expansion, deterministic compact-prefix typeahead, entity
+abbreviation expansion, algorithmic compact syllable segmentation, guarded
+Telex/VNI cleanup, a local embedding kNN index with intent voting, entity
 extraction, semantic templates, transparent score factors, simulated profile
-boosts, a local `/api/suggest` HTTP service, and a validated agentic rewrite
-path for low-confidence variants such as `caphe -> cà phê`. Simulated profiles
-include `coffee-loyal`, `danang-traveler`, and `commuter`, and boosted
-suggestions expose the reason in metadata. The rewrite provider is local and
-structured today; hosted or Hermes-class providers remain optional plug-ins.
+boosts, local behavior feedback from selected suggestions, configurable ranking
+weights, a local `/api/suggest` HTTP service, persistent alias-memory helpers,
+and a validated agentic rewrite contract for low-confidence variants that
+remain hard after the deterministic tiers. Simulated profiles include
+`coffee-loyal`, `danang-traveler`, and `commuter`; the demo also has a
+`local-demo` learner profile backed by browser local storage. Boosted
+suggestions expose the reason in metadata. The current embedding source is
+local and dependency-free; it can be swapped for a multilingual sentence model
+later. A hosted/local rewrite-provider adapter exists through
+`npm run rewrite:agent`, but it only runs when an endpoint is configured and
+remains outside the per-keystroke path.
+`npm run rank:tune` compares named ranking-weight presets against the public
+evaluation suite and writes reports to `reports/ranking-tuning/latest.json` and
+`reports/ranking-tuning/latest.md`.
 `npm run tune:agentic` exports advisory weak-case tuning reports to
 `reports/agentic-tuning/latest.json` and `reports/agentic-tuning/latest.md`;
 proposals require explicit developer acceptance before changing runtime
@@ -167,8 +184,8 @@ iOS integration.
 Continue Phase 5:
 
 1. Add a grounded explanation/narrator layer that uses only returned metadata.
-2. Persist accepted alias-memory records beyond request fixtures.
-3. Prepare the final README example gallery and submission packaging.
+2. Prepare the final README example gallery and submission packaging.
+3. Run the final local/deployed smoke proof when the presentation target is chosen.
 
 ## Repository Structure
 

@@ -1,0 +1,462 @@
+{
+  "generatedAt": "2026-07-03T03:37:57.777Z",
+  "best": "semantic-diverse",
+  "runs": [
+    {
+      "name": "default-v1",
+      "description": "Current transparent scoring formula from SPEC.md.",
+      "weights": {
+        "lexical": 0.3,
+        "intent": 0.2,
+        "source": 0.15,
+        "popularity": 0.1,
+        "poiQuality": 0.1,
+        "locality": 0.05,
+        "personalization": 0.05,
+        "diversity": 0.05
+      },
+      "summary": {
+        "total": 60,
+        "top1Accuracy": 0.9,
+        "top3Recall": 1,
+        "top5Recall": 1,
+        "intentAccuracy": 0.667,
+        "mrr": 0.933,
+        "averageLatencyMs": 23.683,
+        "p95LatencyMs": 36,
+        "maxLatencyMs": 44,
+        "byDifficulty": {
+          "Easy": {
+            "total": 16,
+            "top3": 16,
+            "top3Recall": 1
+          },
+          "Medium": {
+            "total": 25,
+            "top3": 25,
+            "top3Recall": 1
+          },
+          "Hard": {
+            "total": 19,
+            "top3": 19,
+            "top3Recall": 1
+          }
+        },
+        "byExpectedType": {
+          "Brand Search": {
+            "total": 6,
+            "intentHits": 4,
+            "top3": 6,
+            "intentAccuracy": 0.667,
+            "top3Recall": 1
+          },
+          "Category Search": {
+            "total": 11,
+            "intentHits": 6,
+            "top3": 11,
+            "intentAccuracy": 0.545,
+            "top3Recall": 1
+          },
+          "Nearby Search": {
+            "total": 7,
+            "intentHits": 7,
+            "top3": 7,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Address Suggestion": {
+            "total": 4,
+            "intentHits": 3,
+            "top3": 4,
+            "intentAccuracy": 0.75,
+            "top3Recall": 1
+          },
+          "POI Search": {
+            "total": 9,
+            "intentHits": 8,
+            "top3": 9,
+            "intentAccuracy": 0.889,
+            "top3Recall": 1
+          },
+          "Discovery Search": {
+            "total": 17,
+            "intentHits": 6,
+            "top3": 17,
+            "intentAccuracy": 0.353,
+            "top3Recall": 1
+          },
+          "Ambiguous": {
+            "total": 2,
+            "intentHits": 2,
+            "top3": 2,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Attribute Search": {
+            "total": 1,
+            "intentHits": 1,
+            "top3": 1,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Navigation": {
+            "total": 2,
+            "intentHits": 2,
+            "top3": 2,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Coordinate Search": {
+            "total": 1,
+            "intentHits": 1,
+            "top3": 1,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "lexical-intent-heavy",
+      "description": "Prioritizes prefix fit and predicted intent for short typeahead prefixes.",
+      "weights": {
+        "lexical": 0.38,
+        "intent": 0.24,
+        "source": 0.12,
+        "popularity": 0.08,
+        "poiQuality": 0.06,
+        "locality": 0.04,
+        "personalization": 0.03,
+        "diversity": 0.05
+      },
+      "summary": {
+        "total": 60,
+        "top1Accuracy": 0.9,
+        "top3Recall": 1,
+        "top5Recall": 1,
+        "intentAccuracy": 0.667,
+        "mrr": 0.933,
+        "averageLatencyMs": 21.217,
+        "p95LatencyMs": 25,
+        "maxLatencyMs": 36,
+        "byDifficulty": {
+          "Easy": {
+            "total": 16,
+            "top3": 16,
+            "top3Recall": 1
+          },
+          "Medium": {
+            "total": 25,
+            "top3": 25,
+            "top3Recall": 1
+          },
+          "Hard": {
+            "total": 19,
+            "top3": 19,
+            "top3Recall": 1
+          }
+        },
+        "byExpectedType": {
+          "Brand Search": {
+            "total": 6,
+            "intentHits": 4,
+            "top3": 6,
+            "intentAccuracy": 0.667,
+            "top3Recall": 1
+          },
+          "Category Search": {
+            "total": 11,
+            "intentHits": 6,
+            "top3": 11,
+            "intentAccuracy": 0.545,
+            "top3Recall": 1
+          },
+          "Nearby Search": {
+            "total": 7,
+            "intentHits": 7,
+            "top3": 7,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Address Suggestion": {
+            "total": 4,
+            "intentHits": 3,
+            "top3": 4,
+            "intentAccuracy": 0.75,
+            "top3Recall": 1
+          },
+          "POI Search": {
+            "total": 9,
+            "intentHits": 8,
+            "top3": 9,
+            "intentAccuracy": 0.889,
+            "top3Recall": 1
+          },
+          "Discovery Search": {
+            "total": 17,
+            "intentHits": 6,
+            "top3": 17,
+            "intentAccuracy": 0.353,
+            "top3Recall": 1
+          },
+          "Ambiguous": {
+            "total": 2,
+            "intentHits": 2,
+            "top3": 2,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Attribute Search": {
+            "total": 1,
+            "intentHits": 1,
+            "top3": 1,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Navigation": {
+            "total": 2,
+            "intentHits": 2,
+            "top3": 2,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Coordinate Search": {
+            "total": 1,
+            "intentHits": 1,
+            "top3": 1,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "semantic-diverse",
+      "description": "Gives more room to semantic and embedding sources through source and diversity factors.",
+      "weights": {
+        "lexical": 0.24,
+        "intent": 0.18,
+        "source": 0.2,
+        "popularity": 0.08,
+        "poiQuality": 0.08,
+        "locality": 0.04,
+        "personalization": 0.04,
+        "diversity": 0.14
+      },
+      "summary": {
+        "total": 60,
+        "top1Accuracy": 0.9,
+        "top3Recall": 1,
+        "top5Recall": 1,
+        "intentAccuracy": 0.667,
+        "mrr": 0.933,
+        "averageLatencyMs": 20.717,
+        "p95LatencyMs": 24,
+        "maxLatencyMs": 36,
+        "byDifficulty": {
+          "Easy": {
+            "total": 16,
+            "top3": 16,
+            "top3Recall": 1
+          },
+          "Medium": {
+            "total": 25,
+            "top3": 25,
+            "top3Recall": 1
+          },
+          "Hard": {
+            "total": 19,
+            "top3": 19,
+            "top3Recall": 1
+          }
+        },
+        "byExpectedType": {
+          "Brand Search": {
+            "total": 6,
+            "intentHits": 4,
+            "top3": 6,
+            "intentAccuracy": 0.667,
+            "top3Recall": 1
+          },
+          "Category Search": {
+            "total": 11,
+            "intentHits": 6,
+            "top3": 11,
+            "intentAccuracy": 0.545,
+            "top3Recall": 1
+          },
+          "Nearby Search": {
+            "total": 7,
+            "intentHits": 7,
+            "top3": 7,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Address Suggestion": {
+            "total": 4,
+            "intentHits": 3,
+            "top3": 4,
+            "intentAccuracy": 0.75,
+            "top3Recall": 1
+          },
+          "POI Search": {
+            "total": 9,
+            "intentHits": 8,
+            "top3": 9,
+            "intentAccuracy": 0.889,
+            "top3Recall": 1
+          },
+          "Discovery Search": {
+            "total": 17,
+            "intentHits": 6,
+            "top3": 17,
+            "intentAccuracy": 0.353,
+            "top3Recall": 1
+          },
+          "Ambiguous": {
+            "total": 2,
+            "intentHits": 2,
+            "top3": 2,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Attribute Search": {
+            "total": 1,
+            "intentHits": 1,
+            "top3": 1,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Navigation": {
+            "total": 2,
+            "intentHits": 2,
+            "top3": 2,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Coordinate Search": {
+            "total": 1,
+            "intentHits": 1,
+            "top3": 1,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "popularity-quality",
+      "description": "Favors popular queries and higher quality POIs for broad ambiguous inputs.",
+      "weights": {
+        "lexical": 0.24,
+        "intent": 0.18,
+        "source": 0.12,
+        "popularity": 0.18,
+        "poiQuality": 0.14,
+        "locality": 0.05,
+        "personalization": 0.04,
+        "diversity": 0.05
+      },
+      "summary": {
+        "total": 60,
+        "top1Accuracy": 0.833,
+        "top3Recall": 0.983,
+        "top5Recall": 1,
+        "intentAccuracy": 0.667,
+        "mrr": 0.895,
+        "averageLatencyMs": 20.75,
+        "p95LatencyMs": 25,
+        "maxLatencyMs": 36,
+        "byDifficulty": {
+          "Easy": {
+            "total": 16,
+            "top3": 16,
+            "top3Recall": 1
+          },
+          "Medium": {
+            "total": 25,
+            "top3": 25,
+            "top3Recall": 1
+          },
+          "Hard": {
+            "total": 19,
+            "top3": 18,
+            "top3Recall": 0.947
+          }
+        },
+        "byExpectedType": {
+          "Brand Search": {
+            "total": 6,
+            "intentHits": 4,
+            "top3": 6,
+            "intentAccuracy": 0.667,
+            "top3Recall": 1
+          },
+          "Category Search": {
+            "total": 11,
+            "intentHits": 6,
+            "top3": 11,
+            "intentAccuracy": 0.545,
+            "top3Recall": 1
+          },
+          "Nearby Search": {
+            "total": 7,
+            "intentHits": 7,
+            "top3": 7,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Address Suggestion": {
+            "total": 4,
+            "intentHits": 3,
+            "top3": 4,
+            "intentAccuracy": 0.75,
+            "top3Recall": 1
+          },
+          "POI Search": {
+            "total": 9,
+            "intentHits": 8,
+            "top3": 9,
+            "intentAccuracy": 0.889,
+            "top3Recall": 1
+          },
+          "Discovery Search": {
+            "total": 17,
+            "intentHits": 6,
+            "top3": 16,
+            "intentAccuracy": 0.353,
+            "top3Recall": 0.941
+          },
+          "Ambiguous": {
+            "total": 2,
+            "intentHits": 2,
+            "top3": 2,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Attribute Search": {
+            "total": 1,
+            "intentHits": 1,
+            "top3": 1,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Navigation": {
+            "total": 2,
+            "intentHits": 2,
+            "top3": 2,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          },
+          "Coordinate Search": {
+            "total": 1,
+            "intentHits": 1,
+            "top3": 1,
+            "intentAccuracy": 1,
+            "top3Recall": 1
+          }
+        }
+      }
+    }
+  ]
+}

@@ -35,7 +35,7 @@ Expected report outputs:
 Latest public report output:
 
 - 60 cases.
-- 30 weak cases, primarily intent mismatches or expected-present ranking cases.
+- 22 weak cases, primarily intent mismatches or expected-present ranking cases.
 - 4 advisory proposals.
 
 ## Acceptance Notes

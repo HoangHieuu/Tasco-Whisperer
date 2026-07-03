@@ -125,6 +125,10 @@ The engine must normalize Vietnamese user input before retrieval:
 - Normalize common punctuation and repeated spaces.
 - Correct small typo variants for known POIs/categories where possible.
 - Expand abbreviation dictionary entries and aliases.
+- Segment compact Vietnamese syllable forms algorithmically where dictionary
+  evidence supports the split, such as `caphe`, `khachsan`, or `benhvien`.
+- Decode common Telex/VNI leftovers only when the decoded token is supported by
+  dataset or domain lexicon evidence.
 
 ### FR-002 Candidate Generation
 
@@ -134,6 +138,8 @@ The engine must retrieve candidates from multiple sources:
 - POI names, categories, brands, addresses, cities, tags, and aliases.
 - Popular queries and regional trends.
 - Abbreviation expansions.
+- Semantic evidence from POI names, categories, tags, historical suggestions,
+  and popular queries.
 - Generated phrase templates for nearby and discovery searches, such as
   `gan day`, `mo cua 24/7`, `gan bien`, or `gan san bay`.
 
@@ -220,6 +226,7 @@ The product must support hackathon-safe personalization:
 
 - Use simulated or local-only history, not real private T Maps data.
 - Boost repeated categories, brands, cities, and selected suggestions.
+- Record local accepted suggestion events for profile-specific behavior boosts.
 - Keep a non-personalized fallback.
 - Make personalization explainable in ranking metadata.
 
@@ -234,6 +241,7 @@ The project must provide an evaluation command or script that measures:
 - Per-difficulty performance.
 - Per-skill or per-suggestion-type performance.
 - Latency percentiles.
+- Ranking-weight preset comparisons for explicit, measured tuning.
 
 ### FR-009 Agentic AI Behavior
 
@@ -560,6 +568,98 @@ Acceptance criteria:
 - Demo degrades cleanly if optional LLM/provider keys are missing.
 - Final validation evidence includes evaluation metrics and smoke test output.
 
+### Phase 7: Generalized Query Intelligence
+
+Goal: move beyond fixture-heavy rules while keeping the real-time autocomplete
+path deterministic, low-latency, and explainable.
+
+#### US-019: Generalized Vietnamese Query Intelligence
+
+As a Vietnamese map user, I want compact, accentless, or keyboard-artifact
+prefixes to be interpreted without one hard-coded rule per typo.
+
+Acceptance criteria:
+
+- Compact Vietnamese prefixes such as `cap`, `caphe`, `cayx`, and `benhv`
+  can resolve through algorithmic segmentation.
+- Telex/VNI cleanup is guarded by dataset-derived evidence.
+- Negative compact cases are not overcorrected without evidence.
+- Agentic rewrite is skipped when deterministic segmentation is strong.
+
+#### US-020: Semantic Retrieval Source
+
+As a user, I want related phrases and out-of-order terms to retrieve useful
+map suggestions even when exact prefix matching is weak.
+
+Acceptance criteria:
+
+- Semantic candidates are derived from dataset text, tags, categories, and
+  popular queries.
+- Semantic candidates flow through the same ranking and explanation metadata.
+- Deterministic lexical retrieval remains available.
+
+#### US-021: Persistent Alias Memory
+
+As a developer, I want accepted corrections to be stored as inspectable alias
+records so repeated fixes can be reused without retraining a model.
+
+Acceptance criteria:
+
+- Alias records include raw query, rewrite, intent, entities, scope, source,
+  acceptance counts, status, and timestamp.
+- Local/session aliases can be reused immediately.
+- Global promotion requires developer acceptance or evaluation proof.
+
+#### US-022: Local Embedding Retrieval And kNN Intent
+
+As a user, I want semantically nearby POIs and queries to be considered before
+the optional LLM layer runs.
+
+Acceptance criteria:
+
+- A local embedding index covers autocomplete, POI, and popular-query records.
+- kNN neighbors can retrieve candidates and vote for likely intent.
+- Diagnostics expose neighbors and intent vote.
+- The implementation runs locally without paid services.
+
+#### US-023: Optional Async LLM Rewrite Provider
+
+As a developer, I want hard-case model help available behind validation without
+putting a model on every keystroke.
+
+Acceptance criteria:
+
+- Hosted and local provider adapters return structured rewrite proposals.
+- Provider output is parsed and validated before use.
+- Unsafe or unrelated rewrites are rejected.
+- Deterministic suggestions still work when no provider is configured.
+
+#### US-024: Behavior Feedback Personalization
+
+As a returning demo user, I want selected suggestions to influence future
+ranking without collecting private production data.
+
+Acceptance criteria:
+
+- The demo records local selected-suggestion events.
+- Behavior events can boost future matching brands, categories, cities, or
+  selected texts for the same profile.
+- The boost reason is exposed in suggestion metadata.
+- Public evaluation remains deterministic without behavior events.
+
+#### US-025: Ranking Weight Tuning Scaffold
+
+As a developer, I want ranking changes to be explicit and measurable instead of
+hidden inside ad hoc scoring code.
+
+Acceptance criteria:
+
+- Runtime requests can pass configurable ranking weights.
+- A tuning command compares named weight presets against public evaluation.
+- Reports include before/after metrics and the exact weights used.
+- The docs state that this is a tuning scaffold, not a production-trained
+  ranker.
+
 ## 9. Suggested Architecture
 
 ```text
@@ -573,9 +673,9 @@ Demo UI / API Client
       -> Popular Query Index
       -> Abbreviation Dictionary
       -> Template Generator
-    -> Ranking Engine
-    -> Personalization Store
-    -> Response Presenter
+  -> Ranking Engine
+  -> Behavior Feedback / Personalization Store
+  -> Response Presenter
   -> Optional Agentic Layer
     -> Failure Analysis
     -> Explanation Generation
@@ -589,6 +689,19 @@ Recommended implementation shape when code begins:
 - `infrastructure/`: CSV loader, in-memory indexes, config, optional LLM client.
 - `interface/`: HTTP API, demo UI adapter, presenters.
 - `eval/` or `scripts/`: public evaluation command and report generation.
+
+Generalization roadmap after the initial MVP:
+
+- synchronous deterministic tier: normalization, abbreviations, Vietnamese
+  syllable segmentation, Telex/VNI cleanup, fuzzy retrieval, semantic-lite
+  candidate retrieval, local embedding kNN retrieval, kNN intent voting, and
+  transparent ranking
+- future model tier: multilingual sentence embeddings can replace the local
+  vectorizer when model files are available
+- hard-case agent tier: optional LLM rewrite provider, strict validation,
+  deterministic reranking, and persistent alias memory
+- learning/tuning tier: local behavior feedback, alias-memory promotion with
+  acceptance guardrails, and measured ranking-weight presets
 
 ## 10. Data Contract
 
