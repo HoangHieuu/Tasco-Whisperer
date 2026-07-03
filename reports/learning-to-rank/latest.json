@@ -1,0 +1,28 @@
+{
+  "weights": {
+    "lexical": 0.31658092599920856,
+    "intent": 0.1582904629996043,
+    "source": 0.15829046299960428,
+    "popularity": 0.10552697533306951,
+    "poiQuality": 0.10302070966890912,
+    "locality": 0.052763487666534756,
+    "personalization": 0.052763487666534756,
+    "diversity": 0.052763487666534756
+  },
+  "train": {
+    "total": 48,
+    "top1Accuracy": 0.979,
+    "top3Recall": 1,
+    "mrr": 0.99,
+    "ndcgAt5": 0.964
+  },
+  "validation": {
+    "total": 12,
+    "top1Accuracy": 0.75,
+    "top3Recall": 1,
+    "mrr": 0.861,
+    "ndcgAt5": 0.866
+  },
+  "rows": 501,
+  "note": "Dependency-free linear LTR baseline over existing score factors; use larger judged logs before claiming production ML ranking."
+}
