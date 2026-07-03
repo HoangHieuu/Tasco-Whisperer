@@ -14,7 +14,7 @@ describe('suggest', () => {
     expect(suggestions).toEqual(expect.arrayContaining(['Quán cà phê gần đây', 'Highlands Coffee']));
   });
 
-  it('uses agentic rewrite for compact no-space coffee query', () => {
+  it('uses algorithmic syllable segmentation for compact no-space coffee query', () => {
     const response = suggest(testDataset, { q: 'caphe', limit: 5 });
 
     expect(response.normalizedQuery).toBe('caphe');
@@ -22,21 +22,18 @@ describe('suggest', () => {
     expect(response.intent.type).toBe('Category Search');
     expect(response.diagnostics.agentic).toEqual(
       expect.objectContaining({
-        triggered: true,
-        appliedRewrite: 'cà phê',
-        source: 'agent',
+        triggered: false,
+        reason: 'deterministic result is strong enough',
       }),
     );
-    expect(response.diagnostics.entities).toEqual(
-      expect.arrayContaining([expect.objectContaining({ kind: 'category', value: 'cà phê', source: 'agent' })]),
-    );
+    expect(response.diagnostics.expansions.join(' ')).toContain('syllable-segmentation');
     expect(response.suggestions.map((suggestion) => suggestion.text)).toEqual(
       expect.arrayContaining(['Quán cà phê gần đây', 'Cà phê mở cửa 24/7']),
     );
     expect(response.suggestions.some((suggestion) => suggestion.text.includes('Highlands Coffee'))).toBe(true);
   });
 
-  it('uses agentic compact-prefix rewrite while a user is still typing caphe', () => {
+  it('uses algorithmic compact-prefix segmentation while a user is still typing caphe', () => {
     const response = suggest(testDataset, { q: 'cap', limit: 5 });
 
     expect(response.normalizedQuery).toBe('cap');
@@ -44,11 +41,11 @@ describe('suggest', () => {
     expect(response.intent.type).toBe('Category Search');
     expect(response.diagnostics.agentic).toEqual(
       expect.objectContaining({
-        triggered: true,
-        appliedRewrite: 'cà phê',
-        source: 'agent',
+        triggered: false,
+        reason: 'deterministic result is strong enough',
       }),
     );
+    expect(response.diagnostics.expansions.join(' ')).toContain('syllable-segmentation');
     expect(response.suggestions[0].text).toBe('Quán cà phê gần đây');
     expect(response.suggestions.map((suggestion) => suggestion.text)).toEqual(
       expect.arrayContaining(['Highlands Coffee Nguyễn Huệ', 'Cà phê mở cửa 24/7']),
@@ -87,6 +84,7 @@ describe('suggest', () => {
   it('does not overcorrect negative compact rewrite cases', () => {
     expect(suggest(testDataset, { q: 'capherang', limit: 5 }).suggestions).toEqual([]);
     expect(suggest(testDataset, { q: 'caphe sua da', limit: 5 }).suggestions).toEqual([]);
+    expect(suggest(testDataset, { q: 'nhathuoc', limit: 5 }).suggestions).toEqual([]);
   });
 
   it('uses abbreviation expansion for hotel in Da Nang', () => {
@@ -139,6 +137,76 @@ describe('suggest', () => {
     expect(response.diagnostics.agentic.provider).toBe('disabled');
     expect(response.suggestions[0].metadata.factors.personalization).toBe(1);
     expect(response.suggestions[0].metadata.personalizationReason).toContain('Coffee loyalist');
+  });
+
+  it('uses local behavior events as personalization evidence for repeated selections', () => {
+    const response = suggest(testDataset, {
+      q: 'cafe',
+      userId: 'local-demo',
+      limit: 5,
+      behaviorEvents: [
+        {
+          userId: 'local-demo',
+          query: 'cafe',
+          selectedText: 'Highlands Coffee Nguyễn Huệ',
+          selectedType: 'POI Search',
+          brand: 'Highlands Coffee',
+          city: 'TP.HCM',
+          occurredAt: '2026-07-03T00:00:00.000Z',
+        },
+      ],
+    });
+    const highlands = response.suggestions.find((suggestion) => suggestion.text === 'Highlands Coffee Nguyễn Huệ');
+
+    expect(highlands?.metadata.factors.personalization).toBeGreaterThan(0);
+    expect(highlands?.metadata.personalizationReason).toContain('Local learner');
+  });
+
+  it('accepts explicit ranking weights without changing the default ranking contract', () => {
+    const baseline = suggest(testDataset, {
+      q: 'cafe',
+      userId: 'local-demo',
+      limit: 5,
+      behaviorEvents: [
+        {
+          userId: 'local-demo',
+          query: 'cafe',
+          selectedText: 'Highlands Coffee Nguyễn Huệ',
+          selectedType: 'POI Search',
+          brand: 'Highlands Coffee',
+          occurredAt: '2026-07-03T00:00:00.000Z',
+        },
+      ],
+    });
+    const weighted = suggest(testDataset, {
+      q: 'cafe',
+      userId: 'local-demo',
+      limit: 5,
+      rankingWeights: {
+        lexical: 0.2,
+        intent: 0.15,
+        source: 0.1,
+        popularity: 0.05,
+        poiQuality: 0.05,
+        locality: 0.05,
+        personalization: 0.35,
+        diversity: 0.05,
+      },
+      behaviorEvents: [
+        {
+          userId: 'local-demo',
+          query: 'cafe',
+          selectedText: 'Highlands Coffee Nguyễn Huệ',
+          selectedType: 'POI Search',
+          brand: 'Highlands Coffee',
+          occurredAt: '2026-07-03T00:00:00.000Z',
+        },
+      ],
+    });
+    const baselineHighlands = baseline.suggestions.find((suggestion) => suggestion.text === 'Highlands Coffee Nguyễn Huệ');
+    const weightedHighlands = weighted.suggestions.find((suggestion) => suggestion.text === 'Highlands Coffee Nguyễn Huệ');
+
+    expect(weightedHighlands?.score ?? 0).toBeGreaterThan(baselineHighlands?.score ?? 0);
   });
 
   it('extracts entities for category, brand, city, and attribute queries', () => {

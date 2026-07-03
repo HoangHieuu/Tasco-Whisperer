@@ -19,6 +19,7 @@ describe('handleSuggestApiRequest', () => {
     expect(body.suggestions.map((suggestion) => suggestion.text)).toEqual(
       expect.arrayContaining(['Cafe có Wi-Fi', 'Quán cà phê có Wi-Fi']),
     );
+    expect(body.diagnostics.embedding?.neighbors.length).toBeGreaterThan(0);
   });
 
   it('returns deterministic fallback suggestions for an empty query', () => {
@@ -30,7 +31,7 @@ describe('handleSuggestApiRequest', () => {
     expect(body.suggestions.length).toBeGreaterThan(0);
   });
 
-  it('returns validated agentic rewrite diagnostics for compact Vietnamese variants', () => {
+  it('returns algorithmic rewrite diagnostics for compact Vietnamese variants', () => {
     const result = handleSuggestApiRequest(testDataset, {
       method: 'GET',
       url: '/api/suggest?q=caphe&limit=5',
@@ -43,8 +44,9 @@ describe('handleSuggestApiRequest', () => {
     );
     expect(body.suggestions.some((suggestion) => suggestion.text.includes('Highlands Coffee'))).toBe(true);
     expect(body.diagnostics.agentic).toEqual(
-      expect.objectContaining({ triggered: true, appliedRewrite: 'cà phê', source: 'agent' }),
+      expect.objectContaining({ triggered: false, reason: 'deterministic result is strong enough' }),
     );
+    expect(body.diagnostics.expansions.join(' ')).toContain('syllable-segmentation');
   });
 
   it('can disable agentic correction through query params', () => {

@@ -11,7 +11,10 @@
     "preview": "vite preview",
     "test": "vitest run",
     "eval": "tsx scripts/evaluate.ts",
+    "rank:tune": "tsx scripts/tuneRanking.ts",
     "tune:agentic": "tsx scripts/agenticTuning.ts",
+    "alias:memory": "tsx scripts/aliasMemory.ts",
+    "rewrite:agent": "tsx scripts/rewriteAgent.ts",
     "check": "npm run test && npm run eval && npm run api:smoke && npm run build"
   },
   "dependencies": {

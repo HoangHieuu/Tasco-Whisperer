@@ -1,6 +1,6 @@
 import { normalizeText } from './normalize';
 import { suggest } from './engine';
-import type { EvaluationCase, IntentType, TascoDataset } from './types';
+import type { EvaluationCase, IntentType, SuggestRequest, TascoDataset } from './types';
 
 export interface EvaluationCaseResult {
   caseId: string;
@@ -35,8 +35,13 @@ export interface EvaluationReport {
   };
 }
 
-export function evaluateDataset(dataset: TascoDataset): EvaluationReport {
-  const cases = dataset.evaluationCases.map((evaluationCase) => evaluateCase(dataset, evaluationCase));
+export interface EvaluationOptions {
+  limit?: number;
+  request?: Omit<Partial<SuggestRequest>, 'q' | 'limit'>;
+}
+
+export function evaluateDataset(dataset: TascoDataset, options: EvaluationOptions = {}): EvaluationReport {
+  const cases = dataset.evaluationCases.map((evaluationCase) => evaluateCase(dataset, evaluationCase, options));
   return {
     cases,
     summary: {
@@ -55,8 +60,8 @@ export function evaluateDataset(dataset: TascoDataset): EvaluationReport {
   };
 }
 
-function evaluateCase(dataset: TascoDataset, evaluationCase: EvaluationCase): EvaluationCaseResult {
-  const response = suggest(dataset, { q: evaluationCase.inputPrefix, limit: 8 });
+function evaluateCase(dataset: TascoDataset, evaluationCase: EvaluationCase, options: EvaluationOptions): EvaluationCaseResult {
+  const response = suggest(dataset, { ...options.request, q: evaluationCase.inputPrefix, limit: options.limit ?? 8 });
   const actual = response.suggestions.map((suggestion) => suggestion.text);
   const expected = evaluationCase.expectedTopSuggestions;
   const expectedIntentType = normalizeExpectedIntent(evaluationCase.expectedSuggestionType);

@@ -103,13 +103,26 @@ export interface ScoreFactors {
   diversity: number;
 }
 
+export type RankingWeights = Record<keyof ScoreFactors, number>;
+
+export interface BehaviorEvent {
+  userId: string;
+  query: string;
+  selectedText: string;
+  selectedType: IntentType;
+  brand?: string;
+  category?: string;
+  city?: string;
+  occurredAt: string;
+}
+
 export interface Suggestion {
   id: string;
   text: string;
   normalizedText: string;
   type: IntentType;
   score: number;
-  source: 'autocomplete' | 'poi' | 'popular-query' | 'template';
+  source: 'autocomplete' | 'poi' | 'popular-query' | 'template' | 'semantic' | 'embedding';
   matched: string[];
   poiId?: string;
   metadata: {
@@ -160,6 +173,8 @@ export interface SuggestRequest {
   city?: string;
   userId?: string;
   limit?: number;
+  rankingWeights?: Partial<RankingWeights>;
+  behaviorEvents?: BehaviorEvent[];
   agentic?: boolean;
   agenticProvider?: AgenticRewriteProvider;
   aliasMemory?: AliasMemoryRecord[];
@@ -187,6 +202,18 @@ export interface SuggestResponse {
       source?: AgenticRewriteSource;
       proposal?: AgenticRewriteProposal;
       aliasMemoryHits?: AliasMemoryRecord[];
+    };
+    embedding?: {
+      neighbors: Array<{
+        id: string;
+        kind: 'autocomplete' | 'poi' | 'popular-query';
+        similarity: number;
+        intent?: IntentType;
+      }>;
+      intentVote?: {
+        type: IntentType;
+        confidence: number;
+      };
     };
     datasetRows: {
       autocomplete: number;

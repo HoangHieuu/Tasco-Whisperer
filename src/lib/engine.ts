@@ -1,10 +1,23 @@
 import { resolveAgenticCorrection } from './agentic';
 import { expandQuery, fuzzyIncludes, normalizeText } from './normalize';
+import {
+  buildEmbeddingIndex,
+  hasStrongSemanticEvidence,
+  searchEmbeddingIndex,
+  semanticDocuments,
+  semanticSimilarity,
+  voteIntentFromNeighbors,
+  type EmbeddingIntentVote,
+  type EmbeddingNeighbor,
+} from './semantic';
+import { buildVietnameseQueryKnowledge, proposeVietnameseRewrites } from './vietnamese';
 import type {
+  BehaviorEvent,
   IntentType,
   PoiRecord,
   QueryEntity,
   QueryUnderstanding,
+  RankingWeights,
   ScoreFactors,
   SuggestRequest,
   SuggestResponse,
@@ -37,6 +50,17 @@ interface SimulatedProfile {
 
 const MAX_QUERY_FREQUENCY = 15000;
 const MAX_REVIEWS = 10000;
+
+export const DEFAULT_RANKING_WEIGHTS: RankingWeights = {
+  lexical: 0.3,
+  intent: 0.2,
+  source: 0.15,
+  popularity: 0.1,
+  poiQuality: 0.1,
+  locality: 0.05,
+  personalization: 0.05,
+  diversity: 0.05,
+};
 
 const SIMULATED_PROFILES: SimulatedProfile[] = [
   {
@@ -159,10 +183,11 @@ const SEMANTIC_TEMPLATES: SemanticTemplate[] = [
 export function suggest(dataset: TascoDataset, request: SuggestRequest): SuggestResponse {
   const start = performance.now();
   const limit = clampLimit(request.limit);
-  const understanding = expandQuery(request.q, dataset.abbreviations);
+  const understanding = understandQuery(dataset, request.q);
   const entities = extractEntities(dataset, understanding);
-  const drafts = collectCandidates(dataset, understanding, request);
-  const intent = predictIntent(drafts, understanding, entities);
+  const embedding = embeddingContext(dataset, understanding);
+  const drafts = collectCandidates(dataset, understanding, request, embedding.neighbors);
+  const intent = predictIntent(drafts, understanding, entities, embedding.intentVote);
   const agentic = resolveAgenticCorrection({
     understanding,
     entities,
@@ -179,9 +204,12 @@ export function suggest(dataset: TascoDataset, request: SuggestRequest): Suggest
   const finalEntities = agentic.appliedRewrite
     ? mergeEntities(extractEntities(dataset, finalUnderstanding), agentic.proposal?.entities ?? [])
     : entities;
-  const rewrittenDrafts = agentic.appliedRewrite ? collectCandidates(dataset, finalUnderstanding, request) : [];
+  const rewrittenEmbedding = agentic.appliedRewrite ? embeddingContext(dataset, finalUnderstanding) : embedding;
+  const rewrittenDrafts = agentic.appliedRewrite ? collectCandidates(dataset, finalUnderstanding, request, rewrittenEmbedding.neighbors) : [];
   const finalDrafts = agentic.appliedRewrite ? [...drafts, ...rewrittenDrafts] : drafts;
-  const rerunIntent = agentic.appliedRewrite ? predictIntent(finalDrafts, finalUnderstanding, finalEntities) : intent;
+  const rerunIntent = agentic.appliedRewrite
+    ? predictIntent(finalDrafts, finalUnderstanding, finalEntities, rewrittenEmbedding.intentVote)
+    : intent;
   const finalIntent = applyValidatedAgenticIntent(rerunIntent, agentic.proposal);
   const suggestions = rankAndMerge(finalDrafts, finalIntent.type, request, limit);
 
@@ -197,6 +225,20 @@ export function suggest(dataset: TascoDataset, request: SuggestRequest): Suggest
       entities: finalEntities,
       candidateCount: finalDrafts.length,
       agentic,
+      embedding: {
+        neighbors: (agentic.appliedRewrite ? rewrittenEmbedding.neighbors : embedding.neighbors).slice(0, 5).map((neighbor) => ({
+          id: neighbor.document.id,
+          kind: neighbor.document.kind,
+          similarity: neighbor.similarity,
+          intent: neighbor.intent,
+        })),
+        intentVote: (agentic.appliedRewrite ? rewrittenEmbedding.intentVote : embedding.intentVote)
+          ? {
+              type: (agentic.appliedRewrite ? rewrittenEmbedding.intentVote : embedding.intentVote)!.type,
+              confidence: (agentic.appliedRewrite ? rewrittenEmbedding.intentVote : embedding.intentVote)!.confidence,
+            }
+          : undefined,
+      },
       datasetRows: {
         autocomplete: dataset.autocomplete.length,
         pois: dataset.pois.length,
@@ -205,6 +247,37 @@ export function suggest(dataset: TascoDataset, request: SuggestRequest): Suggest
         evaluationCases: dataset.evaluationCases.length,
       },
     },
+  };
+}
+
+function embeddingContext(
+  dataset: TascoDataset,
+  understanding: QueryUnderstanding,
+): { neighbors: EmbeddingNeighbor[]; intentVote?: EmbeddingIntentVote } {
+  const query = understanding.expanded || understanding.normalized;
+  if (!query || isUnresolvedCompactQuery(understanding)) {
+    return { neighbors: [] };
+  }
+  const neighbors = searchEmbeddingIndex(query, buildEmbeddingIndex(dataset), 10).filter((neighbor) => neighbor.similarity >= 0.38);
+  return {
+    neighbors,
+    intentVote: voteIntentFromNeighbors(neighbors),
+  };
+}
+
+function understandQuery(dataset: TascoDataset, query: string): QueryUnderstanding {
+  const base = expandQuery(query, dataset.abbreviations);
+  const [rewrite] = proposeVietnameseRewrites(query, buildVietnameseQueryKnowledge(dataset), dataset.abbreviations);
+  if (!rewrite) {
+    return base;
+  }
+  const rewritten = expandQuery(rewrite.rewrite, dataset.abbreviations);
+  return {
+    original: query,
+    normalized: base.normalized,
+    expanded: rewritten.expanded,
+    expansions: [...base.expansions, `${rewrite.source}: ${rewrite.reason}`, ...rewritten.expansions],
+    tokens: rewritten.tokens,
   };
 }
 
@@ -245,6 +318,7 @@ function collectCandidates(
   dataset: TascoDataset,
   understanding: QueryUnderstanding,
   request: SuggestRequest,
+  embeddingNeighbors: EmbeddingNeighbor[] = [],
 ): CandidateDraft[] {
   if (!understanding.normalized) {
     return dataset.popularQueries.slice(0, 5).map((query) => ({
@@ -263,6 +337,8 @@ function collectCandidates(
     ...fromAutocomplete(dataset, understanding),
     ...fromPois(dataset, understanding, request),
     ...fromPopularQueries(dataset, understanding),
+    ...fromEmbedding(understanding, embeddingNeighbors),
+    ...fromSemantic(dataset, understanding),
     ...fromTemplates(understanding),
   ];
 }
@@ -297,7 +373,7 @@ function fromPois(dataset: TascoDataset, understanding: QueryUnderstanding, requ
   return dataset.pois.flatMap((poi) => {
     const haystacks = [poi.poiName, poi.brand, poi.category, poi.address, poi.city, ...poi.tags].filter(Boolean);
     const matched = haystacks.filter((value) => queryMatches(value, understanding));
-    const categoryHit = understanding.tokens.some((token) => tokenEvidence(normalizeText(poi.category), token));
+    const categoryHit = tokenFallbackMatches(normalizeText(poi.category), understanding.tokens);
     const cityHit = requestedCity ? normalizeText(poi.city).includes(requestedCity) : true;
     if (matched.length === 0 && !categoryHit) {
       return [];
@@ -333,6 +409,127 @@ function fromPopularQueries(dataset: TascoDataset, understanding: QueryUnderstan
       reason: 'popular query trend',
     };
   });
+}
+
+function fromSemantic(dataset: TascoDataset, understanding: QueryUnderstanding): CandidateDraft[] {
+  const query = understanding.expanded || understanding.normalized;
+  if (query.length < 4) {
+    return [];
+  }
+  if (isUnresolvedCompactQuery(understanding)) {
+    return [];
+  }
+  return semanticDocuments(dataset)
+    .map((document) => ({ document, similarity: semanticSimilarity(query, document.text) }))
+    .filter(({ document, similarity }) => similarity >= 0.5 && hasStrongSemanticEvidence(query, document.text))
+    .sort((a, b) => b.similarity - a.similarity)
+    .slice(0, 12)
+    .map(({ document, similarity }): CandidateDraft => {
+      if (document.kind === 'poi') {
+        const poi = document.record;
+        return {
+          id: document.id,
+          text: poi.poiName,
+          type: inferPoiSuggestionType(poi, understanding),
+          source: 'semantic',
+          matched: ['semantic retrieval'],
+          poi,
+          baseScore: Math.min(0.76, 0.42 + similarity * 0.32),
+          frequencyScore: poi.popularityScore / 100,
+          reason: `semantic match from ${poi.category}${poi.city ? ` in ${poi.city}` : ''}`,
+          entityBoost: 0.02,
+        };
+      }
+      if (document.kind === 'autocomplete') {
+        const record = document.record;
+        return {
+          id: document.id,
+          text: record.suggestionText,
+          type: record.suggestionType,
+          source: 'semantic',
+          matched: ['semantic retrieval'],
+          baseScore: Math.min(0.76, 0.43 + similarity * 0.32),
+          frequencyScore: record.queryFrequency / MAX_QUERY_FREQUENCY,
+          reason: 'semantic match from historical autocomplete',
+          entityBoost: 0.02,
+        };
+      }
+      const record = document.record;
+      return {
+        id: document.id,
+        text: record.queryText,
+        type: record.intentType,
+        source: 'semantic',
+        matched: ['semantic retrieval'],
+        baseScore: Math.min(0.74, 0.42 + similarity * 0.3),
+        frequencyScore: record.monthlyFrequency / MAX_QUERY_FREQUENCY,
+        reason: 'semantic match from popular query',
+        entityBoost: 0.02,
+      };
+    });
+}
+
+function fromEmbedding(understanding: QueryUnderstanding, neighbors: EmbeddingNeighbor[]): CandidateDraft[] {
+  const query = understanding.expanded || understanding.normalized;
+  if (query.length < 4 || isUnresolvedCompactQuery(understanding)) {
+    return [];
+  }
+  return neighbors
+    .filter((neighbor) => neighbor.similarity >= 0.44 && hasStrongSemanticEvidence(query, neighbor.document.text))
+    .slice(0, 10)
+    .map((neighbor): CandidateDraft => {
+      const { document, similarity } = neighbor;
+      if (document.kind === 'poi') {
+        const poi = document.record;
+        return {
+          id: `embedding-${document.id}`,
+          text: poi.poiName,
+          type: inferPoiSuggestionType(poi, understanding),
+          source: 'embedding',
+          matched: ['embedding kNN'],
+          poi,
+          baseScore: Math.min(0.84, 0.48 + similarity * 0.42),
+          frequencyScore: poi.popularityScore / 100,
+          reason: `embedding kNN match from ${poi.category}${poi.city ? ` in ${poi.city}` : ''}`,
+          entityBoost: 0.04,
+        };
+      }
+      if (document.kind === 'autocomplete') {
+        const record = document.record;
+        return {
+          id: `embedding-${document.id}`,
+          text: record.suggestionText,
+          type: record.suggestionType,
+          source: 'embedding',
+          matched: ['embedding kNN'],
+          baseScore: Math.min(0.84, 0.48 + similarity * 0.4),
+          frequencyScore: record.queryFrequency / MAX_QUERY_FREQUENCY,
+          reason: 'embedding kNN match from historical autocomplete',
+          entityBoost: 0.04,
+        };
+      }
+      const record = document.record;
+      return {
+        id: `embedding-${document.id}`,
+        text: record.queryText,
+        type: record.intentType,
+        source: 'embedding',
+        matched: ['embedding kNN'],
+        baseScore: Math.min(0.82, 0.47 + similarity * 0.38),
+        frequencyScore: record.monthlyFrequency / MAX_QUERY_FREQUENCY,
+        reason: 'embedding kNN match from popular query',
+        entityBoost: 0.04,
+      };
+    });
+}
+
+function isUnresolvedCompactQuery(understanding: QueryUnderstanding): boolean {
+  return (
+    !understanding.normalized.includes(' ') &&
+    understanding.normalized === understanding.expanded &&
+    understanding.expansions.length === 0 &&
+    understanding.normalized.length >= 6
+  );
 }
 
 function fromTemplates(understanding: QueryUnderstanding): CandidateDraft[] {
@@ -382,7 +579,11 @@ function semanticTemplateMatches(query: string, trigger: string): boolean {
 }
 
 function significantTokensEvery(query: string, haystack: string): boolean {
+  const allTokens = query.split(' ').filter(Boolean);
   const tokens = query.split(' ').filter((token) => token.length >= 3);
+  if (allTokens.length > 1 && tokens.length < 2) {
+    return false;
+  }
   return tokens.length > 0 && tokens.every((token) => tokenEvidence(haystack, token));
 }
 
@@ -405,8 +606,19 @@ function queryMatches(value: string, understanding: QueryUnderstanding): boolean
     compactCrossTokenPrefixMatches(normalizedValue, understanding.expanded) ||
     fuzzyIncludes(normalizedValue, understanding.normalized) ||
     fuzzyIncludes(normalizedValue, understanding.expanded) ||
-    understanding.tokens.some((token) => tokenEvidence(normalizedValue, token))
+    tokenFallbackMatches(normalizedValue, understanding.tokens)
   );
+}
+
+function tokenFallbackMatches(value: string, tokens: string[]): boolean {
+  const significant = tokens.filter((token) => token.length >= 3);
+  if (significant.length === 0) {
+    return false;
+  }
+  if (significant.length === 1) {
+    return tokenEvidence(value, significant[0]);
+  }
+  return significant.every((token) => tokenEvidence(value, token));
 }
 
 function prefixPhraseMatches(haystack: string, query: string): boolean {
@@ -467,7 +679,12 @@ function inferPoiSuggestionType(poi: PoiRecord, understanding: QueryUnderstandin
   return 'POI Search';
 }
 
-function predictIntent(drafts: CandidateDraft[], understanding: QueryUnderstanding, entities: QueryEntity[]): SuggestResponse['intent'] {
+function predictIntent(
+  drafts: CandidateDraft[],
+  understanding: QueryUnderstanding,
+  entities: QueryEntity[],
+  embeddingVote?: EmbeddingIntentVote,
+): SuggestResponse['intent'] {
   const votes = new Map<IntentType, number>();
   for (const [term, type] of CATEGORY_TERMS) {
     if (understanding.expanded.includes(term) || understanding.normalized.includes(term)) {
@@ -483,6 +700,9 @@ function predictIntent(drafts: CandidateDraft[], understanding: QueryUnderstandi
       const weight = entity.kind === 'attribute' ? entity.confidence + 1.9 : entity.confidence;
       votes.set(mapped, (votes.get(mapped) ?? 0) + weight);
     }
+  }
+  if (embeddingVote && embeddingVote.confidence >= 0.46) {
+    votes.set(embeddingVote.type, (votes.get(embeddingVote.type) ?? 0) + embeddingVote.confidence * 1.8);
   }
   if (entities.some((entity) => entity.kind === 'coordinate')) {
     return { type: 'Coordinate Search', confidence: 0.93 };
@@ -563,9 +783,9 @@ function rankAndMerge(
   const merged = new Map<string, Suggestion>();
 
   for (const draft of drafts) {
-    const personalization = personalizationBoost(request.userId, draft);
+    const personalization = personalizationBoost(request.userId, draft, request.behaviorEvents);
     const factors = scoreFactors(draft, predictedIntent, request, personalization.boost);
-    const score = weightedScore(factors);
+    const score = weightedScore(factors, request.rankingWeights);
     const normalizedText = normalizeText(draft.text);
     const existing = merged.get(normalizedText);
     const suggestion: Suggestion = {
@@ -613,12 +833,23 @@ function scoreFactors(
   const factors: ScoreFactors = {
     lexical: draft.baseScore,
     intent: draft.type === predictedIntent ? 1 : 0.55,
-    source: draft.source === 'autocomplete' ? 0.95 : draft.source === 'template' ? 0.92 : draft.source === 'popular-query' ? 0.86 : 0.8,
+    source:
+      draft.source === 'autocomplete'
+        ? 0.95
+        : draft.source === 'template'
+          ? 0.92
+        : draft.source === 'embedding'
+          ? 0.88
+          : draft.source === 'semantic'
+            ? 0.82
+            : draft.source === 'popular-query'
+              ? 0.86
+              : 0.8,
     popularity: clamp01(draft.frequencyScore),
     poiQuality: poi ? clamp01((poi.rating / 5) * 0.45 + (poi.reviewCount / MAX_REVIEWS) * 0.25 + (poi.popularityScore / 100) * 0.3) : 0.68,
     locality: cityMatch ? 1 : request.city ? 0.45 : 0.7,
-    personalization: personalizationBoostValue,
-    diversity: draft.source === 'template' ? 0.92 : 0.66,
+    personalization: clamp01(personalizationBoostValue),
+    diversity: draft.source === 'template' ? 0.92 : ['semantic', 'embedding'].includes(draft.source) ? 0.6 : 0.66,
   };
   if (draft.entityBoost) {
     factors.lexical = Math.min(1.18, factors.lexical + draft.entityBoost);
@@ -626,25 +857,41 @@ function scoreFactors(
   return factors;
 }
 
-function weightedScore(factors: ScoreFactors): number {
+function weightedScore(factors: ScoreFactors, requestedWeights?: Partial<RankingWeights>): number {
+  const weights = resolveRankingWeights(requestedWeights);
   return roundScore(
-    factors.lexical * 0.3 +
-      factors.intent * 0.2 +
-      factors.source * 0.15 +
-      factors.popularity * 0.1 +
-      factors.poiQuality * 0.1 +
-      factors.locality * 0.05 +
-      factors.personalization * 0.05 +
-      factors.diversity * 0.05,
+    factors.lexical * weights.lexical +
+      factors.intent * weights.intent +
+      factors.source * weights.source +
+      factors.popularity * weights.popularity +
+      factors.poiQuality * weights.poiQuality +
+      factors.locality * weights.locality +
+      factors.personalization * weights.personalization +
+      factors.diversity * weights.diversity,
   );
 }
 
-function personalizationBoost(userId: string | undefined, draft: CandidateDraft): { boost: number; reason?: string } {
-  if (!userId) {
-    return { boost: 0 };
+function resolveRankingWeights(requestedWeights?: Partial<RankingWeights>): RankingWeights {
+  const merged: RankingWeights = {
+    ...DEFAULT_RANKING_WEIGHTS,
+    ...requestedWeights,
+  };
+  const sanitized = Object.fromEntries(
+    Object.entries(merged).map(([key, value]) => [key, Number.isFinite(value) ? Math.max(0, value) : 0]),
+  ) as RankingWeights;
+  const total = Object.values(sanitized).reduce((sum, value) => sum + value, 0);
+  if (total <= 0) {
+    return DEFAULT_RANKING_WEIGHTS;
   }
-  const profile = findSimulatedProfile(userId);
-  if (!profile) {
+  return Object.fromEntries(Object.entries(sanitized).map(([key, value]) => [key, value / total])) as RankingWeights;
+}
+
+function personalizationBoost(
+  userId: string | undefined,
+  draft: CandidateDraft,
+  behaviorEvents: BehaviorEvent[] = [],
+): { boost: number; reason?: string } {
+  if (!userId) {
     return { boost: 0 };
   }
   const haystack = normalizeText(
@@ -652,19 +899,68 @@ function personalizationBoost(userId: string | undefined, draft: CandidateDraft)
       draft.poi?.city ?? ''
     } ${draft.poi?.address ?? ''} ${draft.poi?.tags.join(' ') ?? ''}`,
   );
-  const match = profile.preferences.find((preference) => containsAny(haystack, preference.terms));
-  if (!match) {
-    return { boost: 0 };
+  const reasons: string[] = [];
+  let boost = 0;
+  const profile = findSimulatedProfile(userId);
+  const profileMatch = profile?.preferences.find((preference) => containsAny(haystack, preference.terms));
+  if (profile && profileMatch) {
+    boost = Math.max(boost, profileMatch.boost);
+    reasons.push(`${profile.label}: ${profileMatch.reason}`);
+  }
+  const behavior = behaviorBoost(userId, behaviorEvents, haystack);
+  if (behavior.boost > 0) {
+    boost = Math.max(boost, behavior.boost);
+    reasons.push(behavior.reason);
   }
   return {
-    boost: match.boost,
-    reason: `${profile.label}: ${match.reason}`,
+    boost: clamp01(boost),
+    reason: reasons.length ? reasons.join('; ') : undefined,
   };
 }
 
 function findSimulatedProfile(userId: string): SimulatedProfile | undefined {
   const normalizedUser = normalizeText(userId);
   return SIMULATED_PROFILES.find((profile) => normalizeText(profile.id) === normalizedUser);
+}
+
+function behaviorBoost(
+  userId: string,
+  behaviorEvents: BehaviorEvent[],
+  haystack: string,
+): { boost: number; reason: string } {
+  const normalizedUser = normalizeText(userId);
+  const matchingEvents = behaviorEvents
+    .filter((event) => normalizeText(event.userId) === normalizedUser)
+    .slice(-50)
+    .reverse();
+  const matchedTerms = new Set<string>();
+
+  for (const event of matchingEvents) {
+    for (const term of behaviorTerms(event)) {
+      if (term.length >= 3 && haystack.includes(normalizeText(term))) {
+        matchedTerms.add(term);
+      }
+    }
+  }
+
+  if (matchedTerms.size === 0) {
+    return { boost: 0, reason: '' };
+  }
+
+  const terms = [...matchedTerms].slice(0, 3);
+  return {
+    boost: Math.min(1, 0.55 + terms.length * 0.12),
+    reason: `Local learner: prior selections match ${terms.join(', ')}`,
+  };
+}
+
+function behaviorTerms(event: BehaviorEvent): string[] {
+  return [
+    event.selectedText,
+    event.brand ?? '',
+    event.category ?? '',
+    event.city ?? '',
+  ].filter(Boolean);
 }
 
 function containsAny(text: string, needles: string[]): boolean {
@@ -684,7 +980,7 @@ function tokenEvidence(haystack: string, token: string): boolean {
 }
 
 function sourcePriority(source: Suggestion['source']): number {
-  return { autocomplete: 0, 'popular-query': 1, poi: 2, template: 3 }[source];
+  return { autocomplete: 0, 'popular-query': 1, poi: 2, template: 3, embedding: 4, semantic: 5 }[source];
 }
 
 function clampLimit(limit: number | undefined): number {
