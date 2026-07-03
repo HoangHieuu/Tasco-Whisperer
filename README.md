@@ -174,6 +174,12 @@ the live endpoint is missing, empty, or unavailable, the response falls back to
 local deterministic data and marks `meta.source` as `local-fallback`.
 
 For mock demos, POI detail supports `include=reviews,photos,hours,ai_summary`.
+POI responses keep the familiar scalar fields and add an `enrichment` block
+with field-level source, confidence, evidence, generated/verified flags,
+deterministic attributes, and live/local reconciliation notes. Vietnamese
+`aiSummary` text is generated only from known dataset/upstream fields. Reviews
+and photos remain deterministic demo placeholders unless supplied by a live
+upstream, and are marked as `local-mock` with `verifiedRealWorld=false`.
 Documented error responses can be exercised without requiring real auth or
 upstream failures by passing `mockError=<code>`, for example `unauthorized`,
 `rate_limited`, `timeout`, or `service_unavailable`.
@@ -200,6 +206,7 @@ npm run eval
 npm run eval:robust
 npm run rank:tune
 npm run rank:train
+npm run enrich:report
 npm run tune:agentic
 npm run alias:memory -- --rawQuery cf --rewrite "cà phê" --intent "Category Search"
 npm run api:smoke
@@ -230,6 +237,13 @@ Learning-to-rank baseline:
 - Held-out validation top-3 recall: 100%.
 - Held-out validation NDCG@5: 0.866.
 
+Enrichment coverage baseline:
+
+- 62/62 POIs have Vietnamese evidence-based summaries.
+- 62/62 POIs have deterministic derived opening-hour estimates.
+- Average deterministic attributes per POI: 6.194.
+- No outside enrichment corpus is imported.
+
 This is a Phase 5 local demo baseline. It uses Vietnamese normalization,
 abbreviation expansion, algorithmic compact syllable segmentation, guarded
 Telex/VNI cleanup, a local embedding kNN index with intent voting, entity
@@ -254,6 +268,9 @@ evaluation suite and writes reports to `reports/ranking-tuning/latest.json` and
 to `reports/learning-to-rank/latest.json` and
 `reports/learning-to-rank/latest.md`; this is training-ready scaffolding, not a
 production ML-ranker claim while labels remain small.
+`npm run enrich:report` writes field-provenance and deterministic-attribute
+coverage to `reports/enrichment/latest.json` and
+`reports/enrichment/latest.md`.
 `npm run tune:agentic` exports advisory weak-case tuning reports to
 `reports/agentic-tuning/latest.json` and `reports/agentic-tuning/latest.md`;
 proposals require explicit developer acceptance before changing runtime

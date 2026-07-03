@@ -60,7 +60,7 @@ search UI. Do not put TASCO credentials in `VITE_*` variables or browser code.
 | Error response shape | yes | partial | Backend returns JSON `error.code/message/details`; local mock supports `mockError` for documented statuses. |
 | Search params | yes | coverage | Supports `q`, `lat`, `lon`, `radiusMeters`, `bbox`, `category`, `limit`, and `lang`. |
 | Autocomplete params | yes | yes | Main UI uses `q`, `lat`, `lon`, `limit`, `sessionId`, and `lang`. |
-| POI params | yes | coverage | Supports `id`, `lang`, and `include`; local fallback supports `reviews`, `photos`, `hours`, and `ai_summary`. |
+| POI params | yes | coverage | Supports `id`, `lang`, and `include`; local fallback supports `reviews`, `photos`, `hours`, and `ai_summary` with field-level provenance, confidence, deterministic attributes, and live/local reconciliation notes. |
 | Reverse geocoding params | yes | coverage | Supports `lat/lon`, `point.lat/point.lon`, `radiusMeters`, and `lang`. |
 | Nearby params | yes | coverage | Supports `lat`, `lon`, `radiusMeters`, `category`, `openNow`, `limit`, and `lang`. |
 | Geocoding params | yes | coverage | Supports `address`, `city`, `district`, `lat`, `lon`, `limit`, and `lang`. |
@@ -75,6 +75,11 @@ The local mock facade accepts `mockError=<code>` on documented TASCO routes to
 exercise `unauthorized`, `forbidden`, `not_found`, `timeout`, `rate_limited`,
 `internal_error`, and `service_unavailable` response shapes without requiring
 real upstream failures.
+
+Local POI `aiSummary` and `openingHours` values are deterministic derivations
+from provided CSV fields, not verified real-world content. Local reviews and
+photos are deterministic mock placeholders and are labeled `local-mock` with
+`verifiedRealWorld=false`.
 
 The documentation names conversational map and semantic ranking as possible
 solution areas but does not define separate REST endpoints for them. Tasco

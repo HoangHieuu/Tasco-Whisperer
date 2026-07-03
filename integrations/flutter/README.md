@@ -91,4 +91,7 @@ The adapter also exposes search, POI detail, reverse geocoding, nearby search,
 geocoding, and route calls for the app's Pelias/Valhalla-style boundaries.
 POI detail preserves enriched fields returned by
 `include=reviews,photos,hours,ai_summary`, including `reviews`, `photos`,
-`openingHours`, and `aiSummary`.
+`openingHours`, and `aiSummary`. It also keeps the optional raw `enrichment`
+map so Flutter screens can inspect field-level provenance, confidence,
+attributes, and live/local reconciliation notes without hard-coding UI
+dependencies into the service layer.
