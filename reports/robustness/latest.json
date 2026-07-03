@@ -1,0 +1,3989 @@
+{
+  "cases": [
+    {
+      "caseId": "PUB001-uppercase",
+      "sourceCaseId": "PUB001",
+      "transform": "uppercase",
+      "inputPrefix": "VIN",
+      "expected": [
+        "Vincom Center",
+        "Vinmec",
+        "Vinpearl"
+      ],
+      "actual": [
+        "Vinpearl",
+        "vincom đồng khởi",
+        "Vincom Center",
+        "Vinmec",
+        "Vincom Center Đồng Khởi",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Vinmec Times City",
+        "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 25
+    },
+    {
+      "caseId": "PUB002-uppercase",
+      "sourceCaseId": "PUB002",
+      "transform": "uppercase",
+      "inputPrefix": "CAFE",
+      "expected": [
+        "Quán cà phê gần đây",
+        "Highlands Coffee",
+        "Cà phê mở cửa 24/7"
+      ],
+      "actual": [
+        "Quán cà phê gần đây",
+        "Coffee near me",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Highlands Coffee Nguyễn Huệ",
+        "The Coffee House Trần Duy Hưng",
+        "Cà phê mở cửa 24/7"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 28
+    },
+    {
+      "caseId": "PUB002-truncated",
+      "sourceCaseId": "PUB002",
+      "transform": "truncated",
+      "inputPrefix": "ca",
+      "expected": [
+        "Quán cà phê gần đây",
+        "Highlands Coffee",
+        "Cà phê mở cửa 24/7"
+      ],
+      "actual": [
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Cộng Cà Phê Hồ Gươm",
+        "Quán cà phê gần đây",
+        "The Coffee House Trần Duy Hưng",
+        "BIDV Cây xăng Trần Duy Hưng TP.HCM"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 16
+    },
+    {
+      "caseId": "PUB003-uppercase",
+      "sourceCaseId": "PUB003",
+      "transform": "uppercase",
+      "inputPrefix": "ATM",
+      "expected": [
+        "ATM Vietcombank gần nhất",
+        "ATM BIDV gần đây",
+        "ATM gần sân bay"
+      ],
+      "actual": [
+        "ATM Vietcombank gần nhất",
+        "ATM BIDV gần đây",
+        "ATM gần sân bay",
+        "atm vcb gần nhất",
+        "Highlands Coffee ATM Pasteur Nha Trang",
+        "ATM Vietcombank Nguyễn Huệ",
+        "WinMart ATM Pasteur Hải Phòng",
+        "Vietcombank ATM Nguyễn Huệ Đà Lạt"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 17
+    },
+    {
+      "caseId": "PUB004-compact",
+      "sourceCaseId": "PUB004",
+      "transform": "compact",
+      "inputPrefix": "nguyenh",
+      "expected": [
+        "Nguyễn Huệ, Quận 1, TP.HCM",
+        "Highlands Coffee Nguyễn Huệ"
+      ],
+      "actual": [
+        "Nguyễn Huệ, Quận 1, TP.HCM",
+        "Highlands Coffee Nguyễn Huệ",
+        "12 Nguyễn Huệ, Quận 1, TP.HCM",
+        "Bãi biển Mỹ Khê",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Phúc Long Trung tâm thương mại Nguyễn Trãi TP.HCM",
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 27
+    },
+    {
+      "caseId": "PUB004-uppercase",
+      "sourceCaseId": "PUB004",
+      "transform": "uppercase",
+      "inputPrefix": "NGUYEN H",
+      "expected": [
+        "Nguyễn Huệ, Quận 1, TP.HCM",
+        "Highlands Coffee Nguyễn Huệ"
+      ],
+      "actual": [
+        "Nguyễn Huệ, Quận 1, TP.HCM",
+        "Highlands Coffee Nguyễn Huệ",
+        "12 Nguyễn Huệ, Quận 1, TP.HCM",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Nhà hàng Nguyễn Huệ Đà Nẵng",
+        "Nhà hàng Nguyễn Huệ Hải Phòng",
+        "Phố đi bộ Nguyễn Huệ"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB004-spaced",
+      "sourceCaseId": "PUB004",
+      "transform": "spaced",
+      "inputPrefix": "nguyen  h",
+      "expected": [
+        "Nguyễn Huệ, Quận 1, TP.HCM",
+        "Highlands Coffee Nguyễn Huệ"
+      ],
+      "actual": [
+        "Nguyễn Huệ, Quận 1, TP.HCM",
+        "Highlands Coffee Nguyễn Huệ",
+        "12 Nguyễn Huệ, Quận 1, TP.HCM",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Nhà hàng Nguyễn Huệ Đà Nẵng",
+        "Nhà hàng Nguyễn Huệ Hải Phòng",
+        "Phố đi bộ Nguyễn Huệ"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB005-compact",
+      "sourceCaseId": "PUB005",
+      "transform": "compact",
+      "inputPrefix": "benth",
+      "expected": [
+        "Chợ Bến Thành",
+        "Khách sạn gần Chợ Bến Thành"
+      ],
+      "actual": [
+        "Chợ Bến Thành",
+        "Khách sạn gần Chợ Bến Thành",
+        "Bệnh viện gần đây",
+        "Bệnh viện Bạch Mai",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Vinmec Times City",
+        "Bệnh viện Trần Duy Hưng Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB005-uppercase",
+      "sourceCaseId": "PUB005",
+      "transform": "uppercase",
+      "inputPrefix": "BEN TH",
+      "expected": [
+        "Chợ Bến Thành",
+        "Khách sạn gần Chợ Bến Thành"
+      ],
+      "actual": [
+        "Chợ Bến Thành",
+        "Khách sạn gần Chợ Bến Thành",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Bệnh viện Bạch Mai",
+        "Vinmec Times City",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Bến xe Miền Đông mới"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 20
+    },
+    {
+      "caseId": "PUB005-spaced",
+      "sourceCaseId": "PUB005",
+      "transform": "spaced",
+      "inputPrefix": "ben  th",
+      "expected": [
+        "Chợ Bến Thành",
+        "Khách sạn gần Chợ Bến Thành"
+      ],
+      "actual": [
+        "Chợ Bến Thành",
+        "Khách sạn gần Chợ Bến Thành",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Bệnh viện Bạch Mai",
+        "Vinmec Times City",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Bến xe Miền Đông mới"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 19
+    },
+    {
+      "caseId": "PUB006-compact",
+      "sourceCaseId": "PUB006",
+      "transform": "compact",
+      "inputPrefix": "ksd",
+      "expected": [
+        "Khách sạn Đà Nẵng",
+        "Khách sạn gần biển Đà Nẵng"
+      ],
+      "actual": [],
+      "top3Hit": false,
+      "top5Hit": false,
+      "latencyMs": 16
+    },
+    {
+      "caseId": "PUB006-uppercase",
+      "sourceCaseId": "PUB006",
+      "transform": "uppercase",
+      "inputPrefix": "KS D",
+      "expected": [
+        "Khách sạn Đà Nẵng",
+        "Khách sạn gần biển Đà Nẵng"
+      ],
+      "actual": [
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn Đà Nẵng",
+        "Khách sạn gần biển Đà Nẵng",
+        "Hotel Đà Nẵng",
+        "Khách sạn gần biển Mỹ Khê",
+        "Khách sạn gần đây",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Khách sạn Mường Thanh Đà Nẵng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB006-spaced",
+      "sourceCaseId": "PUB006",
+      "transform": "spaced",
+      "inputPrefix": "ks  d",
+      "expected": [
+        "Khách sạn Đà Nẵng",
+        "Khách sạn gần biển Đà Nẵng"
+      ],
+      "actual": [
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn Đà Nẵng",
+        "Khách sạn gần biển Đà Nẵng",
+        "Hotel Đà Nẵng",
+        "Khách sạn gần biển Mỹ Khê",
+        "Khách sạn gần đây",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Khách sạn Mường Thanh Đà Nẵng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB007-compact",
+      "sourceCaseId": "PUB007",
+      "transform": "compact",
+      "inputPrefix": "bvbach",
+      "expected": [
+        "Bệnh viện Bạch Mai"
+      ],
+      "actual": [
+        "Bệnh viện Bạch Mai",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Vinmec Times City",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Bệnh viện Điện Biên Phủ Nha Trang",
+        "Bệnh viện Lê Lợi Đà Lạt",
+        "Bệnh viện gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB007-uppercase",
+      "sourceCaseId": "PUB007",
+      "transform": "uppercase",
+      "inputPrefix": "BV BACH",
+      "expected": [
+        "Bệnh viện Bạch Mai"
+      ],
+      "actual": [
+        "Bệnh viện Bạch Mai",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Vinmec Times City",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Bệnh viện Điện Biên Phủ Nha Trang",
+        "Bệnh viện Lê Lợi Đà Lạt",
+        "Bệnh viện Lý Thường Kiệt Hà Nội"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 34
+    },
+    {
+      "caseId": "PUB007-spaced",
+      "sourceCaseId": "PUB007",
+      "transform": "spaced",
+      "inputPrefix": "bv  bach",
+      "expected": [
+        "Bệnh viện Bạch Mai"
+      ],
+      "actual": [
+        "Bệnh viện Bạch Mai",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Vinmec Times City",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Bệnh viện Điện Biên Phủ Nha Trang",
+        "Bệnh viện Lê Lợi Đà Lạt",
+        "Bệnh viện Lý Thường Kiệt Hà Nội"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB007-truncated",
+      "sourceCaseId": "PUB007",
+      "transform": "truncated",
+      "inputPrefix": "bv ba",
+      "expected": [
+        "Bệnh viện Bạch Mai"
+      ],
+      "actual": [
+        "Bệnh viện gần sân bay",
+        "Bệnh viện Bạch Mai",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Vinmec Times City",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Bệnh viện Điện Biên Phủ Nha Trang",
+        "bệnh viện gần nhất"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB008-compact",
+      "sourceCaseId": "PUB008",
+      "transform": "compact",
+      "inputPrefix": "cayx",
+      "expected": [
+        "Cây xăng gần đây"
+      ],
+      "actual": [
+        "Cây xăng gần đây",
+        "Trạm xăng gần đây",
+        "Cây xăng trên đường đi",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
+        "The Coffee House Cây xăng Lý Thường Kiệt Đà Nẵng",
+        "Cây xăng Petrolimex Nguyễn Trãi",
+        "CGV Cây xăng Pasteur Hà Nội"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB008-uppercase",
+      "sourceCaseId": "PUB008",
+      "transform": "uppercase",
+      "inputPrefix": "CAY X",
+      "expected": [
+        "Cây xăng gần đây"
+      ],
+      "actual": [
+        "Cây xăng gần đây",
+        "Trạm xăng gần đây",
+        "Cây xăng trên đường đi",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
+        "The Coffee House Cây xăng Lý Thường Kiệt Đà Nẵng",
+        "Cây xăng Petrolimex Nguyễn Trãi",
+        "CGV Cây xăng Pasteur Hà Nội"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 19
+    },
+    {
+      "caseId": "PUB008-spaced",
+      "sourceCaseId": "PUB008",
+      "transform": "spaced",
+      "inputPrefix": "cay  x",
+      "expected": [
+        "Cây xăng gần đây"
+      ],
+      "actual": [
+        "Cây xăng gần đây",
+        "Trạm xăng gần đây",
+        "Cây xăng trên đường đi",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
+        "The Coffee House Cây xăng Lý Thường Kiệt Đà Nẵng",
+        "Cây xăng Petrolimex Nguyễn Trãi",
+        "CGV Cây xăng Pasteur Hà Nội"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 18
+    },
+    {
+      "caseId": "PUB009-compact",
+      "sourceCaseId": "PUB009",
+      "transform": "compact",
+      "inputPrefix": "photh",
+      "expected": [
+        "Phở Thìn Lò Đúc"
+      ],
+      "actual": [
+        "Phở Thìn Lò Đúc",
+        "Phở gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB009-uppercase",
+      "sourceCaseId": "PUB009",
+      "transform": "uppercase",
+      "inputPrefix": "PHO TH",
+      "expected": [
+        "Phở Thìn Lò Đúc"
+      ],
+      "actual": [
+        "Phở Thìn Lò Đúc",
+        "Nhà hàng Nguyễn Huệ Hải Phòng",
+        "Khách sạn Lý Thường Kiệt Hải Phòng",
+        "BIDV Trung tâm thương mại Võ Nguyên Giáp Hải Phòng",
+        "Lotte Mart Quán cà phê Phan Chu Trinh Hải Phòng",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Bệnh viện Bạch Mai",
+        "Bệnh viện Trần Duy Hưng Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 18
+    },
+    {
+      "caseId": "PUB009-spaced",
+      "sourceCaseId": "PUB009",
+      "transform": "spaced",
+      "inputPrefix": "pho  th",
+      "expected": [
+        "Phở Thìn Lò Đúc"
+      ],
+      "actual": [
+        "Phở Thìn Lò Đúc",
+        "Nhà hàng Nguyễn Huệ Hải Phòng",
+        "Khách sạn Lý Thường Kiệt Hải Phòng",
+        "BIDV Trung tâm thương mại Võ Nguyên Giáp Hải Phòng",
+        "Lotte Mart Quán cà phê Phan Chu Trinh Hải Phòng",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Bệnh viện Bạch Mai",
+        "Bệnh viện Trần Duy Hưng Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 18
+    },
+    {
+      "caseId": "PUB010-compact",
+      "sourceCaseId": "PUB010",
+      "transform": "compact",
+      "inputPrefix": "coffeenear",
+      "expected": [
+        "Coffee near me",
+        "Quán cà phê gần đây"
+      ],
+      "actual": [],
+      "top3Hit": false,
+      "top5Hit": false,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB010-uppercase",
+      "sourceCaseId": "PUB010",
+      "transform": "uppercase",
+      "inputPrefix": "COFFEE NEAR",
+      "expected": [
+        "Coffee near me",
+        "Quán cà phê gần đây"
+      ],
+      "actual": [
+        "Quán cà phê gần đây",
+        "Coffee near me",
+        "Khách sạn gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Phở gần đây",
+        "Bệnh viện gần đây",
+        "Lotte Mart Quán cà phê Lê Lợi Hà Nội",
+        "cây xăng gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 25
+    },
+    {
+      "caseId": "PUB010-spaced",
+      "sourceCaseId": "PUB010",
+      "transform": "spaced",
+      "inputPrefix": "coffee  near",
+      "expected": [
+        "Coffee near me",
+        "Quán cà phê gần đây"
+      ],
+      "actual": [
+        "Quán cà phê gần đây",
+        "Coffee near me",
+        "Khách sạn gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Phở gần đây",
+        "Bệnh viện gần đây",
+        "Lotte Mart Quán cà phê Lê Lợi Hà Nội",
+        "cây xăng gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB010-truncated",
+      "sourceCaseId": "PUB010",
+      "transform": "truncated",
+      "inputPrefix": "coffee ne",
+      "expected": [
+        "Coffee near me",
+        "Quán cà phê gần đây"
+      ],
+      "actual": [
+        "Quán cà phê gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Highlands Coffee Nguyễn Huệ",
+        "The Coffee House Trần Duy Hưng",
+        "Lotte Mart Quán cà phê Phan Chu Trinh Hải Phòng",
+        "Lotte Mart Quán cà phê Lê Lợi Hà Nội"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB011-compact",
+      "sourceCaseId": "PUB011",
+      "transform": "compact",
+      "inputPrefix": "nguyenhuee",
+      "expected": [
+        "Nguyễn Huệ, Quận 1, TP.HCM"
+      ],
+      "actual": [],
+      "top3Hit": false,
+      "top5Hit": false,
+      "latencyMs": 10
+    },
+    {
+      "caseId": "PUB011-uppercase",
+      "sourceCaseId": "PUB011",
+      "transform": "uppercase",
+      "inputPrefix": "NGUYEN HUEE",
+      "expected": [
+        "Nguyễn Huệ, Quận 1, TP.HCM"
+      ],
+      "actual": [
+        "Nguyễn Huệ, Quận 1, TP.HCM",
+        "Highlands Coffee Nguyễn Huệ",
+        "12 Nguyễn Huệ, Quận 1, TP.HCM",
+        "Phố đi bộ Nguyễn Huệ",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Nhà hàng Nguyễn Huệ Đà Nẵng",
+        "Nhà hàng Nguyễn Huệ Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 29
+    },
+    {
+      "caseId": "PUB011-spaced",
+      "sourceCaseId": "PUB011",
+      "transform": "spaced",
+      "inputPrefix": "nguyen  huee",
+      "expected": [
+        "Nguyễn Huệ, Quận 1, TP.HCM"
+      ],
+      "actual": [
+        "Nguyễn Huệ, Quận 1, TP.HCM",
+        "Highlands Coffee Nguyễn Huệ",
+        "12 Nguyễn Huệ, Quận 1, TP.HCM",
+        "Phố đi bộ Nguyễn Huệ",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Nhà hàng Nguyễn Huệ Đà Nẵng",
+        "Nhà hàng Nguyễn Huệ Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 28
+    },
+    {
+      "caseId": "PUB011-truncated",
+      "sourceCaseId": "PUB011",
+      "transform": "truncated",
+      "inputPrefix": "nguyen hu",
+      "expected": [
+        "Nguyễn Huệ, Quận 1, TP.HCM"
+      ],
+      "actual": [
+        "Nguyễn Huệ, Quận 1, TP.HCM",
+        "Highlands Coffee Nguyễn Huệ",
+        "12 Nguyễn Huệ, Quận 1, TP.HCM",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Nhà hàng Nguyễn Huệ Đà Nẵng",
+        "Nhà hàng Nguyễn Huệ Hải Phòng",
+        "Phố đi bộ Nguyễn Huệ"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB012-compact",
+      "sourceCaseId": "PUB012",
+      "transform": "compact",
+      "inputPrefix": "vincomdongk",
+      "expected": [
+        "Vincom Center Đồng Khởi"
+      ],
+      "actual": [
+        "Vincom Center Đồng Khởi",
+        "Vinpearl",
+        "Vincom Center",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Vinmec",
+        "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+        "vincom đồng khởi",
+        "Vincom ATM Võ Nguyên Giáp TP.HCM"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB012-uppercase",
+      "sourceCaseId": "PUB012",
+      "transform": "uppercase",
+      "inputPrefix": "VINCOM DONG K",
+      "expected": [
+        "Vincom Center Đồng Khởi"
+      ],
+      "actual": [
+        "Vincom Center Đồng Khởi",
+        "vincom đồng khởi"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB012-spaced",
+      "sourceCaseId": "PUB012",
+      "transform": "spaced",
+      "inputPrefix": "vincom  dong  k",
+      "expected": [
+        "Vincom Center Đồng Khởi"
+      ],
+      "actual": [
+        "Vincom Center Đồng Khởi",
+        "vincom đồng khởi"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 46
+    },
+    {
+      "caseId": "PUB013-compact",
+      "sourceCaseId": "PUB013",
+      "transform": "compact",
+      "inputPrefix": "atmvcbq",
+      "expected": [
+        "ATM Vietcombank Quận 1",
+        "ATM Vietcombank Quận 7"
+      ],
+      "actual": [
+        "ATM Vietcombank Quận 1",
+        "ATM Vietcombank Quận 7",
+        "ATM Vietcombank gần nhất",
+        "ATM BIDV gần đây",
+        "Highlands Coffee ATM Pasteur Nha Trang",
+        "ATM gần sân bay",
+        "ATM Vietcombank Nguyễn Huệ",
+        "WinMart ATM Pasteur Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 57
+    },
+    {
+      "caseId": "PUB013-uppercase",
+      "sourceCaseId": "PUB013",
+      "transform": "uppercase",
+      "inputPrefix": "ATM VCB Q",
+      "expected": [
+        "ATM Vietcombank Quận 1",
+        "ATM Vietcombank Quận 7"
+      ],
+      "actual": [
+        "ATM Vietcombank Quận 1",
+        "ATM Vietcombank Quận 7",
+        "ATM Vietcombank gần nhất",
+        "ATM BIDV gần đây",
+        "atm vcb gần nhất",
+        "Highlands Coffee ATM Pasteur Nha Trang",
+        "ATM Vietcombank Nguyễn Huệ",
+        "ATM gần sân bay"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 168
+    },
+    {
+      "caseId": "PUB013-spaced",
+      "sourceCaseId": "PUB013",
+      "transform": "spaced",
+      "inputPrefix": "atm  vcb  q",
+      "expected": [
+        "ATM Vietcombank Quận 1",
+        "ATM Vietcombank Quận 7"
+      ],
+      "actual": [
+        "ATM Vietcombank Quận 1",
+        "ATM Vietcombank Quận 7",
+        "ATM Vietcombank gần nhất",
+        "ATM BIDV gần đây",
+        "atm vcb gần nhất",
+        "Highlands Coffee ATM Pasteur Nha Trang",
+        "ATM Vietcombank Nguyễn Huệ",
+        "ATM gần sân bay"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 123
+    },
+    {
+      "caseId": "PUB014-compact",
+      "sourceCaseId": "PUB014",
+      "transform": "compact",
+      "inputPrefix": "quanankhu",
+      "expected": [
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây"
+      ],
+      "actual": [
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Quán ăn Hà Nội",
+        "Nhà hàng phù hợp cho trẻ em",
+        "Quán ăn vặt gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 87
+    },
+    {
+      "caseId": "PUB014-uppercase",
+      "sourceCaseId": "PUB014",
+      "transform": "uppercase",
+      "inputPrefix": "QUAN AN KHU",
+      "expected": [
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây"
+      ],
+      "actual": [
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Quán ăn Hà Nội",
+        "Nhà hàng phù hợp cho trẻ em",
+        "Quán ăn vặt gần đây",
+        "Lotte Mart Quán cà phê Phan Chu Trinh Hải Phòng",
+        "Highlands Coffee Quán cà phê Lê Lợi Nha Trang"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 139
+    },
+    {
+      "caseId": "PUB014-spaced",
+      "sourceCaseId": "PUB014",
+      "transform": "spaced",
+      "inputPrefix": "quan  an  khu",
+      "expected": [
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây"
+      ],
+      "actual": [
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Quán ăn Hà Nội",
+        "Nhà hàng phù hợp cho trẻ em",
+        "Quán ăn vặt gần đây",
+        "Lotte Mart Quán cà phê Phan Chu Trinh Hải Phòng",
+        "Highlands Coffee Quán cà phê Lê Lợi Nha Trang"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 117
+    },
+    {
+      "caseId": "PUB015-compact",
+      "sourceCaseId": "PUB015",
+      "transform": "compact",
+      "inputPrefix": "trasuang",
+      "expected": [
+        "Trà sữa gần đây",
+        "Trà sữa ngon"
+      ],
+      "actual": [
+        "Trà sữa gần đây",
+        "Trà sữa ngon"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 69
+    },
+    {
+      "caseId": "PUB015-uppercase",
+      "sourceCaseId": "PUB015",
+      "transform": "uppercase",
+      "inputPrefix": "TRA SUA NG",
+      "expected": [
+        "Trà sữa gần đây",
+        "Trà sữa ngon"
+      ],
+      "actual": [
+        "Trà sữa gần đây",
+        "Trà sữa ngon"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 81
+    },
+    {
+      "caseId": "PUB015-spaced",
+      "sourceCaseId": "PUB015",
+      "transform": "spaced",
+      "inputPrefix": "tra  sua  ng",
+      "expected": [
+        "Trà sữa gần đây",
+        "Trà sữa ngon"
+      ],
+      "actual": [
+        "Trà sữa gần đây",
+        "Trà sữa ngon"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 83
+    },
+    {
+      "caseId": "PUB016-compact",
+      "sourceCaseId": "PUB016",
+      "transform": "compact",
+      "inputPrefix": "hoteldan",
+      "expected": [
+        "Khách sạn Đà Nẵng gần biển",
+        "Hotel Đà Nẵng"
+      ],
+      "actual": [
+        "Khách sạn Đà Nẵng",
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn gần biển Đà Nẵng",
+        "Hotel Đà Nẵng",
+        "Khách sạn gần biển Mỹ Khê"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 43
+    },
+    {
+      "caseId": "PUB016-uppercase",
+      "sourceCaseId": "PUB016",
+      "transform": "uppercase",
+      "inputPrefix": "HOTEL DA N",
+      "expected": [
+        "Khách sạn Đà Nẵng gần biển",
+        "Hotel Đà Nẵng"
+      ],
+      "actual": [
+        "Khách sạn Đà Nẵng",
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn gần biển Đà Nẵng",
+        "Hotel Đà Nẵng",
+        "Khách sạn gần biển Mỹ Khê",
+        "Khách sạn Mường Thanh Đà Nẵng",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Khách sạn Pasteur Đà Nẵng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 75
+    },
+    {
+      "caseId": "PUB016-spaced",
+      "sourceCaseId": "PUB016",
+      "transform": "spaced",
+      "inputPrefix": "hotel  da  n",
+      "expected": [
+        "Khách sạn Đà Nẵng gần biển",
+        "Hotel Đà Nẵng"
+      ],
+      "actual": [
+        "Khách sạn Đà Nẵng",
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn gần biển Đà Nẵng",
+        "Hotel Đà Nẵng",
+        "Khách sạn gần biển Mỹ Khê",
+        "Khách sạn Mường Thanh Đà Nẵng",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Khách sạn Pasteur Đà Nẵng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 72
+    },
+    {
+      "caseId": "PUB017-compact",
+      "sourceCaseId": "PUB017",
+      "transform": "compact",
+      "inputPrefix": "sanbayn",
+      "expected": [
+        "Sân bay Nội Bài"
+      ],
+      "actual": [
+        "Sân bay gần sân bay",
+        "Sân bay Nội Bài",
+        "Khách sạn Lý Thường Kiệt Hà Nội",
+        "Phở Thìn Lò Đúc",
+        "Trường Đại học Bách Khoa Hà Nội",
+        "Vinmec Times City",
+        "ATM gần sân bay",
+        "CGV Cây xăng Pasteur Hà Nội"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 53
+    },
+    {
+      "caseId": "PUB017-uppercase",
+      "sourceCaseId": "PUB017",
+      "transform": "uppercase",
+      "inputPrefix": "SAN BAY N",
+      "expected": [
+        "Sân bay Nội Bài"
+      ],
+      "actual": [
+        "Sân bay Nội Bài",
+        "Bệnh viện gần sân bay",
+        "Chỉ đường đến sân bay Nội Bài",
+        "Chỉ đường đến sân bay Tân Sơn Nhất",
+        "Phở Thìn Lò Đúc",
+        "Khách sạn Lý Thường Kiệt Hà Nội",
+        "ATM gần sân bay"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 63
+    },
+    {
+      "caseId": "PUB017-spaced",
+      "sourceCaseId": "PUB017",
+      "transform": "spaced",
+      "inputPrefix": "san  bay  n",
+      "expected": [
+        "Sân bay Nội Bài"
+      ],
+      "actual": [
+        "Sân bay Nội Bài",
+        "Bệnh viện gần sân bay",
+        "Chỉ đường đến sân bay Nội Bài",
+        "Chỉ đường đến sân bay Tân Sơn Nhất",
+        "Phở Thìn Lò Đúc",
+        "Khách sạn Lý Thường Kiệt Hà Nội",
+        "ATM gần sân bay"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 28
+    },
+    {
+      "caseId": "PUB018-compact",
+      "sourceCaseId": "PUB018",
+      "transform": "compact",
+      "inputPrefix": "noibaiatm",
+      "expected": [
+        "ATM gần sân bay Nội Bài"
+      ],
+      "actual": [
+        "ATM gần sân bay",
+        "ATM gần sân bay Nội Bài",
+        "ATM Vietcombank gần nhất",
+        "ATM BIDV gần đây",
+        "Highlands Coffee ATM Pasteur Nha Trang",
+        "ATM Vietcombank Nguyễn Huệ",
+        "WinMart ATM Pasteur Hải Phòng",
+        "Vietcombank ATM Nguyễn Huệ Đà Lạt"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 66
+    },
+    {
+      "caseId": "PUB018-uppercase",
+      "sourceCaseId": "PUB018",
+      "transform": "uppercase",
+      "inputPrefix": "NOI BAI ATM",
+      "expected": [
+        "ATM gần sân bay Nội Bài"
+      ],
+      "actual": [
+        "ATM gần sân bay",
+        "ATM gần sân bay Nội Bài",
+        "ATM Vietcombank gần nhất",
+        "ATM BIDV gần đây",
+        "Highlands Coffee ATM Pasteur Nha Trang",
+        "ATM Vietcombank Nguyễn Huệ",
+        "WinMart ATM Pasteur Hải Phòng",
+        "Vietcombank ATM Nguyễn Huệ Đà Lạt"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 30
+    },
+    {
+      "caseId": "PUB018-spaced",
+      "sourceCaseId": "PUB018",
+      "transform": "spaced",
+      "inputPrefix": "noi  bai  atm",
+      "expected": [
+        "ATM gần sân bay Nội Bài"
+      ],
+      "actual": [
+        "ATM gần sân bay",
+        "ATM gần sân bay Nội Bài",
+        "ATM Vietcombank gần nhất",
+        "ATM BIDV gần đây",
+        "Highlands Coffee ATM Pasteur Nha Trang",
+        "ATM Vietcombank Nguyễn Huệ",
+        "WinMart ATM Pasteur Hải Phòng",
+        "Vietcombank ATM Nguyễn Huệ Đà Lạt"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 31
+    },
+    {
+      "caseId": "PUB018-abbreviation",
+      "sourceCaseId": "PUB018",
+      "transform": "abbreviation",
+      "inputPrefix": "nb atm",
+      "expected": [
+        "ATM gần sân bay Nội Bài"
+      ],
+      "actual": [
+        "ATM gần sân bay",
+        "ATM gần sân bay Nội Bài",
+        "ATM Vietcombank gần nhất",
+        "ATM BIDV gần đây",
+        "atm vcb gần nhất",
+        "Highlands Coffee ATM Pasteur Nha Trang",
+        "ATM Vietcombank Nguyễn Huệ",
+        "WinMart ATM Pasteur Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB019-uppercase",
+      "sourceCaseId": "PUB019",
+      "transform": "uppercase",
+      "inputPrefix": "GALAXY",
+      "expected": [
+        "Galaxy Cinema",
+        "Samsung Galaxy Store",
+        "Galaxy Hotel"
+      ],
+      "actual": [
+        "Galaxy Cinema",
+        "Samsung Galaxy Store",
+        "Galaxy Hotel",
+        "Galaxy Cinema Nguyễn Du"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 10
+    },
+    {
+      "caseId": "PUB019-truncated",
+      "sourceCaseId": "PUB019",
+      "transform": "truncated",
+      "inputPrefix": "gal",
+      "expected": [
+        "Galaxy Cinema",
+        "Samsung Galaxy Store",
+        "Galaxy Hotel"
+      ],
+      "actual": [
+        "Galaxy Cinema",
+        "Samsung Galaxy Store",
+        "Galaxy Hotel",
+        "Galaxy Cinema Nguyễn Du"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 16
+    },
+    {
+      "caseId": "PUB020-compact",
+      "sourceCaseId": "PUB020",
+      "transform": "compact",
+      "inputPrefix": "bigc",
+      "expected": [
+        "GO! / Big C",
+        "Big C Thăng Long",
+        "Big C Miền Đông"
+      ],
+      "actual": [
+        "GO! / Big C",
+        "Big C Thăng Long",
+        "Big C Miền Đông"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB020-uppercase",
+      "sourceCaseId": "PUB020",
+      "transform": "uppercase",
+      "inputPrefix": "BIG C",
+      "expected": [
+        "GO! / Big C",
+        "Big C Thăng Long",
+        "Big C Miền Đông"
+      ],
+      "actual": [
+        "GO! / Big C",
+        "Big C Thăng Long",
+        "Big C Miền Đông"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 17
+    },
+    {
+      "caseId": "PUB020-spaced",
+      "sourceCaseId": "PUB020",
+      "transform": "spaced",
+      "inputPrefix": "big  c",
+      "expected": [
+        "GO! / Big C",
+        "Big C Thăng Long",
+        "Big C Miền Đông"
+      ],
+      "actual": [
+        "GO! / Big C",
+        "Big C Thăng Long",
+        "Big C Miền Đông"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 17
+    },
+    {
+      "caseId": "PUB021-compact",
+      "sourceCaseId": "PUB021",
+      "transform": "compact",
+      "inputPrefix": "quancafehoc",
+      "expected": [
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi"
+      ],
+      "actual": [
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê gần đây",
+        "Cà phê mở cửa 24/7"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 26
+    },
+    {
+      "caseId": "PUB021-uppercase",
+      "sourceCaseId": "PUB021",
+      "transform": "uppercase",
+      "inputPrefix": "QUAN CAFE HOC",
+      "expected": [
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi"
+      ],
+      "actual": [
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 25
+    },
+    {
+      "caseId": "PUB021-spaced",
+      "sourceCaseId": "PUB021",
+      "transform": "spaced",
+      "inputPrefix": "quan  cafe  hoc",
+      "expected": [
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi"
+      ],
+      "actual": [
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 26
+    },
+    {
+      "caseId": "PUB022-compact",
+      "sourceCaseId": "PUB022",
+      "transform": "compact",
+      "inputPrefix": "12ngu",
+      "expected": [
+        "12 Nguyễn Huệ, Quận 1, TP.HCM"
+      ],
+      "actual": [
+        "Nguyễn Huệ, Quận 1, TP.HCM",
+        "12 Nguyễn Huệ, Quận 1, TP.HCM",
+        "Highlands Coffee Nguyễn Huệ"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 20
+    },
+    {
+      "caseId": "PUB022-uppercase",
+      "sourceCaseId": "PUB022",
+      "transform": "uppercase",
+      "inputPrefix": "12 NGU",
+      "expected": [
+        "12 Nguyễn Huệ, Quận 1, TP.HCM"
+      ],
+      "actual": [
+        "Nguyễn Huệ, Quận 1, TP.HCM",
+        "Highlands Coffee Nguyễn Huệ",
+        "12 Nguyễn Huệ, Quận 1, TP.HCM",
+        "Bãi biển Mỹ Khê",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Phúc Long Trung tâm thương mại Nguyễn Trãi TP.HCM",
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB022-spaced",
+      "sourceCaseId": "PUB022",
+      "transform": "spaced",
+      "inputPrefix": "12  ngu",
+      "expected": [
+        "12 Nguyễn Huệ, Quận 1, TP.HCM"
+      ],
+      "actual": [
+        "Nguyễn Huệ, Quận 1, TP.HCM",
+        "Highlands Coffee Nguyễn Huệ",
+        "12 Nguyễn Huệ, Quận 1, TP.HCM",
+        "Bãi biển Mỹ Khê",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Phúc Long Trung tâm thương mại Nguyễn Trãi TP.HCM",
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB023-compact",
+      "sourceCaseId": "PUB023",
+      "transform": "compact",
+      "inputPrefix": "12nguyenhueq",
+      "expected": [
+        "12 Nguyễn Huệ, Quận 1, TP.HCM"
+      ],
+      "actual": [],
+      "top3Hit": false,
+      "top5Hit": false,
+      "latencyMs": 10
+    },
+    {
+      "caseId": "PUB023-uppercase",
+      "sourceCaseId": "PUB023",
+      "transform": "uppercase",
+      "inputPrefix": "12 NGUYEN HUE Q",
+      "expected": [
+        "12 Nguyễn Huệ, Quận 1, TP.HCM"
+      ],
+      "actual": [
+        "Nguyễn Huệ, Quận 1, TP.HCM",
+        "Highlands Coffee Nguyễn Huệ",
+        "12 Nguyễn Huệ, Quận 1, TP.HCM",
+        "Phố đi bộ Nguyễn Huệ",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Nhà hàng Nguyễn Huệ Đà Nẵng",
+        "Nhà hàng Nguyễn Huệ Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 26
+    },
+    {
+      "caseId": "PUB023-spaced",
+      "sourceCaseId": "PUB023",
+      "transform": "spaced",
+      "inputPrefix": "12  nguyen  hue  q",
+      "expected": [
+        "12 Nguyễn Huệ, Quận 1, TP.HCM"
+      ],
+      "actual": [
+        "Nguyễn Huệ, Quận 1, TP.HCM",
+        "Highlands Coffee Nguyễn Huệ",
+        "12 Nguyễn Huệ, Quận 1, TP.HCM",
+        "Phố đi bộ Nguyễn Huệ",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Nhà hàng Nguyễn Huệ Đà Nẵng",
+        "Nhà hàng Nguyễn Huệ Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 25
+    },
+    {
+      "caseId": "PUB024-accentless",
+      "sourceCaseId": "PUB024",
+      "transform": "accentless",
+      "inputPrefix": "tram x",
+      "expected": [
+        "Trạm xăng gần đây",
+        "Cây xăng gần đây"
+      ],
+      "actual": [
+        "Cây xăng gần đây",
+        "Trạm xăng gần đây",
+        "Cây xăng trên đường đi",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
+        "WinMart ATM Pasteur Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB024-compact",
+      "sourceCaseId": "PUB024",
+      "transform": "compact",
+      "inputPrefix": "tramx",
+      "expected": [
+        "Trạm xăng gần đây",
+        "Cây xăng gần đây"
+      ],
+      "actual": [
+        "Cây xăng gần đây",
+        "Trạm xăng gần đây",
+        "Cây xăng trên đường đi",
+        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
+        "Cây xăng Petrolimex Nguyễn Trãi"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB024-uppercase",
+      "sourceCaseId": "PUB024",
+      "transform": "uppercase",
+      "inputPrefix": "TRẠM X",
+      "expected": [
+        "Trạm xăng gần đây",
+        "Cây xăng gần đây"
+      ],
+      "actual": [
+        "Cây xăng gần đây",
+        "Trạm xăng gần đây",
+        "Cây xăng trên đường đi",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
+        "WinMart ATM Pasteur Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB024-spaced",
+      "sourceCaseId": "PUB024",
+      "transform": "spaced",
+      "inputPrefix": "trạm  x",
+      "expected": [
+        "Trạm xăng gần đây",
+        "Cây xăng gần đây"
+      ],
+      "actual": [
+        "Cây xăng gần đây",
+        "Trạm xăng gần đây",
+        "Cây xăng trên đường đi",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
+        "WinMart ATM Pasteur Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB025-uppercase",
+      "sourceCaseId": "PUB025",
+      "transform": "uppercase",
+      "inputPrefix": "WIN",
+      "expected": [
+        "WinMart",
+        "WinMart+ gần đây"
+      ],
+      "actual": [
+        "WinMart",
+        "WinMart+ gần đây",
+        "WinMart ATM Pasteur Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 15
+    },
+    {
+      "caseId": "PUB026-uppercase",
+      "sourceCaseId": "PUB026",
+      "transform": "uppercase",
+      "inputPrefix": "LOTTE",
+      "expected": [
+        "Lotte Mart",
+        "Lotteria",
+        "Lotte Cinema"
+      ],
+      "actual": [
+        "Lotte Mart",
+        "Lotteria",
+        "Lotte Cinema",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Lotteria Nguyễn Văn Linh",
+        "Lotte Mart Quán cà phê Phan Chu Trinh Hải Phòng",
+        "Lotte Mart Quán cà phê Lê Lợi Hà Nội",
+        "Phở Thìn Lò Đúc"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB026-truncated",
+      "sourceCaseId": "PUB026",
+      "transform": "truncated",
+      "inputPrefix": "lot",
+      "expected": [
+        "Lotte Mart",
+        "Lotteria",
+        "Lotte Cinema"
+      ],
+      "actual": [
+        "Lotte Mart",
+        "Lotteria",
+        "Lotte Cinema",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Lotteria Nguyễn Văn Linh",
+        "Lotte Mart Quán cà phê Phan Chu Trinh Hải Phòng",
+        "Lotte Mart Quán cà phê Lê Lợi Hà Nội"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 15
+    },
+    {
+      "caseId": "PUB027-compact",
+      "sourceCaseId": "PUB027",
+      "transform": "compact",
+      "inputPrefix": "hanoian",
+      "expected": [
+        "Quán ăn Hà Nội",
+        "Ăn đêm Hà Nội"
+      ],
+      "actual": [
+        "Quán ăn Hà Nội",
+        "Ăn đêm Hà Nội",
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Nhà hàng phù hợp cho trẻ em",
+        "Quán ăn vặt gần đây",
+        "chợ bến thành",
+        "Sân bay Nội Bài"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB027-uppercase",
+      "sourceCaseId": "PUB027",
+      "transform": "uppercase",
+      "inputPrefix": "HA NOI AN",
+      "expected": [
+        "Quán ăn Hà Nội",
+        "Ăn đêm Hà Nội"
+      ],
+      "actual": [
+        "Quán ăn Hà Nội",
+        "Ăn đêm Hà Nội",
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Nhà hàng phù hợp cho trẻ em",
+        "Quán ăn vặt gần đây",
+        "Nhà hàng Lý Thường Kiệt Hà Nội",
+        "Sân bay Nội Bài"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 20
+    },
+    {
+      "caseId": "PUB027-spaced",
+      "sourceCaseId": "PUB027",
+      "transform": "spaced",
+      "inputPrefix": "ha  noi  an",
+      "expected": [
+        "Quán ăn Hà Nội",
+        "Ăn đêm Hà Nội"
+      ],
+      "actual": [
+        "Quán ăn Hà Nội",
+        "Ăn đêm Hà Nội",
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Nhà hàng phù hợp cho trẻ em",
+        "Quán ăn vặt gần đây",
+        "Nhà hàng Lý Thường Kiệt Hà Nội",
+        "Sân bay Nội Bài"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 19
+    },
+    {
+      "caseId": "PUB027-abbreviation",
+      "sourceCaseId": "PUB027",
+      "transform": "abbreviation",
+      "inputPrefix": "hn an",
+      "expected": [
+        "Quán ăn Hà Nội",
+        "Ăn đêm Hà Nội"
+      ],
+      "actual": [
+        "Quán ăn Hà Nội",
+        "Ăn đêm Hà Nội",
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Nhà hàng phù hợp cho trẻ em",
+        "Quán ăn vặt gần đây",
+        "chợ bến thành",
+        "Sân bay Nội Bài"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB028-compact",
+      "sourceCaseId": "PUB028",
+      "transform": "compact",
+      "inputPrefix": "dalatcheck",
+      "expected": [
+        "Địa điểm check-in đẹp ở Đà Lạt"
+      ],
+      "actual": [
+        "Địa điểm check-in đẹp ở Đà Lạt",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Bệnh viện Lê Lợi Đà Lạt",
+        "Vietcombank ATM Nguyễn Huệ Đà Lạt",
+        "Nhà hàng Phan Chu Trinh Đà Lạt",
+        "Khách sạn Võ Nguyên Giáp Đà Lạt",
+        "CGV Trung tâm thương mại Nguyễn Huệ Đà Lạt",
+        "BIDV Cây xăng Pasteur Đà Lạt"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB028-uppercase",
+      "sourceCaseId": "PUB028",
+      "transform": "uppercase",
+      "inputPrefix": "DA LAT CHECK",
+      "expected": [
+        "Địa điểm check-in đẹp ở Đà Lạt"
+      ],
+      "actual": [
+        "Địa điểm check-in đẹp ở Đà Lạt",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Nhà hàng Phan Chu Trinh Đà Lạt",
+        "Khách sạn Võ Nguyên Giáp Đà Lạt",
+        "CGV Trung tâm thương mại Nguyễn Huệ Đà Lạt",
+        "Bệnh viện Lê Lợi Đà Lạt",
+        "Vietcombank ATM Nguyễn Huệ Đà Lạt",
+        "BIDV Cây xăng Pasteur Đà Lạt"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB028-spaced",
+      "sourceCaseId": "PUB028",
+      "transform": "spaced",
+      "inputPrefix": "da  lat  check",
+      "expected": [
+        "Địa điểm check-in đẹp ở Đà Lạt"
+      ],
+      "actual": [
+        "Địa điểm check-in đẹp ở Đà Lạt",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Nhà hàng Phan Chu Trinh Đà Lạt",
+        "Khách sạn Võ Nguyên Giáp Đà Lạt",
+        "CGV Trung tâm thương mại Nguyễn Huệ Đà Lạt",
+        "Bệnh viện Lê Lợi Đà Lạt",
+        "Vietcombank ATM Nguyễn Huệ Đà Lạt",
+        "BIDV Cây xăng Pasteur Đà Lạt"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB028-truncated",
+      "sourceCaseId": "PUB028",
+      "transform": "truncated",
+      "inputPrefix": "da lat che",
+      "expected": [
+        "Địa điểm check-in đẹp ở Đà Lạt"
+      ],
+      "actual": [
+        "Địa điểm check-in đẹp ở Đà Lạt",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Nhà hàng Phan Chu Trinh Đà Lạt",
+        "CGV Trung tâm thương mại Nguyễn Huệ Đà Lạt",
+        "Khách sạn Võ Nguyên Giáp Đà Lạt",
+        "Vietcombank ATM Nguyễn Huệ Đà Lạt",
+        "Bệnh viện Lê Lợi Đà Lạt",
+        "BIDV Cây xăng Pasteur Đà Lạt"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB029-compact",
+      "sourceCaseId": "PUB029",
+      "transform": "compact",
+      "inputPrefix": "rooftopq1",
+      "expected": [
+        "Rooftop Quận 1",
+        "Quán bar rooftop Quận 1"
+      ],
+      "actual": [
+        "Rooftop Quận 1",
+        "Quán bar rooftop Quận 1",
+        "Rooftop Chill Skybar"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB029-uppercase",
+      "sourceCaseId": "PUB029",
+      "transform": "uppercase",
+      "inputPrefix": "ROOFTOP Q1",
+      "expected": [
+        "Rooftop Quận 1",
+        "Quán bar rooftop Quận 1"
+      ],
+      "actual": [
+        "Rooftop Quận 1",
+        "Quán bar rooftop Quận 1",
+        "Rooftop Chill Skybar"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB029-spaced",
+      "sourceCaseId": "PUB029",
+      "transform": "spaced",
+      "inputPrefix": "rooftop  q1",
+      "expected": [
+        "Rooftop Quận 1",
+        "Quán bar rooftop Quận 1"
+      ],
+      "actual": [
+        "Rooftop Quận 1",
+        "Quán bar rooftop Quận 1",
+        "Rooftop Chill Skybar"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB030-compact",
+      "sourceCaseId": "PUB030",
+      "transform": "compact",
+      "inputPrefix": "cafewifi",
+      "expected": [
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc"
+      ],
+      "actual": [
+        "Quán cà phê có Wi-Fi",
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê gần đây",
+        "Cà phê mở cửa 24/7"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB030-uppercase",
+      "sourceCaseId": "PUB030",
+      "transform": "uppercase",
+      "inputPrefix": "CAFE WIFI",
+      "expected": [
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc"
+      ],
+      "actual": [
+        "Quán cà phê có Wi-Fi",
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê gần đây",
+        "Cà phê mở cửa 24/7"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB030-spaced",
+      "sourceCaseId": "PUB030",
+      "transform": "spaced",
+      "inputPrefix": "cafe  wifi",
+      "expected": [
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc"
+      ],
+      "actual": [
+        "Quán cà phê có Wi-Fi",
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê gần đây",
+        "Cà phê mở cửa 24/7"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB030-truncated",
+      "sourceCaseId": "PUB030",
+      "transform": "truncated",
+      "inputPrefix": "cafe wi",
+      "expected": [
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc"
+      ],
+      "actual": [
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB031-compact",
+      "sourceCaseId": "PUB031",
+      "transform": "compact",
+      "inputPrefix": "quanchay",
+      "expected": [
+        "Nhà hàng chay gần đây",
+        "Quán chay"
+      ],
+      "actual": [
+        "Nhà hàng chay gần đây",
+        "Quán chay"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB031-uppercase",
+      "sourceCaseId": "PUB031",
+      "transform": "uppercase",
+      "inputPrefix": "QUAN CHAY",
+      "expected": [
+        "Nhà hàng chay gần đây",
+        "Quán chay"
+      ],
+      "actual": [
+        "Nhà hàng chay gần đây",
+        "Quán chay"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB031-spaced",
+      "sourceCaseId": "PUB031",
+      "transform": "spaced",
+      "inputPrefix": "quan  chay",
+      "expected": [
+        "Nhà hàng chay gần đây",
+        "Quán chay"
+      ],
+      "actual": [
+        "Nhà hàng chay gần đây",
+        "Quán chay"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 25
+    },
+    {
+      "caseId": "PUB031-truncated",
+      "sourceCaseId": "PUB031",
+      "transform": "truncated",
+      "inputPrefix": "quan ch",
+      "expected": [
+        "Nhà hàng chay gần đây",
+        "Quán chay"
+      ],
+      "actual": [
+        "Nhà hàng chay gần đây",
+        "Quán chay",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Cộng Cà Phê Hồ Gươm",
+        "Rooftop Chill Skybar",
+        "Highlands Coffee Nguyễn Huệ"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB032-compact",
+      "sourceCaseId": "PUB032",
+      "transform": "compact",
+      "inputPrefix": "halalhcm",
+      "expected": [
+        "Nhà hàng halal TP.HCM"
+      ],
+      "actual": [
+        "Nhà hàng halal TP.HCM"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 10
+    },
+    {
+      "caseId": "PUB032-uppercase",
+      "sourceCaseId": "PUB032",
+      "transform": "uppercase",
+      "inputPrefix": "HALAL HCM",
+      "expected": [
+        "Nhà hàng halal TP.HCM"
+      ],
+      "actual": [
+        "Nhà hàng halal TP.HCM",
+        "Chợ Bến Thành",
+        "Vincom Center Đồng Khởi",
+        "Nhà hàng Pizza 4P's Bến Nghé",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Phúc Long Trung tâm thương mại Nguyễn Trãi TP.HCM",
+        "Galaxy Cinema Nguyễn Du"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB032-spaced",
+      "sourceCaseId": "PUB032",
+      "transform": "spaced",
+      "inputPrefix": "halal  hcm",
+      "expected": [
+        "Nhà hàng halal TP.HCM"
+      ],
+      "actual": [
+        "Nhà hàng halal TP.HCM",
+        "Chợ Bến Thành",
+        "Vincom Center Đồng Khởi",
+        "Nhà hàng Pizza 4P's Bến Nghé",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Phúc Long Trung tâm thương mại Nguyễn Trãi TP.HCM",
+        "Galaxy Cinema Nguyễn Du"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB033-compact",
+      "sourceCaseId": "PUB033",
+      "transform": "compact",
+      "inputPrefix": "bienmy",
+      "expected": [
+        "Bãi biển Mỹ Khê"
+      ],
+      "actual": [
+        "Bãi biển Mỹ Khê",
+        "Chợ Bến Thành",
+        "Khách sạn Đà Nẵng gần biển",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "AEON Mall Long Biên",
+        "Nhà hàng Pizza 4P's Bến Nghé",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB033-uppercase",
+      "sourceCaseId": "PUB033",
+      "transform": "uppercase",
+      "inputPrefix": "BIEN MY",
+      "expected": [
+        "Bãi biển Mỹ Khê"
+      ],
+      "actual": [
+        "Bãi biển Mỹ Khê",
+        "AEON Mall Long Biên",
+        "Nhà hàng Điện Biên Phủ TP.HCM",
+        "Khách sạn Mường Thanh Đà Nẵng",
+        "Khách sạn Nguyễn Trãi Nha Trang",
+        "Vietcombank Trung tâm thương mại Điện Biên Phủ Hà Nội",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Khách sạn Đà Nẵng gần biển"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 19
+    },
+    {
+      "caseId": "PUB033-spaced",
+      "sourceCaseId": "PUB033",
+      "transform": "spaced",
+      "inputPrefix": "bien  my",
+      "expected": [
+        "Bãi biển Mỹ Khê"
+      ],
+      "actual": [
+        "Bãi biển Mỹ Khê",
+        "AEON Mall Long Biên",
+        "Nhà hàng Điện Biên Phủ TP.HCM",
+        "Khách sạn Mường Thanh Đà Nẵng",
+        "Khách sạn Nguyễn Trãi Nha Trang",
+        "Vietcombank Trung tâm thương mại Điện Biên Phủ Hà Nội",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Khách sạn Đà Nẵng gần biển"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 20
+    },
+    {
+      "caseId": "PUB034-compact",
+      "sourceCaseId": "PUB034",
+      "transform": "compact",
+      "inputPrefix": "mykhehotel",
+      "expected": [
+        "Khách sạn gần biển Mỹ Khê"
+      ],
+      "actual": [
+        "Khách sạn gần biển Mỹ Khê",
+        "Khách sạn Đà Nẵng",
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn gần biển Đà Nẵng",
+        "Hotel Đà Nẵng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 11
+    },
+    {
+      "caseId": "PUB034-uppercase",
+      "sourceCaseId": "PUB034",
+      "transform": "uppercase",
+      "inputPrefix": "MY KHE HOTEL",
+      "expected": [
+        "Khách sạn gần biển Mỹ Khê"
+      ],
+      "actual": [
+        "Khách sạn gần biển",
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn Đà Nẵng",
+        "Khách sạn gần biển Mỹ Khê",
+        "Khách sạn gần biển Đà Nẵng",
+        "Hotel Đà Nẵng",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Khách sạn Mường Thanh Đà Nẵng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB034-spaced",
+      "sourceCaseId": "PUB034",
+      "transform": "spaced",
+      "inputPrefix": "my  khe  hotel",
+      "expected": [
+        "Khách sạn gần biển Mỹ Khê"
+      ],
+      "actual": [
+        "Khách sạn gần biển",
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn Đà Nẵng",
+        "Khách sạn gần biển Mỹ Khê",
+        "Khách sạn gần biển Đà Nẵng",
+        "Hotel Đà Nẵng",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Khách sạn Mường Thanh Đà Nẵng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB034-truncated",
+      "sourceCaseId": "PUB034",
+      "transform": "truncated",
+      "inputPrefix": "my khe hot",
+      "expected": [
+        "Khách sạn gần biển Mỹ Khê"
+      ],
+      "actual": [
+        "Khách sạn gần biển",
+        "Khách sạn gần biển Mỹ Khê",
+        "Khách sạn Đà Nẵng",
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn gần biển Đà Nẵng",
+        "Hotel Đà Nẵng",
+        "Khách sạn Mường Thanh Đà Nẵng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB035-compact",
+      "sourceCaseId": "PUB035",
+      "transform": "compact",
+      "inputPrefix": "daihocbach",
+      "expected": [
+        "Đại học Bách Khoa Hà Nội"
+      ],
+      "actual": [
+        "Đại học Bách Khoa Hà Nội",
+        "Đại học Bách Khoa",
+        "Trường Đại học Bách Khoa Hà Nội",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Highlands Coffee Nguyễn Huệ",
+        "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+        "The Coffee House Trần Duy Hưng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB035-uppercase",
+      "sourceCaseId": "PUB035",
+      "transform": "uppercase",
+      "inputPrefix": "DAI HOC BACH",
+      "expected": [
+        "Đại học Bách Khoa Hà Nội"
+      ],
+      "actual": [
+        "Đại học Bách Khoa Hà Nội",
+        "Đại học Bách Khoa",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Highlands Coffee Nguyễn Huệ",
+        "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+        "The Coffee House Trần Duy Hưng",
+        "Trường Đại học Bách Khoa Hà Nội",
+        "Khách sạn Nguyễn Trãi Nha Trang"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB035-spaced",
+      "sourceCaseId": "PUB035",
+      "transform": "spaced",
+      "inputPrefix": "dai  hoc  bach",
+      "expected": [
+        "Đại học Bách Khoa Hà Nội"
+      ],
+      "actual": [
+        "Đại học Bách Khoa Hà Nội",
+        "Đại học Bách Khoa",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Highlands Coffee Nguyễn Huệ",
+        "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+        "The Coffee House Trần Duy Hưng",
+        "Trường Đại học Bách Khoa Hà Nội",
+        "Khách sạn Nguyễn Trãi Nha Trang"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB035-truncated",
+      "sourceCaseId": "PUB035",
+      "transform": "truncated",
+      "inputPrefix": "dai hoc ba",
+      "expected": [
+        "Đại học Bách Khoa Hà Nội"
+      ],
+      "actual": [
+        "Đại học Bách Khoa Hà Nội",
+        "Đại học Bách Khoa",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+        "Highlands Coffee Nguyễn Huệ",
+        "The Coffee House Trần Duy Hưng",
+        "Trường Đại học Bách Khoa Hà Nội",
+        "Khách sạn Nguyễn Trãi Nha Trang"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 19
+    },
+    {
+      "caseId": "PUB035-abbreviation",
+      "sourceCaseId": "PUB035",
+      "transform": "abbreviation",
+      "inputPrefix": "dh bach",
+      "expected": [
+        "Đại học Bách Khoa Hà Nội"
+      ],
+      "actual": [
+        "Đại học Bách Khoa Hà Nội",
+        "Đại học Bách Khoa",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Bệnh viện Bạch Mai",
+        "Highlands Coffee Nguyễn Huệ",
+        "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+        "The Coffee House Trần Duy Hưng",
+        "Trường Đại học Bách Khoa Hà Nội"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB036-compact",
+      "sourceCaseId": "PUB036",
+      "transform": "compact",
+      "inputPrefix": "dhbk",
+      "expected": [
+        "Đại học Bách Khoa"
+      ],
+      "actual": [],
+      "top3Hit": false,
+      "top5Hit": false,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB036-uppercase",
+      "sourceCaseId": "PUB036",
+      "transform": "uppercase",
+      "inputPrefix": "DH BK",
+      "expected": [
+        "Đại học Bách Khoa"
+      ],
+      "actual": [
+        "Đại học Bách Khoa Hà Nội",
+        "Đại học Bách Khoa",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Highlands Coffee Nguyễn Huệ",
+        "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+        "Trường Đại học Bách Khoa Hà Nội",
+        "The Coffee House Trần Duy Hưng",
+        "Khách sạn Nguyễn Trãi Nha Trang"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB036-spaced",
+      "sourceCaseId": "PUB036",
+      "transform": "spaced",
+      "inputPrefix": "dh  bk",
+      "expected": [
+        "Đại học Bách Khoa"
+      ],
+      "actual": [
+        "Đại học Bách Khoa Hà Nội",
+        "Đại học Bách Khoa",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Highlands Coffee Nguyễn Huệ",
+        "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+        "Trường Đại học Bách Khoa Hà Nội",
+        "The Coffee House Trần Duy Hưng",
+        "Khách sạn Nguyễn Trãi Nha Trang"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB037-compact",
+      "sourceCaseId": "PUB037",
+      "transform": "compact",
+      "inputPrefix": "phuclong",
+      "expected": [
+        "Phúc Long gần đây",
+        "Phúc Long Coffee & Tea"
+      ],
+      "actual": [
+        "Phúc Long gần đây",
+        "Phúc Long Coffee & Tea",
+        "Phúc Long Trung tâm thương mại Nguyễn Trãi TP.HCM"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB037-uppercase",
+      "sourceCaseId": "PUB037",
+      "transform": "uppercase",
+      "inputPrefix": "PHUC LONG",
+      "expected": [
+        "Phúc Long gần đây",
+        "Phúc Long Coffee & Tea"
+      ],
+      "actual": [
+        "Phúc Long gần đây",
+        "Phúc Long Coffee & Tea",
+        "Phúc Long Trung tâm thương mại Nguyễn Trãi TP.HCM"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 20
+    },
+    {
+      "caseId": "PUB037-spaced",
+      "sourceCaseId": "PUB037",
+      "transform": "spaced",
+      "inputPrefix": "phuc  long",
+      "expected": [
+        "Phúc Long gần đây",
+        "Phúc Long Coffee & Tea"
+      ],
+      "actual": [
+        "Phúc Long gần đây",
+        "Phúc Long Coffee & Tea",
+        "Phúc Long Trung tâm thương mại Nguyễn Trãi TP.HCM"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 20
+    },
+    {
+      "caseId": "PUB037-truncated",
+      "sourceCaseId": "PUB037",
+      "transform": "truncated",
+      "inputPrefix": "phuc lo",
+      "expected": [
+        "Phúc Long gần đây",
+        "Phúc Long Coffee & Tea"
+      ],
+      "actual": [
+        "Phúc Long gần đây",
+        "Phúc Long Coffee & Tea",
+        "Sân bay Nội Bài",
+        "The Coffee House Trung tâm thương mại Điện Biên Phủ Nha Trang",
+        "Nhà hàng Điện Biên Phủ TP.HCM",
+        "Khách sạn Nguyễn Trãi Nha Trang",
+        "Vietcombank Trung tâm thương mại Điện Biên Phủ Hà Nội",
+        "Phúc Long Trung tâm thương mại Nguyễn Trãi TP.HCM"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 17
+    },
+    {
+      "caseId": "PUB038-compact",
+      "sourceCaseId": "PUB038",
+      "transform": "compact",
+      "inputPrefix": "congcafe",
+      "expected": [
+        "Cộng Cà Phê gần đây",
+        "Cộng Cà Phê Hồ Gươm"
+      ],
+      "actual": [
+        "Cộng Cà Phê Hồ Gươm",
+        "Cộng Cà Phê gần đây",
+        "Quán cà phê Cộng Cà Phê gần nhất",
+        "Quán cà phê gần đây",
+        "Cà phê mở cửa 24/7",
+        "Highlands Coffee"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB038-uppercase",
+      "sourceCaseId": "PUB038",
+      "transform": "uppercase",
+      "inputPrefix": "CONG CAFE",
+      "expected": [
+        "Cộng Cà Phê gần đây",
+        "Cộng Cà Phê Hồ Gươm"
+      ],
+      "actual": [
+        "Cộng Cà Phê Hồ Gươm",
+        "Cộng Cà Phê gần đây",
+        "Quán cà phê Cộng Cà Phê gần nhất",
+        "Highlands Coffee",
+        "Quán cà phê gần đây",
+        "Cà phê mở cửa 24/7"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB038-spaced",
+      "sourceCaseId": "PUB038",
+      "transform": "spaced",
+      "inputPrefix": "cong  cafe",
+      "expected": [
+        "Cộng Cà Phê gần đây",
+        "Cộng Cà Phê Hồ Gươm"
+      ],
+      "actual": [
+        "Cộng Cà Phê Hồ Gươm",
+        "Cộng Cà Phê gần đây",
+        "Quán cà phê Cộng Cà Phê gần nhất",
+        "Highlands Coffee",
+        "Quán cà phê gần đây",
+        "Cà phê mở cửa 24/7"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB038-truncated",
+      "sourceCaseId": "PUB038",
+      "transform": "truncated",
+      "inputPrefix": "cong ca",
+      "expected": [
+        "Cộng Cà Phê gần đây",
+        "Cộng Cà Phê Hồ Gươm"
+      ],
+      "actual": [
+        "Cộng Cà Phê Hồ Gươm",
+        "Cộng Cà Phê gần đây",
+        "AEON Mall Long Biên",
+        "Trường Đại học Bách Khoa Hà Nội"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 18
+    },
+    {
+      "caseId": "PUB039-compact",
+      "sourceCaseId": "PUB039",
+      "transform": "compact",
+      "inputPrefix": "hoguomcafe",
+      "expected": [
+        "Quán cà phê gần Hồ Gươm"
+      ],
+      "actual": [
+        "Quán cà phê gần Hồ Gươm",
+        "Quán cà phê gần đây",
+        "Cà phê mở cửa 24/7",
+        "Cộng Cà Phê Hồ Gươm",
+        "Highlands Coffee"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB039-uppercase",
+      "sourceCaseId": "PUB039",
+      "transform": "uppercase",
+      "inputPrefix": "HO GUOM CAFE",
+      "expected": [
+        "Quán cà phê gần Hồ Gươm"
+      ],
+      "actual": [
+        "Quán cà phê gần Hồ Gươm",
+        "Quán cà phê gần đây",
+        "Cà phê mở cửa 24/7",
+        "Cộng Cà Phê Hồ Gươm",
+        "Highlands Coffee"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 28
+    },
+    {
+      "caseId": "PUB039-spaced",
+      "sourceCaseId": "PUB039",
+      "transform": "spaced",
+      "inputPrefix": "ho  guom  cafe",
+      "expected": [
+        "Quán cà phê gần Hồ Gươm"
+      ],
+      "actual": [
+        "Quán cà phê gần Hồ Gươm",
+        "Quán cà phê gần đây",
+        "Cà phê mở cửa 24/7",
+        "Cộng Cà Phê Hồ Gươm",
+        "Highlands Coffee"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 34
+    },
+    {
+      "caseId": "PUB039-truncated",
+      "sourceCaseId": "PUB039",
+      "transform": "truncated",
+      "inputPrefix": "ho guom ca",
+      "expected": [
+        "Quán cà phê gần Hồ Gươm"
+      ],
+      "actual": [
+        "Quán cà phê gần Hồ Gươm",
+        "Cộng Cà Phê Hồ Gươm"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 18
+    },
+    {
+      "caseId": "PUB040-compact",
+      "sourceCaseId": "PUB040",
+      "transform": "compact",
+      "inputPrefix": "pizza4",
+      "expected": [
+        "Pizza 4P's",
+        "Pizza 4P's Bến Nghé"
+      ],
+      "actual": [
+        "Pizza 4P's",
+        "Pizza 4P's Bến Nghé",
+        "Nhà hàng Pizza 4P's Bến Nghé"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB040-uppercase",
+      "sourceCaseId": "PUB040",
+      "transform": "uppercase",
+      "inputPrefix": "PIZZA 4",
+      "expected": [
+        "Pizza 4P's",
+        "Pizza 4P's Bến Nghé"
+      ],
+      "actual": [
+        "Pizza 4P's",
+        "Pizza 4P's Bến Nghé",
+        "Nhà hàng Pizza 4P's Bến Nghé"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 19
+    },
+    {
+      "caseId": "PUB040-spaced",
+      "sourceCaseId": "PUB040",
+      "transform": "spaced",
+      "inputPrefix": "pizza  4",
+      "expected": [
+        "Pizza 4P's",
+        "Pizza 4P's Bến Nghé"
+      ],
+      "actual": [
+        "Pizza 4P's",
+        "Pizza 4P's Bến Nghé",
+        "Nhà hàng Pizza 4P's Bến Nghé"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 18
+    },
+    {
+      "caseId": "PUB041-compact",
+      "sourceCaseId": "PUB041",
+      "transform": "compact",
+      "inputPrefix": "suaxegan",
+      "expected": [
+        "Tiệm sửa xe gần đây"
+      ],
+      "actual": [
+        "Tiệm sửa xe gần đây",
+        "Trà sữa gần đây",
+        "Trà sữa ngon"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB041-uppercase",
+      "sourceCaseId": "PUB041",
+      "transform": "uppercase",
+      "inputPrefix": "SUA XE GAN",
+      "expected": [
+        "Tiệm sửa xe gần đây"
+      ],
+      "actual": [
+        "Trà sữa gần đây",
+        "Trà sữa ngon",
+        "Tiệm sửa xe gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB041-spaced",
+      "sourceCaseId": "PUB041",
+      "transform": "spaced",
+      "inputPrefix": "sua  xe  gan",
+      "expected": [
+        "Tiệm sửa xe gần đây"
+      ],
+      "actual": [
+        "Trà sữa gần đây",
+        "Trà sữa ngon",
+        "Tiệm sửa xe gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB042-compact",
+      "sourceCaseId": "PUB042",
+      "transform": "compact",
+      "inputPrefix": "garaoto",
+      "expected": [
+        "Garage ô tô gần đây"
+      ],
+      "actual": [
+        "Garage ô tô gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB042-uppercase",
+      "sourceCaseId": "PUB042",
+      "transform": "uppercase",
+      "inputPrefix": "GARA OTO",
+      "expected": [
+        "Garage ô tô gần đây"
+      ],
+      "actual": [
+        "Garage ô tô gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB042-spaced",
+      "sourceCaseId": "PUB042",
+      "transform": "spaced",
+      "inputPrefix": "gara  oto",
+      "expected": [
+        "Garage ô tô gần đây"
+      ],
+      "actual": [
+        "Garage ô tô gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB043-compact",
+      "sourceCaseId": "PUB043",
+      "transform": "compact",
+      "inputPrefix": "duongdenben",
+      "expected": [
+        "Chỉ đường đến Chợ Bến Thành",
+        "Chỉ đường đến bến xe"
+      ],
+      "actual": [
+        "Chỉ đường đến Chợ Bến Thành",
+        "Chỉ đường đến bến xe",
+        "Chợ Bến Thành",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Bệnh viện Điện Biên Phủ Nha Trang",
+        "Bệnh viện Lê Lợi Đà Lạt"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB043-uppercase",
+      "sourceCaseId": "PUB043",
+      "transform": "uppercase",
+      "inputPrefix": "DUONG DEN BEN",
+      "expected": [
+        "Chỉ đường đến Chợ Bến Thành",
+        "Chỉ đường đến bến xe"
+      ],
+      "actual": [
+        "Chỉ đường đến Chợ Bến Thành",
+        "Chỉ đường đến bến xe",
+        "Chợ Bến Thành",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Bệnh viện Điện Biên Phủ Nha Trang",
+        "Bệnh viện Lê Lợi Đà Lạt"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB043-spaced",
+      "sourceCaseId": "PUB043",
+      "transform": "spaced",
+      "inputPrefix": "duong  den  ben",
+      "expected": [
+        "Chỉ đường đến Chợ Bến Thành",
+        "Chỉ đường đến bến xe"
+      ],
+      "actual": [
+        "Chỉ đường đến Chợ Bến Thành",
+        "Chỉ đường đến bến xe",
+        "Chợ Bến Thành",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Bệnh viện Điện Biên Phủ Nha Trang",
+        "Bệnh viện Lê Lợi Đà Lạt"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB044-compact",
+      "sourceCaseId": "PUB044",
+      "transform": "compact",
+      "inputPrefix": "chiduongsan",
+      "expected": [
+        "Chỉ đường đến sân bay Nội Bài",
+        "Chỉ đường đến sân bay Tân Sơn Nhất"
+      ],
+      "actual": [
+        "Chỉ đường đến sân bay Nội Bài",
+        "Chỉ đường đến sân bay Tân Sơn Nhất",
+        "Sân bay Nội Bài",
+        "Galaxy Cinema Nguyễn Du",
+        "Rooftop Chill Skybar",
+        "Khách sạn Mường Thanh Đà Nẵng",
+        "Khách sạn Lý Thường Kiệt Hải Phòng",
+        "Khách sạn Đà Nẵng gần biển"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB044-uppercase",
+      "sourceCaseId": "PUB044",
+      "transform": "uppercase",
+      "inputPrefix": "CHI DUONG SAN",
+      "expected": [
+        "Chỉ đường đến sân bay Nội Bài",
+        "Chỉ đường đến sân bay Tân Sơn Nhất"
+      ],
+      "actual": [
+        "Chỉ đường đến sân bay Nội Bài",
+        "Chỉ đường đến sân bay Tân Sơn Nhất",
+        "Sân bay Nội Bài",
+        "Galaxy Cinema Nguyễn Du",
+        "Rooftop Chill Skybar",
+        "Khách sạn Mường Thanh Đà Nẵng",
+        "Khách sạn Lý Thường Kiệt Hải Phòng",
+        "Khách sạn Đà Nẵng gần biển"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB044-spaced",
+      "sourceCaseId": "PUB044",
+      "transform": "spaced",
+      "inputPrefix": "chi  duong  san",
+      "expected": [
+        "Chỉ đường đến sân bay Nội Bài",
+        "Chỉ đường đến sân bay Tân Sơn Nhất"
+      ],
+      "actual": [
+        "Chỉ đường đến sân bay Nội Bài",
+        "Chỉ đường đến sân bay Tân Sơn Nhất",
+        "Sân bay Nội Bài",
+        "Galaxy Cinema Nguyễn Du",
+        "Rooftop Chill Skybar",
+        "Khách sạn Mường Thanh Đà Nẵng",
+        "Khách sạn Lý Thường Kiệt Hải Phòng",
+        "Khách sạn Đà Nẵng gần biển"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB045-truncated",
+      "sourceCaseId": "PUB045",
+      "transform": "truncated",
+      "inputPrefix": "10.",
+      "expected": [
+        "10.7769,106.7009"
+      ],
+      "actual": [
+        "10.7769,106.7009"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 14
+    },
+    {
+      "caseId": "PUB046-compact",
+      "sourceCaseId": "PUB046",
+      "transform": "compact",
+      "inputPrefix": "xangtrenduong",
+      "expected": [
+        "Cây xăng trên đường đi",
+        "Trạm dừng có cây xăng"
+      ],
+      "actual": [
+        "Cây xăng gần đây",
+        "Trạm xăng gần đây",
+        "Cây xăng trên đường đi",
+        "Cây xăng Petrolimex Nguyễn Trãi"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 10
+    },
+    {
+      "caseId": "PUB046-uppercase",
+      "sourceCaseId": "PUB046",
+      "transform": "uppercase",
+      "inputPrefix": "XANG TREN DUONG",
+      "expected": [
+        "Cây xăng trên đường đi",
+        "Trạm dừng có cây xăng"
+      ],
+      "actual": [
+        "Cây xăng gần đây",
+        "Cây xăng trên đường đi",
+        "Trạm xăng gần đây",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Cây xăng Petrolimex Nguyễn Trãi",
+        "Vincom Cây xăng Điện Biên Phủ Nha Trang",
+        "Vincom ATM Võ Nguyên Giáp TP.HCM",
+        "The Coffee House Trung tâm thương mại Điện Biên Phủ Nha Trang"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB046-spaced",
+      "sourceCaseId": "PUB046",
+      "transform": "spaced",
+      "inputPrefix": "xang  tren  duong",
+      "expected": [
+        "Cây xăng trên đường đi",
+        "Trạm dừng có cây xăng"
+      ],
+      "actual": [
+        "Cây xăng gần đây",
+        "Cây xăng trên đường đi",
+        "Trạm xăng gần đây",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Cây xăng Petrolimex Nguyễn Trãi",
+        "Vincom Cây xăng Điện Biên Phủ Nha Trang",
+        "Vincom ATM Võ Nguyên Giáp TP.HCM",
+        "The Coffee House Trung tâm thương mại Điện Biên Phủ Nha Trang"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB046-truncated",
+      "sourceCaseId": "PUB046",
+      "transform": "truncated",
+      "inputPrefix": "xang tren duo",
+      "expected": [
+        "Cây xăng trên đường đi",
+        "Trạm dừng có cây xăng"
+      ],
+      "actual": [
+        "Cây xăng gần đây",
+        "Cây xăng trên đường đi",
+        "Trạm xăng gần đây",
+        "Cây xăng Petrolimex Nguyễn Trãi",
+        "Vincom Cây xăng Điện Biên Phủ Nha Trang",
+        "The Coffee House Trung tâm thương mại Điện Biên Phủ Nha Trang"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB047-compact",
+      "sourceCaseId": "PUB047",
+      "transform": "compact",
+      "inputPrefix": "quanantreem",
+      "expected": [
+        "Nhà hàng phù hợp cho trẻ em"
+      ],
+      "actual": [
+        "Quán ăn phù hợp cho trẻ em",
+        "Nhà hàng phù hợp cho trẻ em",
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Quán ăn Hà Nội",
+        "Quán ăn vặt gần đây",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Phúc Long Trung tâm thương mại Nguyễn Trãi TP.HCM"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB047-uppercase",
+      "sourceCaseId": "PUB047",
+      "transform": "uppercase",
+      "inputPrefix": "QUAN AN TRE EM",
+      "expected": [
+        "Nhà hàng phù hợp cho trẻ em"
+      ],
+      "actual": [
+        "Quán ăn phù hợp cho trẻ em",
+        "Nhà hàng phù hợp cho trẻ em",
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Quán ăn Hà Nội",
+        "Quán ăn vặt gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 18
+    },
+    {
+      "caseId": "PUB047-spaced",
+      "sourceCaseId": "PUB047",
+      "transform": "spaced",
+      "inputPrefix": "quan  an  tre  em",
+      "expected": [
+        "Nhà hàng phù hợp cho trẻ em"
+      ],
+      "actual": [
+        "Quán ăn phù hợp cho trẻ em",
+        "Nhà hàng phù hợp cho trẻ em",
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Quán ăn Hà Nội",
+        "Quán ăn vặt gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 20
+    },
+    {
+      "caseId": "PUB048-compact",
+      "sourceCaseId": "PUB048",
+      "transform": "compact",
+      "inputPrefix": "cflamviec",
+      "expected": [
+        "Cà phê làm việc",
+        "Quán cà phê có Wi-Fi"
+      ],
+      "actual": [
+        "Cà phê làm việc",
+        "Quán cà phê có Wi-Fi",
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê đẹp để check-in",
+        "quán cafe học bài"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 26
+    },
+    {
+      "caseId": "PUB048-uppercase",
+      "sourceCaseId": "PUB048",
+      "transform": "uppercase",
+      "inputPrefix": "CF LAM VIEC",
+      "expected": [
+        "Cà phê làm việc",
+        "Quán cà phê có Wi-Fi"
+      ],
+      "actual": [
+        "Cà phê làm việc",
+        "Quán cà phê có Wi-Fi",
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê đẹp để check-in",
+        "quán cafe học bài"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 25
+    },
+    {
+      "caseId": "PUB048-spaced",
+      "sourceCaseId": "PUB048",
+      "transform": "spaced",
+      "inputPrefix": "cf  lam  viec",
+      "expected": [
+        "Cà phê làm việc",
+        "Quán cà phê có Wi-Fi"
+      ],
+      "actual": [
+        "Cà phê làm việc",
+        "Quán cà phê có Wi-Fi",
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê đẹp để check-in",
+        "quán cafe học bài"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 25
+    },
+    {
+      "caseId": "PUB048-truncated",
+      "sourceCaseId": "PUB048",
+      "transform": "truncated",
+      "inputPrefix": "cf lam vi",
+      "expected": [
+        "Cà phê làm việc",
+        "Quán cà phê có Wi-Fi"
+      ],
+      "actual": [
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê đẹp để check-in",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Highlands Coffee Nguyễn Huệ"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB049-compact",
+      "sourceCaseId": "PUB049",
+      "transform": "compact",
+      "inputPrefix": "atmbidv",
+      "expected": [
+        "ATM BIDV gần đây"
+      ],
+      "actual": [
+        "ATM BIDV gần đây",
+        "ATM BIDV gần nhất",
+        "ATM gần đây",
+        "ATM Vietcombank gần nhất",
+        "Highlands Coffee ATM Pasteur Nha Trang",
+        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
+        "ATM gần sân bay",
+        "BIDV Trung tâm thương mại Võ Nguyên Giáp Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB049-uppercase",
+      "sourceCaseId": "PUB049",
+      "transform": "uppercase",
+      "inputPrefix": "ATM BIDV",
+      "expected": [
+        "ATM BIDV gần đây"
+      ],
+      "actual": [
+        "ATM BIDV gần đây",
+        "ATM BIDV gần nhất",
+        "ATM Vietcombank gần nhất",
+        "Highlands Coffee ATM Pasteur Nha Trang",
+        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
+        "ATM gần sân bay",
+        "ATM Vietcombank Nguyễn Huệ",
+        "WinMart ATM Pasteur Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB049-spaced",
+      "sourceCaseId": "PUB049",
+      "transform": "spaced",
+      "inputPrefix": "atm  bidv",
+      "expected": [
+        "ATM BIDV gần đây"
+      ],
+      "actual": [
+        "ATM BIDV gần đây",
+        "ATM BIDV gần nhất",
+        "ATM Vietcombank gần nhất",
+        "Highlands Coffee ATM Pasteur Nha Trang",
+        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
+        "ATM gần sân bay",
+        "ATM Vietcombank Nguyễn Huệ",
+        "WinMart ATM Pasteur Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB049-truncated",
+      "sourceCaseId": "PUB049",
+      "transform": "truncated",
+      "inputPrefix": "atm bi",
+      "expected": [
+        "ATM BIDV gần đây"
+      ],
+      "actual": [
+        "ATM BIDV gần đây",
+        "Highlands Coffee ATM Pasteur Nha Trang",
+        "ATM Vietcombank Nguyễn Huệ",
+        "WinMart ATM Pasteur Hải Phòng",
+        "Vietcombank ATM Nguyễn Huệ Đà Lạt",
+        "Vincom ATM Võ Nguyên Giáp TP.HCM",
+        "Vietcombank ATM Trần Duy Hưng Hà Nội",
+        "CGV ATM Hai Bà Trưng Đà Nẵng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 18
+    },
+    {
+      "caseId": "PUB050-compact",
+      "sourceCaseId": "PUB050",
+      "transform": "compact",
+      "inputPrefix": "benhviengansan",
+      "expected": [
+        "Bệnh viện gần sân bay"
+      ],
+      "actual": [
+        "Bệnh viện gần sân bay",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Bệnh viện Bạch Mai",
+        "Vinmec Times City",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Bệnh viện Điện Biên Phủ Nha Trang",
+        "Bệnh viện Lê Lợi Đà Lạt"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB050-uppercase",
+      "sourceCaseId": "PUB050",
+      "transform": "uppercase",
+      "inputPrefix": "BENH VIEN GAN SAN",
+      "expected": [
+        "Bệnh viện gần sân bay"
+      ],
+      "actual": [
+        "Bệnh viện gần sân bay",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Bệnh viện Bạch Mai",
+        "Vinmec Times City",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Bệnh viện Điện Biên Phủ Nha Trang",
+        "Bệnh viện Lê Lợi Đà Lạt"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB050-spaced",
+      "sourceCaseId": "PUB050",
+      "transform": "spaced",
+      "inputPrefix": "benh  vien  gan  san",
+      "expected": [
+        "Bệnh viện gần sân bay"
+      ],
+      "actual": [
+        "Bệnh viện gần sân bay",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Bệnh viện Bạch Mai",
+        "Vinmec Times City",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Bệnh viện Điện Biên Phủ Nha Trang",
+        "Bệnh viện Lê Lợi Đà Lạt"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB050-abbreviation",
+      "sourceCaseId": "PUB050",
+      "transform": "abbreviation",
+      "inputPrefix": "bv gan san",
+      "expected": [
+        "Bệnh viện gần sân bay"
+      ],
+      "actual": [
+        "Bệnh viện gần sân bay",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Bệnh viện Bạch Mai",
+        "Vinmec Times City",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "ATM gần sân bay",
+        "Bệnh viện Điện Biên Phủ Nha Trang"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB051-compact",
+      "sourceCaseId": "PUB051",
+      "transform": "compact",
+      "inputPrefix": "spaganday",
+      "expected": [
+        "Spa gần đây"
+      ],
+      "actual": [
+        "Spa gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 10
+    },
+    {
+      "caseId": "PUB051-uppercase",
+      "sourceCaseId": "PUB051",
+      "transform": "uppercase",
+      "inputPrefix": "SPA GAN DAY",
+      "expected": [
+        "Spa gần đây"
+      ],
+      "actual": [
+        "Spa gần đây",
+        "cây xăng gần đây",
+        "Trạm xăng gần đây",
+        "ATM BIDV gần đây",
+        "quán cà phê gần đây",
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn gần đây",
+        "ăn đêm gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB051-spaced",
+      "sourceCaseId": "PUB051",
+      "transform": "spaced",
+      "inputPrefix": "spa  gan  day",
+      "expected": [
+        "Spa gần đây"
+      ],
+      "actual": [
+        "Spa gần đây",
+        "cây xăng gần đây",
+        "Trạm xăng gần đây",
+        "ATM BIDV gần đây",
+        "quán cà phê gần đây",
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn gần đây",
+        "ăn đêm gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB052-compact",
+      "sourceCaseId": "PUB052",
+      "transform": "compact",
+      "inputPrefix": "gym24",
+      "expected": [
+        "Phòng gym mở cửa 24/7"
+      ],
+      "actual": [
+        "Phòng gym mở cửa 24/7"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 19
+    },
+    {
+      "caseId": "PUB052-uppercase",
+      "sourceCaseId": "PUB052",
+      "transform": "uppercase",
+      "inputPrefix": "GYM 24",
+      "expected": [
+        "Phòng gym mở cửa 24/7"
+      ],
+      "actual": [
+        "Phòng gym mở cửa 24/7"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 20
+    },
+    {
+      "caseId": "PUB052-spaced",
+      "sourceCaseId": "PUB052",
+      "transform": "spaced",
+      "inputPrefix": "gym  24",
+      "expected": [
+        "Phòng gym mở cửa 24/7"
+      ],
+      "actual": [
+        "Phòng gym mở cửa 24/7"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 18
+    },
+    {
+      "caseId": "PUB053-compact",
+      "sourceCaseId": "PUB053",
+      "transform": "compact",
+      "inputPrefix": "sieuthigan",
+      "expected": [
+        "Siêu thị gần đây"
+      ],
+      "actual": [
+        "Siêu thị gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB053-uppercase",
+      "sourceCaseId": "PUB053",
+      "transform": "uppercase",
+      "inputPrefix": "SIEUTHI GAN",
+      "expected": [
+        "Siêu thị gần đây"
+      ],
+      "actual": [
+        "Siêu thị gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB053-spaced",
+      "sourceCaseId": "PUB053",
+      "transform": "spaced",
+      "inputPrefix": "sieuthi  gan",
+      "expected": [
+        "Siêu thị gần đây"
+      ],
+      "actual": [
+        "Siêu thị gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB054-compact",
+      "sourceCaseId": "PUB054",
+      "transform": "compact",
+      "inputPrefix": "quannuongq7",
+      "expected": [
+        "Quán nướng Quận 7"
+      ],
+      "actual": [
+        "Quán nướng Quận 7"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB054-uppercase",
+      "sourceCaseId": "PUB054",
+      "transform": "uppercase",
+      "inputPrefix": "QUAN NUONG Q7",
+      "expected": [
+        "Quán nướng Quận 7"
+      ],
+      "actual": [
+        "Quán nướng Quận 7"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB054-spaced",
+      "sourceCaseId": "PUB054",
+      "transform": "spaced",
+      "inputPrefix": "quan  nuong  q7",
+      "expected": [
+        "Quán nướng Quận 7"
+      ],
+      "actual": [
+        "Quán nướng Quận 7"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB055-compact",
+      "sourceCaseId": "PUB055",
+      "transform": "compact",
+      "inputPrefix": "cafeyentinh",
+      "expected": [
+        "Quán cà phê yên tĩnh"
+      ],
+      "actual": [
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê gần đây",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB055-uppercase",
+      "sourceCaseId": "PUB055",
+      "transform": "uppercase",
+      "inputPrefix": "CAFE YEN TINH",
+      "expected": [
+        "Quán cà phê yên tĩnh"
+      ],
+      "actual": [
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê đẹp để check-in",
+        "Cà phê mở cửa 24/7",
+        "Quán cà phê gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB055-spaced",
+      "sourceCaseId": "PUB055",
+      "transform": "spaced",
+      "inputPrefix": "cafe  yen  tinh",
+      "expected": [
+        "Quán cà phê yên tĩnh"
+      ],
+      "actual": [
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê đẹp để check-in",
+        "Cà phê mở cửa 24/7",
+        "Quán cà phê gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB055-truncated",
+      "sourceCaseId": "PUB055",
+      "transform": "truncated",
+      "inputPrefix": "cafe yen ti",
+      "expected": [
+        "Quán cà phê yên tĩnh"
+      ],
+      "actual": [
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê đẹp để check-in",
+        "Cà phê mở cửa 24/7",
+        "Quán cà phê gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB056-compact",
+      "sourceCaseId": "PUB056",
+      "transform": "compact",
+      "inputPrefix": "hotelnearbeachdanang",
+      "expected": [
+        "Khách sạn gần biển Đà Nẵng"
+      ],
+      "actual": [
+        "Khách sạn gần biển Đà Nẵng",
+        "Khách sạn Đà Nẵng",
+        "Khách sạn Đà Nẵng gần biển",
+        "Hotel Đà Nẵng",
+        "Khách sạn gần biển Mỹ Khê"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 10
+    },
+    {
+      "caseId": "PUB056-uppercase",
+      "sourceCaseId": "PUB056",
+      "transform": "uppercase",
+      "inputPrefix": "HOTEL NEAR BEACH DANANG",
+      "expected": [
+        "Khách sạn gần biển Đà Nẵng"
+      ],
+      "actual": [
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn gần biển Đà Nẵng",
+        "Khách sạn Đà Nẵng",
+        "Hotel Đà Nẵng",
+        "Khách sạn gần biển Mỹ Khê",
+        "Bãi biển Mỹ Khê",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Khách sạn Nguyễn Huệ TP.HCM"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 25
+    },
+    {
+      "caseId": "PUB056-spaced",
+      "sourceCaseId": "PUB056",
+      "transform": "spaced",
+      "inputPrefix": "hotel  near  beach  danang",
+      "expected": [
+        "Khách sạn gần biển Đà Nẵng"
+      ],
+      "actual": [
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn gần biển Đà Nẵng",
+        "Khách sạn Đà Nẵng",
+        "Hotel Đà Nẵng",
+        "Khách sạn gần biển Mỹ Khê",
+        "Bãi biển Mỹ Khê",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Khách sạn Nguyễn Huệ TP.HCM"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 26
+    },
+    {
+      "caseId": "PUB056-truncated",
+      "sourceCaseId": "PUB056",
+      "transform": "truncated",
+      "inputPrefix": "hotel near beach dan",
+      "expected": [
+        "Khách sạn gần biển Đà Nẵng"
+      ],
+      "actual": [
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn gần biển Đà Nẵng",
+        "Khách sạn Đà Nẵng",
+        "Hotel Đà Nẵng",
+        "Khách sạn gần biển Mỹ Khê",
+        "Khách sạn Nguyễn Huệ TP.HCM",
+        "Khách sạn Mường Thanh Đà Nẵng",
+        "Khách sạn Lý Thường Kiệt Hải Phòng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 25
+    },
+    {
+      "caseId": "PUB057-accentless",
+      "sourceCaseId": "PUB057",
+      "transform": "accentless",
+      "inputPrefix": "ben xe mien dong",
+      "expected": [
+        "Bến xe Miền Đông mới",
+        "Bến xe Miền Đông cũ"
+      ],
+      "actual": [
+        "Bến xe Miền Đông mới",
+        "Bến xe Miền Đông cũ",
+        "Bệnh viện Bạch Mai"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB057-compact",
+      "sourceCaseId": "PUB057",
+      "transform": "compact",
+      "inputPrefix": "benxemiendong",
+      "expected": [
+        "Bến xe Miền Đông mới",
+        "Bến xe Miền Đông cũ"
+      ],
+      "actual": [
+        "Bến xe Miền Đông mới",
+        "Bến xe Miền Đông cũ"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 28
+    },
+    {
+      "caseId": "PUB057-uppercase",
+      "sourceCaseId": "PUB057",
+      "transform": "uppercase",
+      "inputPrefix": "BẾN XE MIỀN ĐÔNG",
+      "expected": [
+        "Bến xe Miền Đông mới",
+        "Bến xe Miền Đông cũ"
+      ],
+      "actual": [
+        "Bến xe Miền Đông mới",
+        "Bến xe Miền Đông cũ",
+        "Bệnh viện Bạch Mai"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB057-spaced",
+      "sourceCaseId": "PUB057",
+      "transform": "spaced",
+      "inputPrefix": "bến  xe  miền  đông",
+      "expected": [
+        "Bến xe Miền Đông mới",
+        "Bến xe Miền Đông cũ"
+      ],
+      "actual": [
+        "Bến xe Miền Đông mới",
+        "Bến xe Miền Đông cũ",
+        "Bệnh viện Bạch Mai"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 23
+    },
+    {
+      "caseId": "PUB057-truncated",
+      "sourceCaseId": "PUB057",
+      "transform": "truncated",
+      "inputPrefix": "ben xe mien do",
+      "expected": [
+        "Bến xe Miền Đông mới",
+        "Bến xe Miền Đông cũ"
+      ],
+      "actual": [
+        "Bến xe Miền Đông mới",
+        "Bến xe Miền Đông cũ"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 19
+    },
+    {
+      "caseId": "PUB058-compact",
+      "sourceCaseId": "PUB058",
+      "transform": "compact",
+      "inputPrefix": "hocvienganday",
+      "expected": [
+        "Học viện gần đây",
+        "Trung tâm đào tạo gần đây"
+      ],
+      "actual": [
+        "Học viện gần đây",
+        "Trung tâm đào tạo gần đây",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Trường Đại học Bách Khoa Hà Nội",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Highlands Coffee Nguyễn Huệ",
+        "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+        "The Coffee House Trần Duy Hưng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 26
+    },
+    {
+      "caseId": "PUB058-uppercase",
+      "sourceCaseId": "PUB058",
+      "transform": "uppercase",
+      "inputPrefix": "HOC VIEN GAN DAY",
+      "expected": [
+        "Học viện gần đây",
+        "Trung tâm đào tạo gần đây"
+      ],
+      "actual": [
+        "Học viện gần đây",
+        "Trung tâm đào tạo gần đây",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Trường Đại học Bách Khoa Hà Nội",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Highlands Coffee Nguyễn Huệ",
+        "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+        "The Coffee House Trần Duy Hưng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 25
+    },
+    {
+      "caseId": "PUB058-spaced",
+      "sourceCaseId": "PUB058",
+      "transform": "spaced",
+      "inputPrefix": "hoc  vien  gan  day",
+      "expected": [
+        "Học viện gần đây",
+        "Trung tâm đào tạo gần đây"
+      ],
+      "actual": [
+        "Học viện gần đây",
+        "Trung tâm đào tạo gần đây",
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Trường Đại học Bách Khoa Hà Nội",
+        "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Highlands Coffee Nguyễn Huệ",
+        "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+        "The Coffee House Trần Duy Hưng"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 25
+    },
+    {
+      "caseId": "PUB059-compact",
+      "sourceCaseId": "PUB059",
+      "transform": "compact",
+      "inputPrefix": "doanvat",
+      "expected": [
+        "Quán ăn vặt gần đây"
+      ],
+      "actual": [
+        "Quán ăn vặt gần đây",
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Quán ăn Hà Nội",
+        "Nhà hàng phù hợp cho trẻ em"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 11
+    },
+    {
+      "caseId": "PUB059-uppercase",
+      "sourceCaseId": "PUB059",
+      "transform": "uppercase",
+      "inputPrefix": "DO AN VAT",
+      "expected": [
+        "Quán ăn vặt gần đây"
+      ],
+      "actual": [
+        "Quán ăn vặt gần đây",
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Quán ăn Hà Nội",
+        "Nhà hàng phù hợp cho trẻ em"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 22
+    },
+    {
+      "caseId": "PUB059-spaced",
+      "sourceCaseId": "PUB059",
+      "transform": "spaced",
+      "inputPrefix": "do  an  vat",
+      "expected": [
+        "Quán ăn vặt gần đây"
+      ],
+      "actual": [
+        "Quán ăn vặt gần đây",
+        "Quán ăn mở cửa khuya",
+        "Ăn đêm gần đây",
+        "Quán ăn Hà Nội",
+        "Nhà hàng phù hợp cho trẻ em"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 21
+    },
+    {
+      "caseId": "PUB060-compact",
+      "sourceCaseId": "PUB060",
+      "transform": "compact",
+      "inputPrefix": "cafedepsongao",
+      "expected": [
+        "Quán cà phê đẹp để check-in"
+      ],
+      "actual": [
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Quán cà phê gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 24
+    },
+    {
+      "caseId": "PUB060-uppercase",
+      "sourceCaseId": "PUB060",
+      "transform": "uppercase",
+      "inputPrefix": "CAFE DEP SONG AO",
+      "expected": [
+        "Quán cà phê đẹp để check-in"
+      ],
+      "actual": [
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Cà phê mở cửa 24/7",
+        "Quán cà phê gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 28
+    },
+    {
+      "caseId": "PUB060-spaced",
+      "sourceCaseId": "PUB060",
+      "transform": "spaced",
+      "inputPrefix": "cafe  dep  song  ao",
+      "expected": [
+        "Quán cà phê đẹp để check-in"
+      ],
+      "actual": [
+        "Quán cà phê đẹp để check-in",
+        "Quán cà phê phù hợp học tập",
+        "Cafe có Wi-Fi",
+        "Quán cà phê có Wi-Fi",
+        "Cafe làm việc",
+        "Quán cà phê yên tĩnh",
+        "Cà phê mở cửa 24/7",
+        "Quán cà phê gần đây"
+      ],
+      "top3Hit": true,
+      "top5Hit": true,
+      "latencyMs": 122
+    }
+  ],
+  "summary": {
+    "total": 192,
+    "top3Recall": 0.974,
+    "top5Recall": 0.974,
+    "p95LatencyMs": 72,
+    "byTransform": {
+      "uppercase": {
+        "total": 59,
+        "top3": 59,
+        "top5": 59,
+        "top3Recall": 1,
+        "top5Recall": 1
+      },
+      "truncated": {
+        "total": 21,
+        "top3": 21,
+        "top5": 21,
+        "top3Recall": 1,
+        "top5Recall": 1
+      },
+      "compact": {
+        "total": 53,
+        "top3": 48,
+        "top5": 48,
+        "top3Recall": 0.906,
+        "top5Recall": 0.906
+      },
+      "spaced": {
+        "total": 53,
+        "top3": 53,
+        "top5": 53,
+        "top3Recall": 1,
+        "top5Recall": 1
+      },
+      "abbreviation": {
+        "total": 4,
+        "top3": 4,
+        "top5": 4,
+        "top3Recall": 1,
+        "top5Recall": 1
+      },
+      "accentless": {
+        "total": 2,
+        "top3": 2,
+        "top5": 2,
+        "top3Recall": 1,
+        "top5Recall": 1
+      }
+    }
+  }
+}
