@@ -15,7 +15,7 @@ import {
 import { browserDataset } from './lib/browserDataset';
 import { evaluateDataset } from './lib/evaluate';
 import { suggest } from './lib/engine';
-import type { QueryEntity, Suggestion } from './lib/types';
+import type { BehaviorEvent, QueryEntity, Suggestion } from './lib/types';
 
 const demoQueries = [
   'vin',
@@ -35,23 +35,61 @@ const demoQueries = [
 
 const profileOptions = [
   { id: '', label: 'No profile' },
+  { id: 'local-demo', label: 'Local learner' },
   { id: 'coffee-loyal', label: 'Coffee loyalist' },
   { id: 'danang-traveler', label: 'Da Nang traveler' },
   { id: 'commuter', label: 'Daily commuter' },
 ];
+
+const BEHAVIOR_STORAGE_KEY = 'tasco-whisperer.behavior-events';
 
 function App() {
   const [query, setQuery] = useState('cafe');
   const [city, setCity] = useState('');
   const [userId, setUserId] = useState('');
   const [debug, setDebug] = useState(true);
+  const [behaviorEvents, setBehaviorEvents] = useState<BehaviorEvent[]>(readBehaviorEvents);
 
   const response = useMemo(
-    () => suggest(browserDataset, { q: query, city: city || undefined, userId: userId || undefined, limit: 8 }),
-    [city, query, userId],
+    () =>
+      suggest(browserDataset, {
+        q: query,
+        city: city || undefined,
+        userId: userId || undefined,
+        behaviorEvents,
+        limit: 8,
+      }),
+    [behaviorEvents, city, query, userId],
   );
   const evaluation = useMemo(() => evaluateDataset(browserDataset), []);
   const selected = response.suggestions[0];
+  const activeBehaviorCount = userId ? behaviorEvents.filter((event) => event.userId === userId).length : 0;
+
+  function recordSelection(suggestion: Suggestion) {
+    const learnerId = userId || 'local-demo';
+    const event: BehaviorEvent = {
+      userId: learnerId,
+      query,
+      selectedText: suggestion.text,
+      selectedType: suggestion.type,
+      brand: suggestion.metadata.brand,
+      category: suggestion.metadata.category,
+      city: suggestion.metadata.city,
+      occurredAt: new Date().toISOString(),
+    };
+    const nextEvents = [...behaviorEvents, event].slice(-80);
+    setBehaviorEvents(nextEvents);
+    persistBehaviorEvents(nextEvents);
+    if (!userId) {
+      setUserId(learnerId);
+    }
+  }
+
+  function clearBehaviorEvents() {
+    const nextEvents = behaviorEvents.filter((event) => event.userId !== (userId || 'local-demo'));
+    setBehaviorEvents(nextEvents);
+    persistBehaviorEvents(nextEvents);
+  }
 
   return (
     <main className="app-shell">
@@ -102,6 +140,18 @@ function App() {
               <span>{response.diagnostics.datasetRows.pois} POIs, {response.diagnostics.datasetRows.autocomplete} pairs</span>
             </div>
           </div>
+          <div className="dataset-card feedback-card">
+            <Sparkles size={17} />
+            <div>
+              <strong>{activeBehaviorCount} local selections</strong>
+              <span>{activeBehaviorCount > 0 ? 'used for behavior personalization' : 'select a result to start learning'}</span>
+            </div>
+            {activeBehaviorCount > 0 ? (
+              <button type="button" onClick={clearBehaviorEvents}>
+                Clear
+              </button>
+            ) : null}
+          </div>
         </aside>
 
         <section className="search-panel">
@@ -150,7 +200,13 @@ function App() {
 
           <div className="suggestion-list" aria-live="polite">
             {response.suggestions.map((suggestion, index) => (
-              <SuggestionRow key={`${suggestion.id}-${suggestion.text}`} index={index} suggestion={suggestion} debug={debug} />
+              <SuggestionRow
+                key={`${suggestion.id}-${suggestion.text}`}
+                index={index}
+                suggestion={suggestion}
+                debug={debug}
+                onSelect={recordSelection}
+              />
             ))}
           </div>
         </section>
@@ -237,6 +293,43 @@ function App() {
   );
 }
 
+function readBehaviorEvents(): BehaviorEvent[] {
+  if (typeof window === 'undefined') {
+    return [];
+  }
+  try {
+    const raw = window.localStorage.getItem(BEHAVIOR_STORAGE_KEY);
+    if (!raw) {
+      return [];
+    }
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter(isBehaviorEvent) : [];
+  } catch {
+    return [];
+  }
+}
+
+function persistBehaviorEvents(events: BehaviorEvent[]) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  window.localStorage.setItem(BEHAVIOR_STORAGE_KEY, JSON.stringify(events));
+}
+
+function isBehaviorEvent(value: unknown): value is BehaviorEvent {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+  const event = value as BehaviorEvent;
+  return (
+    typeof event.userId === 'string' &&
+    typeof event.query === 'string' &&
+    typeof event.selectedText === 'string' &&
+    typeof event.selectedType === 'string' &&
+    typeof event.occurredAt === 'string'
+  );
+}
+
 function EntityChip({ entity }: { entity: QueryEntity }) {
   return (
     <span className="entity-chip" title={`${entity.source}, ${Math.round(entity.confidence * 100)}% confidence`}>
@@ -246,9 +339,31 @@ function EntityChip({ entity }: { entity: QueryEntity }) {
   );
 }
 
-function SuggestionRow({ suggestion, index, debug }: { suggestion: Suggestion; index: number; debug: boolean }) {
+function SuggestionRow({
+  suggestion,
+  index,
+  debug,
+  onSelect,
+}: {
+  suggestion: Suggestion;
+  index: number;
+  debug: boolean;
+  onSelect: (suggestion: Suggestion) => void;
+}) {
   return (
-    <article className="suggestion-row">
+    <article
+      className="suggestion-row"
+      role="button"
+      tabIndex={0}
+      title="Select suggestion"
+      onClick={() => onSelect(suggestion)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onSelect(suggestion);
+        }
+      }}
+    >
       <div className="rank">{index + 1}</div>
       <div className="suggestion-main">
         <h2>{suggestion.text}</h2>

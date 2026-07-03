@@ -184,6 +184,7 @@ h1 {
 
 .dataset-card {
   display: flex;
+  align-items: center;
   gap: 10px;
   margin-top: 18px;
   padding: 13px;
@@ -201,6 +202,20 @@ h1 {
 .dataset-card strong {
   color: var(--text);
   margin-bottom: 3px;
+}
+
+.feedback-card {
+  margin-top: 10px;
+}
+
+.feedback-card button {
+  margin-left: auto;
+  border: 1px solid rgba(24, 132, 81, 0.24);
+  border-radius: 8px;
+  padding: 5px 8px;
+  background: #ffffff;
+  color: var(--green-dark);
+  font-size: 12px;
 }
 
 .search-panel {
@@ -334,6 +349,16 @@ h1 {
   border-radius: 8px;
   padding: 13px;
   background: rgba(255, 255, 255, 0.96);
+  cursor: pointer;
+}
+
+.suggestion-row:focus-visible {
+  outline: 3px solid rgba(24, 132, 81, 0.24);
+  outline-offset: 2px;
+}
+
+.suggestion-row:hover {
+  border-color: rgba(24, 132, 81, 0.32);
 }
 
 .rank {
