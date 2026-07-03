@@ -1,5 +1,6 @@
 import { resolveAgenticCorrection } from './agentic';
 import { expandQuery, fuzzyIncludes, normalizeText } from './normalize';
+import { generatedPatternCandidates } from './generatedPatterns';
 import {
   buildEmbeddingIndex,
   hasStrongSemanticEvidence,
@@ -186,7 +187,7 @@ export function suggest(dataset: TascoDataset, request: SuggestRequest): Suggest
   const understanding = understandQuery(dataset, request.q);
   const entities = extractEntities(dataset, understanding);
   const embedding = embeddingContext(dataset, understanding);
-  const drafts = collectCandidates(dataset, understanding, request, embedding.neighbors);
+  const drafts = collectCandidates(dataset, understanding, request, embedding.neighbors, entities);
   const intent = predictIntent(drafts, understanding, entities, embedding.intentVote);
   const agentic = resolveAgenticCorrection({
     understanding,
@@ -205,7 +206,9 @@ export function suggest(dataset: TascoDataset, request: SuggestRequest): Suggest
     ? mergeEntities(extractEntities(dataset, finalUnderstanding), agentic.proposal?.entities ?? [])
     : entities;
   const rewrittenEmbedding = agentic.appliedRewrite ? embeddingContext(dataset, finalUnderstanding) : embedding;
-  const rewrittenDrafts = agentic.appliedRewrite ? collectCandidates(dataset, finalUnderstanding, request, rewrittenEmbedding.neighbors) : [];
+  const rewrittenDrafts = agentic.appliedRewrite
+    ? collectCandidates(dataset, finalUnderstanding, request, rewrittenEmbedding.neighbors, finalEntities)
+    : [];
   const finalDrafts = agentic.appliedRewrite ? [...drafts, ...rewrittenDrafts] : drafts;
   const rerunIntent = agentic.appliedRewrite
     ? predictIntent(finalDrafts, finalUnderstanding, finalEntities, rewrittenEmbedding.intentVote)
@@ -319,6 +322,7 @@ function collectCandidates(
   understanding: QueryUnderstanding,
   request: SuggestRequest,
   embeddingNeighbors: EmbeddingNeighbor[] = [],
+  entities: QueryEntity[] = [],
 ): CandidateDraft[] {
   if (!understanding.normalized) {
     return dataset.popularQueries.slice(0, 5).map((query) => ({
@@ -339,6 +343,7 @@ function collectCandidates(
     ...fromPopularQueries(dataset, understanding),
     ...fromEmbedding(understanding, embeddingNeighbors),
     ...fromSemantic(dataset, understanding),
+    ...fromGeneratedPatterns(dataset, understanding, entities),
     ...fromTemplates(understanding),
   ];
 }
@@ -521,6 +526,27 @@ function fromEmbedding(understanding: QueryUnderstanding, neighbors: EmbeddingNe
         entityBoost: 0.04,
       };
     });
+}
+
+function fromGeneratedPatterns(
+  dataset: TascoDataset,
+  understanding: QueryUnderstanding,
+  entities: QueryEntity[],
+): CandidateDraft[] {
+  if (isUnresolvedCompactQuery(understanding)) {
+    return [];
+  }
+  return generatedPatternCandidates(dataset, understanding, entities).map((candidate): CandidateDraft => ({
+    id: candidate.id,
+    text: candidate.text,
+    type: candidate.type,
+    source: 'generated',
+    matched: candidate.matched,
+    baseScore: candidate.baseScore,
+    frequencyScore: candidate.frequencyScore,
+    reason: candidate.reason,
+    entityBoost: candidate.entityBoost,
+  }));
 }
 
 function isUnresolvedCompactQuery(understanding: QueryUnderstanding): boolean {
@@ -836,6 +862,8 @@ function scoreFactors(
     source:
       draft.source === 'autocomplete'
         ? 0.95
+        : draft.source === 'generated'
+          ? 0.94
         : draft.source === 'template'
           ? 0.92
         : draft.source === 'embedding'
@@ -849,7 +877,7 @@ function scoreFactors(
     poiQuality: poi ? clamp01((poi.rating / 5) * 0.45 + (poi.reviewCount / MAX_REVIEWS) * 0.25 + (poi.popularityScore / 100) * 0.3) : 0.68,
     locality: cityMatch ? 1 : request.city ? 0.45 : 0.7,
     personalization: clamp01(personalizationBoostValue),
-    diversity: draft.source === 'template' ? 0.92 : ['semantic', 'embedding'].includes(draft.source) ? 0.6 : 0.66,
+    diversity: ['generated', 'template'].includes(draft.source) ? 0.92 : ['semantic', 'embedding'].includes(draft.source) ? 0.6 : 0.66,
   };
   if (draft.entityBoost) {
     factors.lexical = Math.min(1.18, factors.lexical + draft.entityBoost);
@@ -980,7 +1008,7 @@ function tokenEvidence(haystack: string, token: string): boolean {
 }
 
 function sourcePriority(source: Suggestion['source']): number {
-  return { autocomplete: 0, 'popular-query': 1, poi: 2, template: 3, embedding: 4, semantic: 5 }[source];
+  return { autocomplete: 0, 'popular-query': 1, poi: 2, generated: 3, template: 4, embedding: 5, semantic: 6 }[source];
 }
 
 function clampLimit(limit: number | undefined): number {

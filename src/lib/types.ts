@@ -122,7 +122,7 @@ export interface Suggestion {
   normalizedText: string;
   type: IntentType;
   score: number;
-  source: 'autocomplete' | 'poi' | 'popular-query' | 'template' | 'semantic' | 'embedding';
+  source: 'autocomplete' | 'poi' | 'popular-query' | 'generated' | 'template' | 'semantic' | 'embedding';
   matched: string[];
   poiId?: string;
   metadata: {

@@ -233,6 +233,20 @@ describe('suggest', () => {
     );
   });
 
+  it('uses data-derived pattern generation before falling back to hand-authored templates', () => {
+    const response = suggest(testDataset, { q: 'cafe wifi', limit: 5 });
+    const wifiSuggestion = response.suggestions.find((suggestion) => suggestion.text === 'Quán cà phê có Wi-Fi');
+
+    expect(wifiSuggestion).toEqual(
+      expect.objectContaining({
+        source: 'generated',
+        metadata: expect.objectContaining({
+          reason: 'data-derived category, attribute, and location phrase',
+        }),
+      }),
+    );
+  });
+
   it('classifies coordinate-style prefixes', () => {
     const response = suggest(testDataset, { q: '10.77', limit: 3 });
     expect(response.intent.type).toBe('Coordinate Search');
