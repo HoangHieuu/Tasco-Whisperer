@@ -90,6 +90,12 @@ Run the local autocomplete API:
 npm run api:dev -- --host 127.0.0.1 --port 8787
 ```
 
+The organizer-compatible mock server entrypoint is also available:
+
+```bash
+node docs/hackathon/mock_api_server.js
+```
+
 Windows PowerShell:
 
 ```powershell
@@ -106,6 +112,84 @@ The endpoint accepts `q`, `city`, `userId`, `lat`, `lng`, `limit`, and
 `agentic`. Set `agentic=false` to prove deterministic-only fallback behavior.
 Invalid parameters return a `4xx` JSON error. Empty `q` returns deterministic
 popular query fallback suggestions.
+
+### TASCO Maps Facade
+
+The API service also exposes the hackathon-compatible routes from
+`tasco_maps_hackathon_api_documentation.pdf`:
+
+```bash
+curl "http://127.0.0.1:8787/v1/autocomplete?q=caphe&limit=5&sessionId=demo-1"
+curl "http://127.0.0.1:8787/v1/search?q=coffee&lat=21.0278&lon=105.8342&limit=5"
+curl "http://127.0.0.1:8787/v1/poi/poi:POI001?include=reviews,photos,hours,ai_summary"
+curl "http://127.0.0.1:8787/v1/reverse?point.lat=10.7759&point.lon=106.7031"
+curl "http://127.0.0.1:8787/v1/nearby-search?lat=10.7759&lon=106.7031&category=ATM&limit=3"
+curl "http://127.0.0.1:8787/v1/geocoding?address=Nguyen%20Hue&city=TP.HCM&limit=3"
+curl -X POST "http://127.0.0.1:8787/v1/route" \
+  -H "Content-Type: application/json" \
+  -d '{"locations":[{"lat":10.7759,"lon":106.7031},{"lat":10.772,"lon":106.698}],"mode":"auto"}'
+curl "http://127.0.0.1:8787/v1/search?q=cafe&mockError=unauthorized"
+curl "http://127.0.0.1:8787/health"
+```
+
+Aliases are supported for quick demos:
+
+- `/autocomplete`
+- `/search`
+- `/v1/geocode-search`
+- `/poi/{id}`
+- `/reverse-geocoding`
+- `/v1/reverse`
+- `/nearby-search`
+- `/geocoding`
+- `/route`
+
+By default these routes use Tasco Whisperer query understanding and local
+fallback data. To call a live TASCO-compatible upstream first, configure:
+
+```bash
+TASCO_API_BASE_URL="https://hackathon.example.com/v1" \
+TASCO_API_KEY="<api_key>" \
+npm run api:dev -- --host 127.0.0.1 --port 8787
+```
+
+Supported live credentials:
+
+- `TASCO_BEARER_TOKEN`
+- `TASCO_API_KEY`
+
+Keep these credentials on the Node API process only. Do not put bearer tokens
+or API keys in `VITE_*` variables or browser/mobile code. The browser UI calls
+the local facade at `VITE_TASCO_API_BASE_URL` or `http://127.0.0.1:8787`; the
+facade adds `Authorization`, `X-API-Key`, `X-Request-Id`, `X-Locale`, and
+`X-Timezone` when calling TASCO-compatible upstream services.
+
+The facade sends normalized/expanded Vietnamese queries upstream for
+autocomplete/search. For example, `caphe` is understood locally as `ca phe`,
+then the facade calls the live `/v1/autocomplete` or `/v1/search` endpoint with
+the expanded query. POI, reverse geocoding, nearby search, geocoding, and route
+requests also try the live TASCO-compatible endpoint first when configured. If
+the live endpoint is missing, empty, or unavailable, the response falls back to
+local deterministic data and marks `meta.source` as `local-fallback`.
+
+For mock demos, POI detail supports `include=reviews,photos,hours,ai_summary`.
+Documented error responses can be exercised without requiring real auth or
+upstream failures by passing `mockError=<code>`, for example `unauthorized`,
+`rate_limited`, `timeout`, or `service_unavailable`.
+
+The OpenAPI contract for the facade is available at
+`docs/hackathon/openapi.yaml`.
+
+### Flutter Thin Adapter
+
+The repo includes a Flutter/Dart adapter in
+`integrations/flutter/tasco_whisperer_adapter.dart`. It calls the documented
+TASCO facade routes, keeps auth pluggable through a `headerProvider`, and maps
+`PlaceResult` rows into an app-compatible suggestion DTO that can be converted
+to the existing Flutter `SearchSuggestion` model.
+
+See `integrations/flutter/README.md` for the copy/import snippet and
+`SearchSuggestion` mapping example.
 
 ## Validation
 
@@ -152,6 +236,10 @@ evaluation suite and writes reports to `reports/ranking-tuning/latest.json` and
 `reports/agentic-tuning/latest.json` and `reports/agentic-tuning/latest.md`;
 proposals require explicit developer acceptance before changing runtime
 ranking, templates, or alias memory.
+The local API also exposes TASCO PDF-compatible `/v1/autocomplete`,
+`/v1/search`, `/v1/poi/{id}`, `/v1/reverse-geocoding`, `/v1/nearby-search`,
+`/v1/geocoding`, `/v1/route`, and `/health` routes, with optional live upstream
+calls configured by `TASCO_API_BASE_URL`.
 
 ## Demo Inputs
 

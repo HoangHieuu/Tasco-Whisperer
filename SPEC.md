@@ -173,7 +173,7 @@ The engine must rank suggestions using a transparent score composed from:
 
 ### FR-005 API
 
-The service must expose an autocomplete endpoint:
+The service must expose the internal debug autocomplete endpoint:
 
 ```http
 GET /api/suggest?q=<prefix>&lat=<optional>&lng=<optional>&city=<optional>&userId=<optional>&limit=<optional>
@@ -208,6 +208,25 @@ Response shape:
 
 Internal display strings should support Vietnamese accents. ASCII-only forms in
 examples are acceptable only when documenting normalized values.
+
+The service should also expose TASCO Maps hackathon-compatible facade routes
+from the supplied API documentation:
+
+- `GET /v1/autocomplete`, alias `/autocomplete`
+- `GET /v1/search`, aliases `/search` and `/v1/geocode-search`
+- `GET /v1/poi/{id}`, alias `/poi/{id}`
+- `GET /v1/reverse-geocoding`, aliases `/reverse-geocoding` and `/v1/reverse`
+- `GET /v1/nearby-search`, alias `/nearby-search`
+- `GET /v1/geocoding`, alias `/geocoding`
+- `POST /v1/route`, alias `/route`
+- `GET /health`
+
+The facade should return TASCO `PlaceResult` style DTOs with stable IDs,
+labels, categories, optional coordinates, scores, and source. When
+`TASCO_API_BASE_URL` or equivalent configuration is present, the facade may call
+the live TASCO-compatible upstream after local query understanding. If the live
+upstream is unavailable or empty, it must fall back to local deterministic
+suggestions.
 
 ### FR-006 Demo UI
 
@@ -660,6 +679,41 @@ Acceptance criteria:
 - The docs state that this is a tuning scaffold, not a production-trained
   ranker.
 
+### Phase 8: TASCO Maps API Integration
+
+Goal: use the official TASCO hackathon API contract as the service boundary so
+the autocomplete intelligence can sit in front of real map data instead of only
+synthetic CSVs.
+
+#### US-026: TASCO Maps API Facade
+
+As an integrator, I want Tasco Whisperer to expose the full TASCO-compatible
+hackathon API surface while still using the local engine as a stable fallback.
+
+Acceptance criteria:
+
+- `GET /v1/autocomplete` and `/autocomplete` return `suggestions` in
+  TASCO `PlaceResult` shape.
+- `GET /v1/search`, `/search`, and `/v1/geocode-search` return `results` in
+  TASCO `PlaceResult` shape.
+- `GET /v1/poi/{id}` and `/poi/{id}` return selected POI details.
+- `GET /v1/reverse-geocoding`, `/reverse-geocoding`, and `/v1/reverse` return
+  nearest place/address results.
+- `GET /v1/nearby-search` and `/nearby-search` return nearby places around a
+  coordinate.
+- `GET /v1/geocoding` and `/geocoding` resolve address text to place results.
+- `POST /v1/route` and `/route` return a route DTO with summary, geometry, and
+  maneuvers.
+- `GET /health` returns a simple success response.
+- Query understanding runs before live upstream calls, so compact forms such as
+  `caphe` can be sent upstream as expanded Vietnamese query text.
+- Live upstream configuration supports base URL, bearer token, API key, locale,
+  and timezone without hardcoding credentials.
+- If the live upstream is missing, unavailable, or returns no valid data, the
+  facade falls back to local deterministic data.
+- Tests cover local fallback, live-client use, validation errors, and DTO
+  mapping.
+
 ## 9. Suggested Architecture
 
 ```text
@@ -680,6 +734,16 @@ Demo UI / API Client
     -> Failure Analysis
     -> Explanation Generation
     -> Offline Ranking Tuning
+  -> TASCO Maps Facade
+    -> /v1/autocomplete
+    -> /v1/search
+    -> /v1/poi/{id}
+    -> /v1/reverse-geocoding
+    -> /v1/nearby-search
+    -> /v1/geocoding
+    -> /v1/route
+    -> optional live upstream client
+    -> local fallback presenter
 ```
 
 Recommended implementation shape when code begins:
