@@ -208,7 +208,17 @@ h1 {
   margin-top: 10px;
 }
 
-.feedback-card button {
+.api-card {
+  margin-top: 10px;
+  border: 1px solid rgba(24, 132, 81, 0.18);
+}
+
+.location-card {
+  margin-top: 10px;
+}
+
+.feedback-card button,
+.location-card button {
   margin-left: auto;
   border: 1px solid rgba(24, 132, 81, 0.24);
   border-radius: 8px;
@@ -216,6 +226,13 @@ h1 {
   background: #ffffff;
   color: var(--green-dark);
   font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.location-card button:disabled {
+  cursor: wait;
+  opacity: 0.7;
 }
 
 .search-panel {
@@ -581,6 +598,52 @@ h1 {
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, var(--green), var(--amber));
+}
+
+.api-coverage-list {
+  display: grid;
+  gap: 8px;
+}
+
+.api-endpoint {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) minmax(72px, auto);
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.api-endpoint span {
+  justify-self: start;
+  border-radius: 999px;
+  padding: 3px 8px;
+  background: #f7e7e7;
+  color: #9f3939;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.api-endpoint.is-ok span {
+  background: #e9f7ef;
+  color: var(--green-dark);
+}
+
+.api-endpoint strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.api-endpoint small {
+  color: var(--muted);
+  font-size: 12px;
+  text-align: right;
 }
 
 @media (max-width: 1120px) {

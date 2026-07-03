@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Activity,
   ArrowUpRight,
@@ -14,7 +14,8 @@ import {
 } from 'lucide-react';
 import { browserDataset } from './lib/browserDataset';
 import { evaluateDataset } from './lib/evaluate';
-import { suggest } from './lib/engine';
+import { fetchFacadeCoverage, type FacadeEndpointStatus } from './lib/frontendFacadeCoverage';
+import { fetchFrontendSuggest, localFrontendSuggest, type FrontendSuggestResponse } from './lib/frontendSuggest';
 import type { BehaviorEvent, QueryEntity, Suggestion } from './lib/types';
 
 const demoQueries = [
@@ -43,27 +44,79 @@ const profileOptions = [
 
 const BEHAVIOR_STORAGE_KEY = 'tasco-whisperer.behavior-events';
 
+type LocationStatus = 'idle' | 'requesting' | 'granted' | 'denied' | 'unsupported' | 'error';
+
+interface UserLocation {
+  lat: number;
+  lon: number;
+  accuracyMeters?: number;
+}
+
 function App() {
   const [query, setQuery] = useState('cafe');
   const [city, setCity] = useState('');
   const [userId, setUserId] = useState('');
   const [debug, setDebug] = useState(true);
   const [behaviorEvents, setBehaviorEvents] = useState<BehaviorEvent[]>(readBehaviorEvents);
+  const [response, setResponse] = useState<FrontendSuggestResponse>(() => localFrontendSuggest({ q: 'cafe', limit: 8 }));
+  const [facadeCoverage, setFacadeCoverage] = useState<FacadeEndpointStatus[]>([]);
+  const [location, setLocation] = useState<UserLocation | undefined>();
+  const [locationStatus, setLocationStatus] = useState<LocationStatus>('idle');
 
-  const response = useMemo(
-    () =>
-      suggest(browserDataset, {
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetchFrontendSuggest(
+      {
         q: query,
         city: city || undefined,
         userId: userId || undefined,
+        lat: location?.lat,
+        lon: location?.lon,
         behaviorEvents,
         limit: 8,
-      }),
-    [behaviorEvents, city, query, userId],
-  );
+      },
+      { signal: controller.signal },
+    )
+      .then((nextResponse) => setResponse(nextResponse))
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          return;
+        }
+        setResponse(
+          localFrontendSuggest(
+            {
+              q: query,
+              city: city || undefined,
+              userId: userId || undefined,
+              lat: location?.lat,
+              lon: location?.lon,
+              behaviorEvents,
+              limit: 8,
+            },
+            error instanceof Error ? error.message : 'TASCO facade request failed',
+          ),
+        );
+      });
+    return () => controller.abort();
+  }, [behaviorEvents, city, location, query, userId]);
+
+  useEffect(() => {
+    let active = true;
+    void fetchFacadeCoverage(location).then((coverage) => {
+      if (active) {
+        setFacadeCoverage(coverage);
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, [location]);
+
   const evaluation = useMemo(() => evaluateDataset(browserDataset), []);
   const selected = response.suggestions[0];
   const activeBehaviorCount = userId ? behaviorEvents.filter((event) => event.userId === userId).length : 0;
+  const healthyApiCount = facadeCoverage.filter((endpoint) => endpoint.ok).length;
+  const locationLabel = location ? `${location.lat.toFixed(5)}, ${location.lon.toFixed(5)}` : locationStatusLabel(locationStatus);
 
   function recordSelection(suggestion: Suggestion) {
     const learnerId = userId || 'local-demo';
@@ -91,6 +144,33 @@ function App() {
     persistBehaviorEvents(nextEvents);
   }
 
+  function requestUserLocation() {
+    if (!navigator.geolocation) {
+      setLocationStatus('unsupported');
+      return;
+    }
+    setLocationStatus('requesting');
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation({
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+          accuracyMeters: Math.round(position.coords.accuracy),
+        });
+        setLocationStatus('granted');
+      },
+      (error) => {
+        setLocation(undefined);
+        setLocationStatus(error.code === error.PERMISSION_DENIED ? 'denied' : 'error');
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 60_000,
+        timeout: 10_000,
+      },
+    );
+  }
+
   return (
     <main className="app-shell">
       <header className="topbar">
@@ -110,7 +190,7 @@ function App() {
           </button>
           <div className="status-pill">
             <span />
-            Local engine
+            {response.transport === 'api' ? 'TASCO facade' : 'Browser fallback'}
           </div>
         </div>
       </header>
@@ -151,6 +231,23 @@ function App() {
                 Clear
               </button>
             ) : null}
+          </div>
+          <div className="dataset-card api-card">
+            <Activity size={17} />
+            <div>
+              <strong>{healthyApiCount}/{facadeCoverage.length || 8} TASCO APIs</strong>
+              <span>{facadeCoverage.length ? 'frontend facade checks passed' : 'checking facade endpoints'}</span>
+            </div>
+          </div>
+          <div className="dataset-card location-card">
+            <MapPin size={17} />
+            <div>
+              <strong>{locationStatus === 'granted' ? 'Location active' : 'Location optional'}</strong>
+              <span>{locationLabel}</span>
+            </div>
+            <button type="button" disabled={locationStatus === 'requesting'} onClick={requestUserLocation}>
+              {locationStatus === 'requesting' ? 'Asking' : 'Use'}
+            </button>
           </div>
         </aside>
 
@@ -218,7 +315,7 @@ function App() {
               icon={<Clock3 size={18} />}
               label="Latency"
               value={`${response.latencyMs} ms`}
-              sub={response.diagnostics.agentic.triggered ? 'validated rewrite path' : 'local deterministic path'}
+              sub={response.transport === 'api' ? `TASCO ${response.facadeSource}` : response.transportReason}
             />
             <Metric icon={<BarChart3 size={18} />} label="Top-3 recall" value={`${Math.round(evaluation.summary.top3Recall * 100)}%`} sub="public evaluation" />
             <Metric icon={<Tags size={18} />} label="Intent accuracy" value={`${Math.round(evaluation.summary.intentAccuracy * 100)}%`} sub="public labels" />
@@ -243,9 +340,15 @@ function App() {
                 <dd>{response.diagnostics.expansions.length ? response.diagnostics.expansions.join(', ') : 'none'}</dd>
               </div>
               <div>
+                <dt>Location context</dt>
+                <dd>{location ? `${locationLabel}${location.accuracyMeters ? `, ±${location.accuracyMeters}m` : ''}` : locationLabel}</dd>
+              </div>
+              <div>
                 <dt>Agentic correction</dt>
                 <dd>
-                  {response.diagnostics.agentic.triggered
+                  {response.transport === 'api'
+                    ? response.transportReason
+                    : response.diagnostics.agentic.triggered
                     ? `${response.diagnostics.agentic.source ?? response.diagnostics.agentic.provider}: ${
                         response.diagnostics.agentic.appliedRewrite ?? response.diagnostics.agentic.reason
                       }`
@@ -287,6 +390,20 @@ function App() {
               </div>
             </section>
           ) : null}
+
+          <section className="analysis-section">
+            <div className="panel-heading">
+              <Activity size={18} />
+              <span>TASCO APIs</span>
+            </div>
+            <div className="api-coverage-list">
+              {facadeCoverage.length ? (
+                facadeCoverage.map((endpoint) => <ApiEndpointRow endpoint={endpoint} key={endpoint.id} />)
+              ) : (
+                <span className="empty-chip">Checking endpoints</span>
+              )}
+            </div>
+          </section>
         </aside>
       </section>
     </main>
@@ -328,6 +445,24 @@ function isBehaviorEvent(value: unknown): value is BehaviorEvent {
     typeof event.selectedType === 'string' &&
     typeof event.occurredAt === 'string'
   );
+}
+
+function locationStatusLabel(status: LocationStatus): string {
+  switch (status) {
+    case 'requesting':
+      return 'asking browser permission';
+    case 'granted':
+      return 'using current browser location';
+    case 'denied':
+      return 'permission denied';
+    case 'unsupported':
+      return 'browser location unavailable';
+    case 'error':
+      return 'location lookup failed';
+    case 'idle':
+    default:
+      return 'not requested';
+  }
 }
 
 function EntityChip({ entity }: { entity: QueryEntity }) {
@@ -389,6 +524,16 @@ function Metric({ icon, label, value, sub }: { icon: React.ReactNode; label: str
       <span>{label}</span>
       <strong>{value}</strong>
       <small>{sub}</small>
+    </div>
+  );
+}
+
+function ApiEndpointRow({ endpoint }: { endpoint: FacadeEndpointStatus }) {
+  return (
+    <div className={endpoint.ok ? 'api-endpoint is-ok' : 'api-endpoint'}>
+      <span>{endpoint.ok ? 'up' : 'down'}</span>
+      <strong>{endpoint.label}</strong>
+      <small>{endpoint.summary}</small>
     </div>
   );
 }
