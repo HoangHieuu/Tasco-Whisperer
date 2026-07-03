@@ -289,6 +289,14 @@ export function shouldTriggerAgenticCorrection(context: AgenticTriggerContext): 
   if (isCoordinateLike(normalized)) {
     return false;
   }
+  if (
+    context.candidateCount > 0 &&
+    context.understanding.expansions.some(
+      (expansion) => expansion.startsWith('syllable-segmentation:') || expansion.startsWith('telex-vni-decoder:'),
+    )
+  ) {
+    return false;
+  }
   if (context.candidateCount === 0) {
     return true;
   }
