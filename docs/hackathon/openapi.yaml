@@ -1,0 +1,537 @@
+openapi: 3.0.3
+info:
+  title: Tasco Whisperer Hackathon Facade API
+  version: 0.1.0
+  description: TASCO Maps-compatible autocomplete, search, POI, geocoding, nearby, and route facade.
+servers:
+  - url: http://localhost:8787
+    description: Local mock server
+  - url: https://hackathon.example.com/v1
+    description: Deployable hackathon facade
+security:
+  - bearerAuth: []
+  - apiKeyAuth: []
+  - {}
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: Server is healthy.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+  /search:
+    get:
+      summary: Search places, addresses, roads, categories, or coordinates.
+      parameters:
+        - $ref: "#/components/parameters/q"
+        - $ref: "#/components/parameters/lat"
+        - $ref: "#/components/parameters/lon"
+        - $ref: "#/components/parameters/radiusMeters"
+        - $ref: "#/components/parameters/bbox"
+        - $ref: "#/components/parameters/category"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/lang"
+        - $ref: "#/components/parameters/mockError"
+      responses:
+        "200":
+          description: Search results.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+        default:
+          $ref: "#/components/responses/Error"
+  /v1/search:
+    get:
+      summary: Versioned search endpoint.
+      parameters:
+        - $ref: "#/components/parameters/q"
+        - $ref: "#/components/parameters/lat"
+        - $ref: "#/components/parameters/lon"
+        - $ref: "#/components/parameters/radiusMeters"
+        - $ref: "#/components/parameters/bbox"
+        - $ref: "#/components/parameters/category"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/lang"
+        - $ref: "#/components/parameters/mockError"
+      responses:
+        "200":
+          description: Search results.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+        default:
+          $ref: "#/components/responses/Error"
+  /autocomplete:
+    get:
+      summary: Low-latency autocomplete suggestions.
+      parameters:
+        - $ref: "#/components/parameters/q"
+        - $ref: "#/components/parameters/lat"
+        - $ref: "#/components/parameters/lon"
+        - $ref: "#/components/parameters/limit"
+        - name: sessionId
+          in: query
+          schema:
+            type: string
+        - $ref: "#/components/parameters/lang"
+        - $ref: "#/components/parameters/mockError"
+      responses:
+        "200":
+          description: Autocomplete suggestions.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutocompleteResponse"
+        default:
+          $ref: "#/components/responses/Error"
+  /v1/autocomplete:
+    get:
+      summary: Versioned autocomplete endpoint.
+      parameters:
+        - $ref: "#/components/parameters/q"
+        - $ref: "#/components/parameters/lat"
+        - $ref: "#/components/parameters/lon"
+        - $ref: "#/components/parameters/limit"
+        - name: sessionId
+          in: query
+          schema:
+            type: string
+        - $ref: "#/components/parameters/lang"
+        - $ref: "#/components/parameters/mockError"
+      responses:
+        "200":
+          description: Autocomplete suggestions.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutocompleteResponse"
+        default:
+          $ref: "#/components/responses/Error"
+  /v1/poi/{id}:
+    get:
+      summary: POI detail and enrichment.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: include
+          in: query
+          schema:
+            type: string
+            example: reviews,photos,hours,ai_summary
+        - $ref: "#/components/parameters/lang"
+        - $ref: "#/components/parameters/mockError"
+      responses:
+        "200":
+          description: POI detail.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PoiResponse"
+        default:
+          $ref: "#/components/responses/Error"
+  /v1/reverse-geocoding:
+    get:
+      summary: Reverse geocode coordinates to places.
+      parameters:
+        - $ref: "#/components/parameters/latRequired"
+        - $ref: "#/components/parameters/lonRequired"
+        - $ref: "#/components/parameters/radiusMeters"
+        - $ref: "#/components/parameters/lang"
+        - $ref: "#/components/parameters/mockError"
+      responses:
+        "200":
+          description: Reverse geocoding results.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlacesResponse"
+        default:
+          $ref: "#/components/responses/Error"
+  /v1/nearby-search:
+    get:
+      summary: Nearby search around a point.
+      parameters:
+        - $ref: "#/components/parameters/latRequired"
+        - $ref: "#/components/parameters/lonRequired"
+        - $ref: "#/components/parameters/radiusMeters"
+        - $ref: "#/components/parameters/category"
+        - name: openNow
+          in: query
+          schema:
+            type: boolean
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/lang"
+        - $ref: "#/components/parameters/mockError"
+      responses:
+        "200":
+          description: Nearby places.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlacesResponse"
+        default:
+          $ref: "#/components/responses/Error"
+  /v1/geocoding:
+    get:
+      summary: Geocode address text.
+      parameters:
+        - name: address
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: city
+          in: query
+          schema:
+            type: string
+        - name: district
+          in: query
+          schema:
+            type: string
+        - $ref: "#/components/parameters/lat"
+        - $ref: "#/components/parameters/lon"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/lang"
+        - $ref: "#/components/parameters/mockError"
+      responses:
+        "200":
+          description: Geocoding results.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlacesResponse"
+        default:
+          $ref: "#/components/responses/Error"
+  /route:
+    post:
+      summary: Calculate a route.
+      parameters:
+        - $ref: "#/components/parameters/mockError"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RouteRequest"
+      responses:
+        "200":
+          description: Route result.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RouteResponse"
+        default:
+          $ref: "#/components/responses/Error"
+  /v1/route:
+    post:
+      summary: Versioned route endpoint.
+      parameters:
+        - $ref: "#/components/parameters/mockError"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RouteRequest"
+      responses:
+        "200":
+          description: Route result.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RouteResponse"
+        default:
+          $ref: "#/components/responses/Error"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  parameters:
+    q:
+      name: q
+      in: query
+      required: true
+      schema:
+        type: string
+    lat:
+      name: lat
+      in: query
+      schema:
+        type: number
+    lon:
+      name: lon
+      in: query
+      schema:
+        type: number
+    latRequired:
+      name: lat
+      in: query
+      required: true
+      schema:
+        type: number
+    lonRequired:
+      name: lon
+      in: query
+      required: true
+      schema:
+        type: number
+    radiusMeters:
+      name: radiusMeters
+      in: query
+      schema:
+        type: integer
+    bbox:
+      name: bbox
+      in: query
+      schema:
+        type: string
+        example: 105.7,21.0,105.9,21.1
+    category:
+      name: category
+      in: query
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+    lang:
+      name: lang
+      in: query
+      schema:
+        type: string
+        default: vi
+    mockError:
+      name: mockError
+      in: query
+      schema:
+        type: string
+        enum: [invalid_request, unauthorized, forbidden, not_found, timeout, rate_limited, internal_error, service_unavailable]
+  responses:
+    Error:
+      description: Error response.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+  schemas:
+    Coordinates:
+      type: object
+      required: [lat, lon]
+      properties:
+        lat:
+          type: number
+        lon:
+          type: number
+    PlaceResult:
+      type: object
+      required: [id, type, name, label, source]
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        name:
+          type: string
+        label:
+          type: string
+        address:
+          type: string
+        category:
+          type: string
+        coordinates:
+          $ref: "#/components/schemas/Coordinates"
+        distanceMeters:
+          type: number
+        score:
+          type: number
+        source:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+    Review:
+      type: object
+      properties:
+        id:
+          type: string
+        author:
+          type: string
+        rating:
+          type: number
+        text:
+          type: string
+        createdAt:
+          type: string
+        source:
+          type: string
+    Photo:
+      type: object
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+        caption:
+          type: string
+        width:
+          type: integer
+        height:
+          type: integer
+        source:
+          type: string
+    SearchResponse:
+      type: object
+      properties:
+        query:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlaceResult"
+        meta:
+          type: object
+    AutocompleteResponse:
+      type: object
+      properties:
+        query:
+          type: string
+        suggestions:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlaceResult"
+        meta:
+          type: object
+    PoiResponse:
+      type: object
+      properties:
+        poi:
+          allOf:
+            - $ref: "#/components/schemas/PlaceResult"
+            - type: object
+              properties:
+                rating:
+                  type: number
+                openingHours:
+                  type: string
+                aiSummary:
+                  type: string
+                reviews:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Review"
+                photos:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Photo"
+        meta:
+          type: object
+    PlacesResponse:
+      type: object
+      properties:
+        query:
+          type: string
+        center:
+          $ref: "#/components/schemas/Coordinates"
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlaceResult"
+        meta:
+          type: object
+    RouteRequest:
+      type: object
+      required: [locations]
+      properties:
+        locations:
+          type: array
+          minItems: 2
+          items:
+            $ref: "#/components/schemas/Coordinates"
+        mode:
+          type: string
+          enum: [auto, pedestrian, bicycle]
+        alternates:
+          type: integer
+        language:
+          type: string
+        units:
+          type: string
+        avoidTolls:
+          type: boolean
+        avoidHighways:
+          type: boolean
+    RouteResponse:
+      type: object
+      properties:
+        routes:
+          type: array
+          items:
+            type: object
+            properties:
+              routeId:
+                type: string
+              sourceIndex:
+                type: integer
+              summary:
+                type: object
+                properties:
+                  distanceMeters:
+                    type: integer
+                  durationSeconds:
+                    type: integer
+              geometry:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [LineString]
+                  coordinates:
+                    type: array
+                    items:
+                      type: array
+                      items:
+                        type: number
+              maneuvers:
+                type: array
+                items:
+                  type: object
+        meta:
+          type: object
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              oneOf:
+                - type: object
+                - type: array
+                  items:
+                    type: string
+        requestId:
+          type: string
