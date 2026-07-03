@@ -172,6 +172,8 @@ export interface SuggestRequest {
   q: string;
   city?: string;
   userId?: string;
+  lat?: number;
+  lon?: number;
   limit?: number;
   rankingWeights?: Partial<RankingWeights>;
   behaviorEvents?: BehaviorEvent[];
