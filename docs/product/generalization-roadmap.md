@@ -34,6 +34,13 @@ Every tier must degrade cleanly to the tier below it.
 - Telex/VNI-style cleanup guarded by the dataset-derived lexicon.
 - Stronger multi-token fallback matching to reduce accidental matches.
 - Local embedding index and semantic retrieval source in `src/lib/semantic.ts`.
+- Data-derived category/attribute/location phrase generation in
+  `src/lib/generatedPatterns.ts`, used before legacy hand-authored semantic
+  templates.
+- Robustness evaluation from metamorphic variants of the provided public labels
+  in `src/lib/robustness.ts` and `npm run eval:robust`.
+- Training-ready learning-to-rank rows plus a dependency-free linear baseline
+  in `src/lib/learningToRank.ts` and `npm run rank:train`.
 - Persistent alias-memory record, promotion, parsing, and CLI helpers in
   `src/lib/aliasMemory.ts` and `scripts/aliasMemory.ts`.
 - Optional hosted/local rewrite-provider adapter in
@@ -93,6 +100,21 @@ optional ranking weights through `SuggestRequest.rankingWeights`, and
 `npm run rank:tune` compares named presets against the public evaluation suite.
 With only 60 public cases, this is a reproducible tuning assistant, not a
 production ML claim.
+
+`npm run rank:train` now exports supervised rows from the public labels and
+fits a regularized linear learning-to-rank baseline. This is the correct
+intermediate step before a LambdaMART/GBDT ranker: it proves feature extraction,
+label mapping, held-out evaluation, and reproducible report output while being
+honest that the current label count is too small for production ML claims.
+
+### Robustness Evaluation
+
+`npm run eval:robust` creates supplemental metamorphic cases from the provided
+CSV labels only. It tests accentless, compact, uppercase, spacing,
+truncated-prefix, and abbreviation variants so a high score on the 60 public
+rows does not hide brittle query handling. These cases are not a replacement
+for a larger judged corpus; they are a regression guard until more real labels
+exist.
 
 ## Future Production Upgrades
 

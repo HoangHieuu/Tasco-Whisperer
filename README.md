@@ -62,7 +62,8 @@ and update story/proof records as work moves from planned to implemented.
   autocomplete engine, Vietnamese segmentation/Telex cleanup, semantic
   candidate retrieval, persistent alias-memory utilities, validated rewrite
   correction path, behavior-feedback personalization, configurable ranking
-  weights, and local API service.
+  weights, data-derived generated query patterns, robustness evaluation,
+  learning-to-rank feature export, and local API service.
 
 ## Setup
 
@@ -196,7 +197,9 @@ See `integrations/flutter/README.md` for the copy/import snippet and
 ```bash
 npm run test
 npm run eval
+npm run eval:robust
 npm run rank:tune
+npm run rank:train
 npm run tune:agentic
 npm run alias:memory -- --rawQuery cf --rewrite "cà phê" --intent "Category Search"
 npm run api:smoke
@@ -207,12 +210,25 @@ npm run check
 Current public evaluation baseline:
 
 - 60 cases run.
-- Top-1 accuracy: 90%.
+- Top-1 accuracy: 93.3%.
 - Top-3 recall: 100%.
 - Top-5 recall: 100%.
-- Intent accuracy: 66.7%.
-- MRR: 0.933.
-- P95 latency: 26 ms.
+- Intent accuracy: 68.3%.
+- MRR: 0.964.
+- P95 latency: 33 ms.
+
+Supplemental robustness baseline:
+
+- 192 generated cases from the provided CSV labels only.
+- Top-3 recall: 97.4%.
+- Top-5 recall: 97.4%.
+- P95 latency: 72 ms.
+
+Learning-to-rank baseline:
+
+- 501 supervised rows exported from public labels and score factors.
+- Held-out validation top-3 recall: 100%.
+- Held-out validation NDCG@5: 0.866.
 
 This is a Phase 5 local demo baseline. It uses Vietnamese normalization,
 abbreviation expansion, algorithmic compact syllable segmentation, guarded
@@ -232,6 +248,12 @@ remains outside the per-keystroke path.
 `npm run rank:tune` compares named ranking-weight presets against the public
 evaluation suite and writes reports to `reports/ranking-tuning/latest.json` and
 `reports/ranking-tuning/latest.md`.
+`npm run eval:robust` writes supplemental metamorphic robustness reports to
+`reports/robustness/latest.json` and `reports/robustness/latest.md`.
+`npm run rank:train` writes a dependency-free linear learning-to-rank baseline
+to `reports/learning-to-rank/latest.json` and
+`reports/learning-to-rank/latest.md`; this is training-ready scaffolding, not a
+production ML-ranker claim while labels remain small.
 `npm run tune:agentic` exports advisory weak-case tuning reports to
 `reports/agentic-tuning/latest.json` and `reports/agentic-tuning/latest.md`;
 proposals require explicit developer acceptance before changing runtime

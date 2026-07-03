@@ -15,7 +15,7 @@ front. Create a detailed story file only when a slice enters implementation.
 | E04 API And Demo | US-011 to US-013 | Autocomplete API, T Maps-style demo UI, and iPhone Mirroring presentation script. | implemented |
 | E05 Agentic AI Layer | US-014 to US-016 | Optional agents for hard-case understanding, validated rewrite memory, failure analysis, tuning, and explanations. | in_progress |
 | E06 Submission | US-017 to US-018 | README, example gallery, deployment, and final smoke proof. | planned |
-| E07 Generalization | US-019 to US-025 | Move beyond fixture-heavy rules with Vietnamese segmentation, semantic retrieval, alias memory, embeddings, optional LLM provider, behavior feedback, and measured ranking tuning. | implemented |
+| E07 Generalization | US-019 to US-027 | Move beyond fixture-heavy rules with Vietnamese segmentation, semantic retrieval, generated pattern candidates, robustness evaluation, alias memory, embeddings, optional LLM provider, behavior feedback, and measured ranking/LTR tuning. | implemented |
 | E08 TASCO API Integration | US-026 | Expose the full TASCO Maps hackathon-compatible REST facade with optional live upstream data and local fallback. | implemented |
 
 ## Planned Stories
@@ -48,3 +48,4 @@ front. Create a detailed story file only when a slice enters implementation.
 | US-024 | Behavior feedback personalization | Phase 7 | normal | implemented: local selected-suggestion events boost future matching suggestions with explainable metadata. |
 | US-025 | Ranking weight tuning scaffold | Phase 7 | normal | implemented: optional ranking weights and `npm run rank:tune` preset comparison report. |
 | US-026 | TASCO Maps API facade | Phase 8 | normal | implemented: autocomplete, search, POI, reverse geocoding, nearby search, geocoding, route, health, live upstream client, and local fallback proof. |
+| US-027 | Core algorithm hardening | Phase 7 | normal | implemented: generated pattern candidates, metamorphic robustness report, and linear LTR baseline without outside datasets. |

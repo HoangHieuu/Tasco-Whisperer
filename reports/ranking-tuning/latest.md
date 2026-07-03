@@ -1,15 +1,15 @@
 # Ranking Tuning Report
 
-Generated: 2026-07-03T03:37:57.779Z
+Generated: 2026-07-03T16:12:40.430Z
 
-Best preset by top-3, top-1, MRR, intent, and latency tie-breakers: `semantic-diverse`.
+Best preset by top-3, top-1, MRR, intent, and latency tie-breakers: `lexical-intent-heavy`.
 
 | Preset | Top-1 | Top-3 | Top-5 | MRR | Intent | p95 ms | Notes |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| default-v1 | 90% | 100% | 100% | 0.933 | 66.7% | 36 | Current transparent scoring formula from SPEC.md. |
-| lexical-intent-heavy | 90% | 100% | 100% | 0.933 | 66.7% | 25 | Prioritizes prefix fit and predicted intent for short typeahead prefixes. |
-| semantic-diverse | 90% | 100% | 100% | 0.933 | 66.7% | 24 | Gives more room to semantic and embedding sources through source and diversity factors. |
-| popularity-quality | 83.3% | 98.3% | 100% | 0.895 | 66.7% | 25 | Favors popular queries and higher quality POIs for broad ambiguous inputs. |
+| default-v1 | 93.3% | 100% | 100% | 0.964 | 68.3% | 25 | Current transparent scoring formula from SPEC.md. |
+| lexical-intent-heavy | 93.3% | 100% | 100% | 0.964 | 68.3% | 24 | Prioritizes prefix fit and predicted intent for short typeahead prefixes. |
+| semantic-diverse | 90% | 100% | 100% | 0.947 | 68.3% | 24 | Gives more room to semantic and embedding sources through source and diversity factors. |
+| popularity-quality | 86.7% | 98.3% | 100% | 0.920 | 68.3% | 24 | Favors popular queries and higher quality POIs for broad ambiguous inputs. |
 
 ## Weights
 
