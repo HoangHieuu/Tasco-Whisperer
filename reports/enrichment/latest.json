@@ -1,0 +1,162 @@
+{
+  "generatedAt": "2026-07-03T16:45:45.550Z",
+  "dataset": {
+    "pois": 62,
+    "note": "Uses only provided hackathon CSV fields; no outside POI or enrichment corpus is imported."
+  },
+  "coverage": {
+    "poiRows": 62,
+    "vietnameseSummaryRows": 62,
+    "openingHoursRows": 62,
+    "minAttributeCount": 4,
+    "averageAttributeCount": 6.194,
+    "minSummaryConfidence": 0.78,
+    "minOpeningHoursConfidence": 0.48,
+    "sourceCounts": {
+      "local-derived": 62,
+      "provided-dataset": 62
+    }
+  },
+  "weakestRows": [
+    {
+      "poiId": "POI017",
+      "label": "Lotteria Nguyễn Văn Linh",
+      "fieldCount": 12,
+      "attributeCount": 4,
+      "hasVietnameseSummary": true,
+      "hasOpeningHours": true,
+      "summaryConfidence": 0.78,
+      "openingHoursConfidence": 0.58,
+      "sources": [
+        "local-derived",
+        "provided-dataset"
+      ]
+    },
+    {
+      "poiId": "POI049",
+      "label": "Highlands Coffee Quán cà phê Lê Lợi Nha Trang",
+      "fieldCount": 12,
+      "attributeCount": 4,
+      "hasVietnameseSummary": true,
+      "hasOpeningHours": true,
+      "summaryConfidence": 0.78,
+      "openingHoursConfidence": 0.58,
+      "sources": [
+        "local-derived",
+        "provided-dataset"
+      ]
+    },
+    {
+      "poiId": "POI011",
+      "label": "Cây xăng Petrolimex Nguyễn Trãi",
+      "fieldCount": 12,
+      "attributeCount": 5,
+      "hasVietnameseSummary": true,
+      "hasOpeningHours": true,
+      "summaryConfidence": 0.78,
+      "openingHoursConfidence": 0.68,
+      "sources": [
+        "local-derived",
+        "provided-dataset"
+      ]
+    },
+    {
+      "poiId": "POI015",
+      "label": "Bến xe Miền Đông mới",
+      "fieldCount": 11,
+      "attributeCount": 5,
+      "hasVietnameseSummary": true,
+      "hasOpeningHours": true,
+      "summaryConfidence": 0.78,
+      "openingHoursConfidence": 0.6,
+      "sources": [
+        "local-derived",
+        "provided-dataset"
+      ]
+    },
+    {
+      "poiId": "POI021",
+      "label": "Lotte Mart Quán cà phê Lê Lợi Hà Nội",
+      "fieldCount": 12,
+      "attributeCount": 5,
+      "hasVietnameseSummary": true,
+      "hasOpeningHours": true,
+      "summaryConfidence": 0.78,
+      "openingHoursConfidence": 0.58,
+      "sources": [
+        "local-derived",
+        "provided-dataset"
+      ]
+    },
+    {
+      "poiId": "POI024",
+      "label": "Vietcombank ATM Trần Duy Hưng Hà Nội",
+      "fieldCount": 12,
+      "attributeCount": 5,
+      "hasVietnameseSummary": true,
+      "hasOpeningHours": true,
+      "summaryConfidence": 0.78,
+      "openingHoursConfidence": 0.68,
+      "sources": [
+        "local-derived",
+        "provided-dataset"
+      ]
+    },
+    {
+      "poiId": "POI037",
+      "label": "Khách sạn Pasteur Đà Nẵng",
+      "fieldCount": 11,
+      "attributeCount": 5,
+      "hasVietnameseSummary": true,
+      "hasOpeningHours": true,
+      "summaryConfidence": 0.78,
+      "openingHoursConfidence": 0.68,
+      "sources": [
+        "local-derived",
+        "provided-dataset"
+      ]
+    },
+    {
+      "poiId": "POI058",
+      "label": "Khách sạn Võ Nguyên Giáp Đà Lạt",
+      "fieldCount": 11,
+      "attributeCount": 5,
+      "hasVietnameseSummary": true,
+      "hasOpeningHours": true,
+      "summaryConfidence": 0.78,
+      "openingHoursConfidence": 0.6,
+      "sources": [
+        "local-derived",
+        "provided-dataset"
+      ]
+    },
+    {
+      "poiId": "POI061",
+      "label": "CGV Trung tâm thương mại Nguyễn Huệ Đà Lạt",
+      "fieldCount": 12,
+      "attributeCount": 5,
+      "hasVietnameseSummary": true,
+      "hasOpeningHours": true,
+      "summaryConfidence": 0.78,
+      "openingHoursConfidence": 0.48,
+      "sources": [
+        "local-derived",
+        "provided-dataset"
+      ]
+    },
+    {
+      "poiId": "POI062",
+      "label": "BIDV Cây xăng Pasteur Đà Lạt",
+      "fieldCount": 12,
+      "attributeCount": 5,
+      "hasVietnameseSummary": true,
+      "hasOpeningHours": true,
+      "summaryConfidence": 0.78,
+      "openingHoursConfidence": 0.68,
+      "sources": [
+        "local-derived",
+        "provided-dataset"
+      ]
+    }
+  ]
+}
