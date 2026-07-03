@@ -357,6 +357,8 @@ components:
           type: string
         category:
           type: string
+        brand:
+          type: string
         coordinates:
           $ref: "#/components/schemas/Coordinates"
         distanceMeters:
@@ -366,6 +368,91 @@ components:
         source:
           type: string
         tags:
+          type: array
+          items:
+            type: string
+        rating:
+          type: number
+        reviewCount:
+          type: number
+        popularityScore:
+          type: number
+        enrichment:
+          $ref: "#/components/schemas/PlaceEnrichment"
+    FieldProvenance:
+      type: object
+      required: [source, confidence, evidence, generated, verifiedRealWorld]
+      properties:
+        source:
+          type: string
+          enum: [provided-dataset, local-derived, local-mock, live-upstream, reconciled]
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        evidence:
+          type: array
+          items:
+            type: string
+        generated:
+          type: boolean
+        verifiedRealWorld:
+          type: boolean
+        note:
+          type: string
+    EnrichedAttribute:
+      type: object
+      required: [key, label, source, confidence, evidence]
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        value:
+          oneOf:
+            - type: string
+            - type: number
+            - type: boolean
+        source:
+          type: string
+        confidence:
+          type: number
+        evidence:
+          type: array
+          items:
+            type: string
+    FieldReconciliation:
+      type: object
+      required: [field, localValue, liveValue, winner, confidence, reason]
+      properties:
+        field:
+          type: string
+        localValue: {}
+        liveValue: {}
+        winner:
+          type: string
+          enum: [local-fallback, live]
+        confidence:
+          type: number
+        reason:
+          type: string
+    PlaceEnrichment:
+      type: object
+      required: [fields, attributes, reconciliations, summaryEvidence]
+      properties:
+        fields:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/FieldProvenance"
+        attributes:
+          type: array
+          items:
+            $ref: "#/components/schemas/EnrichedAttribute"
+        reconciliations:
+          type: array
+          items:
+            $ref: "#/components/schemas/FieldReconciliation"
+        summaryEvidence:
           type: array
           items:
             type: string
@@ -384,6 +471,10 @@ components:
           type: string
         source:
           type: string
+        confidence:
+          type: number
+        provenance:
+          $ref: "#/components/schemas/FieldProvenance"
     Photo:
       type: object
       properties:
@@ -399,6 +490,10 @@ components:
           type: integer
         source:
           type: string
+        confidence:
+          type: number
+        provenance:
+          $ref: "#/components/schemas/FieldProvenance"
     SearchResponse:
       type: object
       properties:

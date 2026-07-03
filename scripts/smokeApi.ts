@@ -78,6 +78,12 @@ try {
   if (!poiBody.poi.reviews?.length || !poiBody.poi.photos?.length || !poiBody.poi.openingHours) {
     throw new Error('Expected enriched POI response to include reviews, photos, and openingHours');
   }
+  if (poiBody.poi.enrichment?.fields.aiSummary?.source !== 'local-derived') {
+    throw new Error('Expected POI aiSummary enrichment provenance to be local-derived');
+  }
+  if (poiBody.poi.enrichment?.fields.reviews?.source !== 'local-mock') {
+    throw new Error('Expected POI review enrichment provenance to be local-mock');
+  }
 
   const reverseResponse = await fetch(`${baseUrl}/v1/reverse?point.lat=10.7759&point.lon=106.7031`);
   if (!reverseResponse.ok) {
@@ -157,6 +163,9 @@ try {
         poiLabel: poiBody.poi.label,
         poiEnrichment: {
           openingHours: poiBody.poi.openingHours,
+          summarySource: poiBody.poi.enrichment?.fields.aiSummary?.source,
+          reviewSource: poiBody.poi.enrichment?.fields.reviews?.source,
+          attributes: poiBody.poi.enrichment?.attributes.length ?? 0,
           reviews: poiBody.poi.reviews?.length ?? 0,
           photos: poiBody.poi.photos?.length ?? 0,
         },

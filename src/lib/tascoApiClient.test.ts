@@ -26,6 +26,28 @@ describe('createTascoApiClient', () => {
                 coordinates: { lat: 21.0166, lon: 105.7833 },
                 score: 0.98,
                 source: 'mock',
+                enrichment: {
+                  fields: {
+                    rating: {
+                      source: 'live-upstream',
+                      confidence: 0.9,
+                      evidence: ['rating'],
+                      generated: false,
+                      verifiedRealWorld: true,
+                    },
+                  },
+                  attributes: [
+                    {
+                      key: 'quality:high-rating',
+                      label: 'Đánh giá rất tốt',
+                      source: 'live-upstream',
+                      confidence: 0.9,
+                      evidence: ['rating=4.7'],
+                    },
+                  ],
+                  reconciliations: [],
+                  summaryEvidence: ['rating'],
+                },
               },
             ],
           }),
@@ -52,6 +74,9 @@ describe('createTascoApiClient', () => {
         id: 'poi:landmark-72',
         label: 'Landmark 72',
         coordinates: { lat: 21.0166, lon: 105.7833 },
+        enrichment: expect.objectContaining({
+          attributes: expect.arrayContaining([expect.objectContaining({ key: 'quality:high-rating' })]),
+        }),
       }),
     );
   });

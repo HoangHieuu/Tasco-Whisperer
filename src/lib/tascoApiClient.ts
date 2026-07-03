@@ -192,11 +192,16 @@ function toPlaceResult(value: unknown): PlaceResult | undefined {
     label,
     address: stringField(row.address),
     category: stringField(row.category),
+    brand: stringField(row.brand),
     coordinates,
     distanceMeters: numberField(row.distanceMeters),
     score: numberField(row.score),
     source: stringField(row.source) || 'tasco-api',
     tags: arrayOfStrings(row.tags),
+    rating: numberField(row.rating),
+    reviewCount: numberField(row.reviewCount),
+    popularityScore: numberField(row.popularityScore),
+    enrichment: enrichmentField(row.enrichment),
   };
 }
 
@@ -211,6 +216,8 @@ function toPoiResult(value: unknown): TascoPoiResponse['poi'] | undefined {
     rating: numberField(row.rating),
     openingHours: stringField(row.openingHours),
     aiSummary: stringField(row.aiSummary),
+    reviews: reviewList(row.reviews),
+    photos: photoList(row.photos),
   };
 }
 
@@ -320,4 +327,59 @@ function arrayOfStrings(value: unknown): string[] | undefined {
   }
   const strings = value.filter((item): item is string => typeof item === 'string' && item.trim().length > 0);
   return strings.length ? strings : undefined;
+}
+
+function enrichmentField(value: unknown): PlaceResult['enrichment'] {
+  const row = objectField(value);
+  if (!Object.keys(row).length || !row.fields || !row.attributes) {
+    return undefined;
+  }
+  return row as unknown as PlaceResult['enrichment'];
+}
+
+function reviewList(value: unknown): TascoPoiResponse['poi']['reviews'] {
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+  return value.map((item) => {
+    const row = objectField(item);
+    return {
+      id: stringField(row.id) ?? '',
+      author: stringField(row.author) ?? '',
+      rating: numberField(row.rating) ?? 0,
+      text: stringField(row.text) ?? '',
+      createdAt: stringField(row.createdAt) ?? '',
+      source: stringField(row.source) ?? 'tasco-api',
+      confidence: numberField(row.confidence),
+      provenance: fieldProvenance(row.provenance),
+    };
+  });
+}
+
+function photoList(value: unknown): TascoPoiResponse['poi']['photos'] {
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+  return value.map((item) => {
+    const row = objectField(item);
+    return {
+      id: stringField(row.id) ?? '',
+      url: stringField(row.url) ?? '',
+      caption: stringField(row.caption) ?? '',
+      width: Math.round(numberField(row.width) ?? 0),
+      height: Math.round(numberField(row.height) ?? 0),
+      source: stringField(row.source) ?? 'tasco-api',
+      confidence: numberField(row.confidence),
+      provenance: fieldProvenance(row.provenance),
+    };
+  });
+}
+
+function fieldProvenance(
+  value: unknown,
+): NonNullable<TascoPoiResponse['poi']['reviews']>[number]['provenance'] {
+  const row = objectField(value);
+  return Object.keys(row).length
+    ? row as unknown as NonNullable<TascoPoiResponse['poi']['reviews']>[number]['provenance']
+    : undefined;
 }

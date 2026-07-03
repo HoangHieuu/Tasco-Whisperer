@@ -1,6 +1,15 @@
 import { suggest } from './engine';
+import {
+  buildPlaceEnrichment,
+  deriveOpeningHours,
+  placeInputFromPoi,
+  provenance,
+  reconcilePlaceFields,
+  vietnameseSummaryForPlace,
+  type EnrichmentPlaceInput,
+} from './enrichment';
 import { normalizeText } from './normalize';
-import type { PoiRecord, Suggestion, TascoDataset } from './types';
+import type { FieldProvenance, PlaceEnrichment, PoiRecord, Suggestion, TascoDataset } from './types';
 
 export interface PlaceResult {
   id: string;
@@ -9,6 +18,7 @@ export interface PlaceResult {
   label: string;
   address?: string;
   category?: string;
+  brand?: string;
   coordinates?: {
     lat: number;
     lon: number;
@@ -17,6 +27,10 @@ export interface PlaceResult {
   score?: number;
   source: string;
   tags?: string[];
+  rating?: number;
+  reviewCount?: number;
+  popularityScore?: number;
+  enrichment?: PlaceEnrichment;
 }
 
 export interface TascoReview {
@@ -26,6 +40,8 @@ export interface TascoReview {
   text: string;
   createdAt: string;
   source: string;
+  confidence?: number;
+  provenance?: FieldProvenance;
 }
 
 export interface TascoPhoto {
@@ -35,6 +51,8 @@ export interface TascoPhoto {
   width: number;
   height: number;
   source: string;
+  confidence?: number;
+  provenance?: FieldProvenance;
 }
 
 export interface TascoAutocompleteResponse {
@@ -452,19 +470,26 @@ async function handlePoi(dataset: TascoDataset, url: URL, liveClient?: TascoLive
     return errorResult(400, 'invalid_request', 'id is required', { field: 'id' }, 'invalid request');
   }
   const livePoi = await safeLivePoi(liveClient, id, { lang, include });
-  const localPoi = poiToPlaceResult(findPoi(dataset, id));
+  const localRecord = findPoi(dataset, id);
+  const localPoi = poiToPlaceResult(localRecord);
   const poi = livePoi ?? localPoi;
   if (!poi) {
     return errorResult(404, 'not_found', 'POI was not found.', { id }, 'not found');
   }
+  const source = livePoi ? 'live' : 'local-fallback';
   return {
     status: 200,
     headers: JSON_HEADERS,
     body: {
-      poi: enrichPoiDetail(poi, include),
+      poi: enrichPoiDetail(poi, include, {
+        source,
+        localPoi,
+        localRecord,
+        livePoi,
+      }),
       meta: {
         lang,
-        source: livePoi ? 'live' : 'local-fallback',
+        source,
         upstreamUsed: Boolean(livePoi),
       },
     },
@@ -477,21 +502,76 @@ async function handlePoi(dataset: TascoDataset, url: URL, liveClient?: TascoLive
   };
 }
 
-function enrichPoiDetail(poi: TascoPoiResponse['poi'], include?: string): TascoPoiResponse['poi'] {
+function enrichPoiDetail(
+  poi: TascoPoiResponse['poi'],
+  include: string | undefined,
+  context: {
+    source: 'live' | 'local-fallback';
+    localPoi?: TascoPoiResponse['poi'];
+    localRecord?: PoiRecord;
+    livePoi?: TascoPoiResponse['poi'];
+  },
+): TascoPoiResponse['poi'] {
   const includeSet = parseInclude(include);
   const enriched: TascoPoiResponse['poi'] = { ...poi };
+  const placeInput = enrichmentInput(enriched, context.source === 'live' ? undefined : context.localRecord);
+  const localInput = context.localPoi ? enrichmentInput(context.localPoi, context.localRecord) : undefined;
+  const liveInput = context.livePoi ? enrichmentInput(context.livePoi, undefined) : undefined;
+  const source = context.source === 'live' ? 'live-upstream' : 'provided-dataset';
+  const enrichment = buildPlaceEnrichment(placeInput, source, reconcilePlaceFields(localInput, liveInput));
+
   if (includeSet.has('hours')) {
-    enriched.openingHours ??= localOpeningHours(enriched);
+    if (enriched.openingHours) {
+      enrichment.fields.openingHours ??= provenance(source, 0.82, ['openingHours supplied by source'], false, source === 'live-upstream');
+    } else {
+      const derived = deriveOpeningHours(placeInput);
+      enriched.openingHours = derived.value;
+      enrichment.fields.openingHours = derived.provenance;
+    }
   }
   if (includeSet.has('ai_summary')) {
-    enriched.aiSummary ??= summaryForPlace(enriched);
+    if (enriched.aiSummary) {
+      enrichment.fields.aiSummary ??= provenance(source, 0.8, ['aiSummary supplied by source'], false, source === 'live-upstream');
+    } else {
+      const summary = vietnameseSummaryForPlace(placeInput);
+      enriched.aiSummary = summary.value;
+      enrichment.fields.aiSummary = summary.provenance;
+    }
   }
   if (includeSet.has('reviews')) {
-    enriched.reviews ??= localReviews(enriched);
+    if (enriched.reviews?.length) {
+      enrichment.fields.reviews ??= provenance(source, 0.78, ['reviews supplied by source'], false, source === 'live-upstream');
+    } else {
+      enriched.reviews = localReviews(enriched);
+      enrichment.fields.reviews = provenance(
+        'local-mock',
+        0.28,
+        ['deterministic demo review fixtures'],
+        true,
+        false,
+        'Mock reviews are not real user reviews.',
+      );
+    }
   }
   if (includeSet.has('photos')) {
-    enriched.photos ??= localPhotos(enriched);
+    if (enriched.photos?.length) {
+      enrichment.fields.photos ??= provenance(source, 0.78, ['photos supplied by source'], false, source === 'live-upstream');
+    } else {
+      enriched.photos = localPhotos(enriched);
+      enrichment.fields.photos = provenance(
+        'local-mock',
+        0.24,
+        ['deterministic demo photo URLs'],
+        true,
+        false,
+        'Mock photo URLs are placeholders, not verified media.',
+      );
+    }
   }
+  enriched.enrichment = {
+    ...enrichment,
+    summaryEvidence: [...new Set(enrichment.summaryEvidence)],
+  };
   return enriched;
 }
 
@@ -716,10 +796,15 @@ function suggestionToPlaceResult(dataset: TascoDataset, suggestion: Suggestion):
     label: suggestion.text,
     address: suggestion.metadata.address,
     category,
+    brand: poi?.brand || suggestion.metadata.brand,
     coordinates: poi ? { lat: poi.latitude, lon: poi.longitude } : undefined,
     score: suggestion.score,
     source: suggestion.source,
     tags: poi?.tags,
+    rating: poi?.rating,
+    reviewCount: poi?.reviewCount,
+    popularityScore: poi?.popularityScore,
+    enrichment: poi ? buildPlaceEnrichment(placeInputFromPoi(poi), 'provided-dataset') : undefined,
   };
 }
 
@@ -847,6 +932,8 @@ function findPoi(dataset: TascoDataset, id: string): PoiRecord | undefined {
 
 function poiToPlaceResult(poi: PoiRecord | undefined, extras: { distanceMeters?: number } = {}): TascoPoiResponse['poi'] | undefined {
   if (!poi) return undefined;
+  const placeInput = placeInputFromPoi(poi);
+  const enrichment = buildPlaceEnrichment(placeInput, 'provided-dataset');
   return {
     id: `poi:${poi.poiId}`,
     type: 'poi',
@@ -854,13 +941,35 @@ function poiToPlaceResult(poi: PoiRecord | undefined, extras: { distanceMeters?:
     label: poi.poiName,
     address: poi.address,
     category: poi.category,
+    brand: poi.brand || undefined,
     coordinates: { lat: poi.latitude, lon: poi.longitude },
     distanceMeters: extras.distanceMeters,
     score: Math.round((poi.popularityScore / 100) * 1000) / 1000,
     source: 'local-fallback',
     tags: poi.tags,
     rating: poi.rating,
-    aiSummary: summaryForPlace({ label: poi.poiName, category: poi.category, address: poi.address }),
+    reviewCount: poi.reviewCount,
+    popularityScore: poi.popularityScore,
+    enrichment,
+  };
+}
+
+function enrichmentInput(place: PlaceResult, localRecord?: PoiRecord): EnrichmentPlaceInput {
+  const detail = place as PlaceResult & { openingHours?: string; aiSummary?: string };
+  return {
+    id: place.id,
+    name: place.name,
+    label: place.label || place.name,
+    address: place.address ?? localRecord?.address,
+    category: place.category ?? localRecord?.category,
+    brand: (place.brand ?? localRecord?.brand) || undefined,
+    coordinates: place.coordinates ?? (localRecord ? { lat: localRecord.latitude, lon: localRecord.longitude } : undefined),
+    rating: place.rating ?? localRecord?.rating,
+    reviewCount: place.reviewCount ?? localRecord?.reviewCount,
+    popularityScore: place.popularityScore ?? localRecord?.popularityScore,
+    tags: place.tags?.length ? place.tags : localRecord?.tags,
+    openingHours: detail.openingHours,
+    aiSummary: detail.aiSummary,
   };
 }
 
@@ -993,64 +1102,70 @@ function routeMetersPerSecond(mode: string): number {
   return 8.5;
 }
 
-function summaryForPlace(place: Pick<PlaceResult, 'label' | 'category' | 'address'>): string {
-  return `${place.label} is a ${place.category ?? 'place'}${place.address ? ` at ${place.address}` : ''}.`;
-}
-
-function localOpeningHours(place: Pick<PlaceResult, 'category'>): string {
-  const category = normalizeText(place.category ?? '');
-  if (category.includes('hospital') || category.includes('atm') || category.includes('gas')) {
-    return '00:00-24:00';
-  }
-  if (category.includes('cafe') || category.includes('ca phe') || category.includes('coffee') || category.includes('restaurant')) {
-    return '07:00-22:00';
-  }
-  if (category.includes('hotel')) {
-    return '00:00-24:00';
-  }
-  return '09:00-22:00';
-}
-
 function localReviews(place: Pick<PlaceResult, 'id' | 'label' | 'category' | 'address'>): TascoReview[] {
   const category = place.category ?? 'place';
+  const provenanceValue = provenance(
+    'local-mock',
+    0.28,
+    [`label=${place.label}`, `category=${category}`],
+    true,
+    false,
+    'Deterministic demo review, not a real user review.',
+  );
   return [
     {
       id: `${slugId(place.id)}:review:1`,
       author: 'TASCO demo user',
       rating: 4.6,
-      text: `${place.label} is a relevant ${category} result for this map search.`,
+      text: `${place.label} là kết quả ${category} phù hợp trong dữ liệu demo.`,
       createdAt: '2026-06-25T00:00:00.000Z',
       source: 'local-fallback',
+      confidence: provenanceValue.confidence,
+      provenance: provenanceValue,
     },
     {
       id: `${slugId(place.id)}:review:2`,
       author: 'Local guide',
       rating: 4.4,
-      text: place.address ? `Useful location near ${place.address}.` : 'Useful local result from the hackathon dataset.',
+      text: place.address ? `Địa điểm có địa chỉ trong bộ dữ liệu: ${place.address}.` : 'Kết quả địa phương từ bộ dữ liệu hackathon.',
       createdAt: '2026-06-26T00:00:00.000Z',
       source: 'local-fallback',
+      confidence: provenanceValue.confidence,
+      provenance: provenanceValue,
     },
   ];
 }
 
 function localPhotos(place: Pick<PlaceResult, 'id' | 'label' | 'category'>): TascoPhoto[] {
   const slug = slugId(place.id);
+  const provenanceValue = provenance(
+    'local-mock',
+    0.24,
+    [`label=${place.label}`, `category=${place.category ?? 'unknown'}`],
+    true,
+    false,
+    'Deterministic placeholder URL, not verified media.',
+  );
   return [
     {
       id: `${slug}:photo:1`,
       url: `https://hackathon.example.com/mock-photos/${slug}-1.jpg`,
-      caption: `${place.label} exterior`,
+      caption: `${place.label} - ảnh minh họa demo`,
       width: 1200,
       height: 800,
       source: 'local-fallback',
+      confidence: provenanceValue.confidence,
+      provenance: provenanceValue,
     },
     {
       id: `${slug}:photo:2`,
       url: `https://hackathon.example.com/mock-photos/${slug}-2.jpg`,
-      caption: `${place.category ?? 'Place'} context`,
+      caption: `${place.category ?? 'Địa điểm'} - ngữ cảnh minh họa`,
       width: 1200,
       height: 800,
       source: 'local-fallback',
+      confidence: provenanceValue.confidence,
+      provenance: provenanceValue,
     },
   ];
 }

@@ -234,12 +234,41 @@ describe('handleTascoFacadeRequest', () => {
     expect(body.poi.coordinates).toEqual({ lat: 10.7759, lon: 106.7031 });
     expect(body.poi.openingHours).toBe('07:00-22:00');
     expect(body.poi.aiSummary).toContain('Highlands Coffee Nguyễn Huệ');
+    expect(body.poi.aiSummary).toContain('là quán cà phê');
+    expect(body.poi.aiSummary).not.toContain(' is a ');
+    expect(body.poi.enrichment?.fields.aiSummary).toEqual(
+      expect.objectContaining({
+        source: 'local-derived',
+        confidence: expect.any(Number),
+        generated: true,
+        verifiedRealWorld: false,
+      }),
+    );
+    expect(body.poi.enrichment?.fields.openingHours).toEqual(
+      expect.objectContaining({
+        source: 'local-derived',
+        confidence: expect.any(Number),
+        note: expect.stringContaining('not verified hours'),
+      }),
+    );
+    expect(body.poi.enrichment?.attributes).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ key: 'tag:wifi', label: 'Có Wi-Fi' }),
+        expect.objectContaining({ key: 'quality:many-reviews', value: 1250 }),
+        expect.objectContaining({ key: 'popularity:high', value: 88 }),
+      ]),
+    );
     expect(body.poi.reviews).toHaveLength(2);
     expect(body.poi.reviews?.[0]).toEqual(
       expect.objectContaining({
         id: 'poi-poi001:review:1',
         rating: 4.6,
         source: 'local-fallback',
+        confidence: expect.any(Number),
+        provenance: expect.objectContaining({
+          source: 'local-mock',
+          verifiedRealWorld: false,
+        }),
       }),
     );
     expect(body.poi.photos).toHaveLength(2);
@@ -248,9 +277,57 @@ describe('handleTascoFacadeRequest', () => {
         id: 'poi-poi001:photo:1',
         url: 'https://hackathon.example.com/mock-photos/poi-poi001-1.jpg',
         source: 'local-fallback',
+        provenance: expect.objectContaining({
+          source: 'local-mock',
+          verifiedRealWorld: false,
+        }),
       }),
     );
     expect(body.meta.source).toBe('local-fallback');
+  });
+
+  it('records live/local POI reconciliation without overwriting live values', async () => {
+    const result = await handleTascoFacadeRequest(
+      testDataset,
+      {
+        method: 'GET',
+        url: '/v1/poi/poi:POI001?include=hours,ai_summary',
+      },
+      {
+        async poi(id) {
+          return {
+            id,
+            type: 'poi',
+            name: 'Highlands Coffee Nguyễn Huệ Live',
+            label: 'Highlands Coffee Nguyễn Huệ Live',
+            address: 'Live upstream address',
+            category: 'Quán cà phê',
+            rating: 4.8,
+            openingHours: '08:00-21:00',
+            source: 'tasco-api',
+          };
+        },
+      },
+    );
+    const body = result.body as TascoPoiResponse;
+
+    expect(result.status).toBe(200);
+    expect(body.meta.source).toBe('live');
+    expect(body.poi.address).toBe('Live upstream address');
+    expect(body.poi.openingHours).toBe('08:00-21:00');
+    expect(body.poi.enrichment?.fields.openingHours).toEqual(
+      expect.objectContaining({
+        source: 'live-upstream',
+        verifiedRealWorld: true,
+      }),
+    );
+    expect(body.poi.enrichment?.reconciliations).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ field: 'label', winner: 'live' }),
+        expect.objectContaining({ field: 'address', winner: 'live' }),
+        expect.objectContaining({ field: 'rating', winner: 'live' }),
+      ]),
+    );
   });
 
   it('supports documented mock error responses without requiring real auth failures', async () => {

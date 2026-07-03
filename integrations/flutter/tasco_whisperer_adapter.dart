@@ -289,16 +289,20 @@ class TascoPlaceResult {
     required this.label,
     this.address,
     this.category,
+    this.brand,
     this.coordinates,
     this.distanceMeters,
     this.score,
     required this.source,
     this.tags = const [],
     this.rating,
+    this.reviewCount,
+    this.popularityScore,
     this.openingHours,
     this.aiSummary,
     this.reviews = const [],
     this.photos = const [],
+    this.enrichment = const <String, dynamic>{},
   });
 
   final String id;
@@ -307,16 +311,20 @@ class TascoPlaceResult {
   final String label;
   final String? address;
   final String? category;
+  final String? brand;
   final TascoCoordinates? coordinates;
   final num? distanceMeters;
   final num? score;
   final String source;
   final List<String> tags;
   final num? rating;
+  final num? reviewCount;
+  final num? popularityScore;
   final String? openingHours;
   final String? aiSummary;
   final List<TascoReview> reviews;
   final List<TascoPhoto> photos;
+  final Map<String, dynamic> enrichment;
 
   factory TascoPlaceResult.fromJson(Map<String, dynamic> json) {
     final label = _string(json['label']) ?? _string(json['name']) ?? '';
@@ -327,6 +335,7 @@ class TascoPlaceResult {
       label: label,
       address: _string(json['address']),
       category: _string(json['category']),
+      brand: _string(json['brand']),
       coordinates: json['coordinates'] is Map<String, dynamic>
           ? TascoCoordinates.fromJson(
               json['coordinates'] as Map<String, dynamic>,
@@ -337,10 +346,13 @@ class TascoPlaceResult {
       source: _string(json['source']) ?? 'tasco-api',
       tags: _stringList(json['tags']),
       rating: _number(json['rating']),
+      reviewCount: _number(json['reviewCount']),
+      popularityScore: _number(json['popularityScore']),
       openingHours: _string(json['openingHours']),
       aiSummary: _string(json['aiSummary']),
       reviews: _list(json['reviews']).map(TascoReview.fromJson).toList(),
       photos: _list(json['photos']).map(TascoPhoto.fromJson).toList(),
+      enrichment: _object(json['enrichment']),
     );
   }
 }
@@ -353,6 +365,8 @@ class TascoReview {
     required this.text,
     required this.createdAt,
     required this.source,
+    this.confidence,
+    this.provenance = const <String, dynamic>{},
   });
 
   final String id;
@@ -361,6 +375,8 @@ class TascoReview {
   final String text;
   final String createdAt;
   final String source;
+  final num? confidence;
+  final Map<String, dynamic> provenance;
 
   factory TascoReview.fromJson(Map<String, dynamic> json) {
     return TascoReview(
@@ -370,6 +386,8 @@ class TascoReview {
       text: _string(json['text']) ?? '',
       createdAt: _string(json['createdAt']) ?? '',
       source: _string(json['source']) ?? 'tasco-api',
+      confidence: _number(json['confidence']),
+      provenance: _object(json['provenance']),
     );
   }
 }
@@ -382,6 +400,8 @@ class TascoPhoto {
     required this.width,
     required this.height,
     required this.source,
+    this.confidence,
+    this.provenance = const <String, dynamic>{},
   });
 
   final String id;
@@ -390,6 +410,8 @@ class TascoPhoto {
   final int width;
   final int height;
   final String source;
+  final num? confidence;
+  final Map<String, dynamic> provenance;
 
   factory TascoPhoto.fromJson(Map<String, dynamic> json) {
     return TascoPhoto(
@@ -399,6 +421,8 @@ class TascoPhoto {
       width: _nonNegativeInt(json['width']),
       height: _nonNegativeInt(json['height']),
       source: _string(json['source']) ?? 'tasco-api',
+      confidence: _number(json['confidence']),
+      provenance: _object(json['provenance']),
     );
   }
 }
