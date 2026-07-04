@@ -97,6 +97,9 @@ async function fetchPlaces(
   if ('sessionId' in params && params.sessionId) {
     url.searchParams.set('sessionId', params.sessionId);
   }
+  if ('userId' in params && params.userId) {
+    url.searchParams.set('userId', params.userId);
+  }
 
   const response = await fetcher(url, {
     headers: requestHeaders(config),

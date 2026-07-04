@@ -8,7 +8,7 @@ import {
   vietnameseSummaryForPlace,
   type EnrichmentPlaceInput,
 } from './enrichment';
-import { normalizeText } from './normalize';
+import { containsTokenPhrase, normalizeText } from './normalize';
 import type { FieldProvenance, PlaceEnrichment, PoiRecord, Suggestion, TascoDataset } from './types';
 
 export interface PlaceResult {
@@ -62,6 +62,7 @@ export interface TascoAutocompleteResponse {
     limit: number;
     sessionId?: string;
     lang: string;
+    city?: string;
     source: 'live' | 'local-fallback';
     normalizedQuery: string;
     expandedQuery: string;
@@ -78,6 +79,7 @@ export interface TascoSearchResponse {
     radiusMeters?: number;
     bbox?: string;
     category?: string;
+    city?: string;
     source: 'live' | 'local-fallback';
     normalizedQuery: string;
     expandedQuery: string;
@@ -187,6 +189,8 @@ export interface TascoLiveQuery {
   radiusMeters?: number;
   bbox?: string;
   category?: string;
+  city?: string;
+  userId?: string;
   limit: number;
   lang: string;
   sessionId?: string;
@@ -238,9 +242,11 @@ interface ParsedFacadeParams {
   radiusMeters?: number;
   bbox?: string;
   category?: string;
+  city?: string;
   limit: number;
   lang: string;
   sessionId?: string;
+  userId?: string;
 }
 
 const MOCK_ERROR_RESPONSES: Record<string, { status: number; message: string }> = {
@@ -336,6 +342,8 @@ export async function handleTascoFacadeRequest(
 
   const local = suggest(dataset, {
     q: parsed.value.q,
+    city: parsed.value.city,
+    userId: parsed.value.userId ?? parsed.value.sessionId,
     limit: isAutocomplete ? parsed.value.limit : Math.max(parsed.value.limit, 20),
     agentic: false,
   });
@@ -347,9 +355,11 @@ export async function handleTascoFacadeRequest(
     radiusMeters: isAutocomplete ? undefined : parsed.value.radiusMeters,
     bbox: isAutocomplete ? undefined : parsed.value.bbox,
     category: isAutocomplete ? undefined : parsed.value.category,
+    city: parsed.value.city,
     limit: parsed.value.limit,
     lang: parsed.value.lang,
     sessionId: parsed.value.sessionId,
+    userId: parsed.value.userId,
   });
   const localResults = applySearchFilters(
     applyLocationContext(mergePlaces(
@@ -364,11 +374,18 @@ export async function handleTascoFacadeRequest(
           category: parsed.value.category,
         },
   );
-  const places = liveResults.length ? liveResults : isAutocomplete ? localResults : rankSearchPlaces(localResults, parsed.value.q);
+  const scopedLiveResults = applyCityScopeToPlaces(liveResults, parsed.value.city);
+  const scopedLocalResults = applyCityScopeToPlaces(
+    isAutocomplete ? localResults : rankSearchPlaces(localResults, parsed.value.q),
+    parsed.value.city,
+  );
+  const upstreamUsed = scopedLiveResults.length > 0;
+  const places = upstreamUsed ? scopedLiveResults : scopedLocalResults;
   const limitedPlaces = places.slice(0, parsed.value.limit);
   const meta = {
     limit: parsed.value.limit,
     lang: parsed.value.lang,
+    city: parsed.value.city,
     ...(isAutocomplete
       ? {}
       : {
@@ -376,10 +393,10 @@ export async function handleTascoFacadeRequest(
           bbox: parsed.value.bbox,
           category: parsed.value.category,
         }),
-    source: liveResults.length ? 'live' as const : 'local-fallback' as const,
+    source: upstreamUsed ? 'live' as const : 'local-fallback' as const,
     normalizedQuery: local.normalizedQuery,
     expandedQuery: local.expandedQuery,
-    upstreamUsed: liveResults.length > 0,
+    upstreamUsed,
   };
 
   if (isAutocomplete) {
@@ -398,7 +415,7 @@ export async function handleTascoFacadeRequest(
         action: 'tasco.autocomplete',
         query: parsed.value.q,
         statusCode: 200,
-        message: liveResults.length ? 'live autocomplete returned' : 'local autocomplete fallback returned',
+        message: upstreamUsed ? 'live autocomplete returned' : 'local autocomplete fallback returned',
       },
     };
   }
@@ -415,7 +432,7 @@ export async function handleTascoFacadeRequest(
       action: 'tasco.search',
       query: parsed.value.q,
       statusCode: 200,
-      message: liveResults.length ? 'live search returned' : 'local search fallback returned',
+      message: upstreamUsed ? 'live search returned' : 'local search fallback returned',
     },
   };
 }
@@ -431,6 +448,8 @@ function parseParams(
   const radiusMeters = optionalNumber(params.get('radiusMeters'), 'radiusMeters', 1, 50000, errors);
   const bbox = params.get('bbox')?.trim() || undefined;
   const category = params.get('category')?.trim() || undefined;
+  const city = params.get('city')?.trim() || undefined;
+  const userId = params.get('userId')?.trim() || undefined;
   const limit = optionalInteger(params.get('limit'), 'limit', 1, maxLimit, errors) ?? (maxLimit === 10 ? 5 : 10);
   const lang = params.get('lang')?.trim() || 'vi';
   const sessionId = params.get('sessionId')?.trim() || undefined;
@@ -456,10 +475,16 @@ function parseParams(
   if (sessionId && sessionId.length > 80) {
     errors.push('sessionId must be 80 characters or fewer');
   }
+  if (city && city.length > 80) {
+    errors.push('city must be 80 characters or fewer');
+  }
+  if (userId && userId.length > 80) {
+    errors.push('userId must be 80 characters or fewer');
+  }
   if (errors.length) {
     return { ok: false, errors };
   }
-  return { ok: true, value: { q, lat, lon, radiusMeters, bbox, category, limit, lang, sessionId } };
+  return { ok: true, value: { q, lat, lon, radiusMeters, bbox, category, city, userId, limit, lang, sessionId } };
 }
 
 async function handlePoi(dataset: TascoDataset, url: URL, liveClient?: TascoLiveClient): Promise<TascoFacadeResult> {
@@ -911,6 +936,64 @@ function applySearchFilters(
     }
     return true;
   });
+}
+
+const KNOWN_CITY_VALUES = ['TP.HCM', 'Hà Nội', 'Đà Nẵng', 'Đà Lạt', 'Nha Trang', 'Hải Phòng'];
+
+function applyCityScopeToPlaces(places: PlaceResult[], city?: string): PlaceResult[] {
+  if (!city) {
+    return places;
+  }
+  return places.filter((place) => {
+    const explicitCity = placeCity(place);
+    if (explicitCity) {
+      return sameCity(explicitCity, city);
+    }
+    const haystack = `${place.name} ${place.label} ${place.address ?? ''}`;
+    return !KNOWN_CITY_VALUES.some((knownCity) => !sameCity(knownCity, city) && cityMentioned(haystack, knownCity));
+  });
+}
+
+function placeCity(place: PlaceResult): string | undefined {
+  const addressCity = place.address?.split(',').map((part) => part.trim()).filter(Boolean).at(-1);
+  if (addressCity) {
+    return addressCity;
+  }
+  return KNOWN_CITY_VALUES.find((city) => cityMentioned(`${place.name} ${place.label}`, city));
+}
+
+function sameCity(left: string, right: string): boolean {
+  const leftAliases = cityAliases(left);
+  const rightAliases = cityAliases(right);
+  return leftAliases.some((leftAlias) => rightAliases.includes(leftAlias));
+}
+
+function cityMentioned(text: string, city: string): boolean {
+  return cityAliases(city).some((alias) => alias.length >= 3 && containsTokenPhrase(text, alias));
+}
+
+function cityAliases(city: string): string[] {
+  const normalized = normalizeText(city);
+  const aliases = new Set([normalized]);
+  if (['tp.hcm', 'tp hcm', 'hcm', 'ho chi minh', 'thanh pho ho chi minh', 'sai gon', 'sg'].includes(normalized)) {
+    ['tp.hcm', 'tp hcm', 'hcm', 'ho chi minh', 'thanh pho ho chi minh', 'sai gon', 'sg'].forEach((alias) => aliases.add(alias));
+  }
+  if (['ha noi', 'hn'].includes(normalized)) {
+    ['ha noi', 'hn'].forEach((alias) => aliases.add(alias));
+  }
+  if (['da nang', 'dn'].includes(normalized)) {
+    ['da nang', 'dn'].forEach((alias) => aliases.add(alias));
+  }
+  if (['da lat', 'dl'].includes(normalized)) {
+    ['da lat', 'dl'].forEach((alias) => aliases.add(alias));
+  }
+  if (['nha trang', 'nt'].includes(normalized)) {
+    ['nha trang', 'nt'].forEach((alias) => aliases.add(alias));
+  }
+  if (['hai phong', 'hp'].includes(normalized)) {
+    ['hai phong', 'hp'].forEach((alias) => aliases.add(alias));
+  }
+  return [...aliases];
 }
 
 function parseBbox(value: string): { minLon: number; minLat: number; maxLon: number; maxLat: number } | undefined {

@@ -95,6 +95,62 @@ describe('suggest', () => {
     );
   });
 
+  it('hard-scopes explicit city selections instead of downranking other cities', () => {
+    const response = suggest(testDataset, { q: 'caphe', city: 'TP.HCM', limit: 8 });
+    const visibleText = response.suggestions
+      .map((suggestion) => `${suggestion.text} ${suggestion.metadata.reason} ${suggestion.metadata.address ?? ''}`)
+      .join(' ');
+
+    expect(response.suggestions.length).toBeGreaterThan(0);
+    expect(visibleText).not.toMatch(/Đà Nẵng|Đà Lạt|Hà Nội|Hải Phòng/);
+    expect(
+      response.suggestions
+        .filter((suggestion) => suggestion.metadata.city)
+        .every((suggestion) => suggestion.metadata.city === 'TP.HCM'),
+    ).toBe(true);
+  });
+
+  it('filters city-specific semantic and template candidates outside the selected city', () => {
+    const response = suggest(testDataset, { q: 'ks d', city: 'TP.HCM', userId: 'danang-traveler', limit: 8 });
+    const visibleText = response.suggestions
+      .map((suggestion) => `${suggestion.text} ${suggestion.metadata.reason} ${suggestion.metadata.address ?? ''}`)
+      .join(' ');
+
+    expect(visibleText).not.toMatch(/Đà Nẵng|Da Nang|Mỹ Khê/);
+    expect(response.suggestions.every((suggestion) => suggestion.metadata.factors.personalization === 0)).toBe(true);
+    expect(response.suggestions.every((suggestion) => !suggestion.metadata.personalizationReason)).toBe(true);
+  });
+
+  it('keeps profile and behavior personalization inside the selected city scope', () => {
+    const mismatchedBehavior = suggest(testDataset, {
+      q: 'cafe',
+      city: 'TP.HCM',
+      userId: 'local-demo',
+      limit: 5,
+      behaviorEvents: [
+        {
+          userId: 'local-demo',
+          query: 'cafe',
+          selectedText: 'Highlands Coffee Nguyễn Huệ',
+          selectedType: 'POI Search',
+          brand: 'Highlands Coffee',
+          category: 'Quán cà phê',
+          city: 'Đà Nẵng',
+          occurredAt: '2026-07-03T00:00:00.000Z',
+        },
+      ],
+    });
+    const highlands = mismatchedBehavior.suggestions.find((suggestion) => suggestion.text === 'Highlands Coffee Nguyễn Huệ');
+
+    expect(highlands?.metadata.factors.personalization).toBe(0);
+    expect(highlands?.metadata.personalizationReason).toBeUndefined();
+
+    const matchingCityProfile = suggest(testDataset, { q: 'ks d', city: 'Đà Nẵng', userId: 'danang-traveler', limit: 5 });
+    expect(matchingCityProfile.suggestions.some((suggestion) => suggestion.metadata.personalizationReason?.includes('Da Nang traveler'))).toBe(
+      true,
+    );
+  });
+
   it('retrieves address and POI suggestions for Nguyen Hue typo/prefix', () => {
     const suggestions = topSuggestionTexts(testDataset, 'nguyen h', 5);
     expect(suggestions).toEqual(

@@ -56,9 +56,18 @@ describe('createTascoApiClient', () => {
       },
     });
 
-    const results = await client!.autocomplete!({ q: 'land', limit: 5, lang: 'vi', sessionId: 's-1' });
+    const results = await client!.autocomplete!({
+      q: 'land',
+      limit: 5,
+      lang: 'vi',
+      city: 'TP.HCM',
+      sessionId: 's-1',
+      userId: 'u-1',
+    });
 
-    expect(calls[0].url).toBe('https://hackathon.example.com/v1/autocomplete?q=land&limit=5&lang=vi&sessionId=s-1');
+    expect(calls[0].url).toBe(
+      'https://hackathon.example.com/v1/autocomplete?q=land&city=TP.HCM&limit=5&lang=vi&sessionId=s-1&userId=u-1',
+    );
     expect(calls[0].headers).toEqual(
       expect.objectContaining({
         authorization: 'Bearer token-123',

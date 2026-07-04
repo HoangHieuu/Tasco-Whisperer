@@ -1,6 +1,6 @@
 import { resolveAgenticCorrection } from './agentic';
 import { rankingEvidenceForPoi } from './enrichment';
-import { expandQuery, fuzzyIncludes, normalizeText } from './normalize';
+import { containsTokenPhrase, expandQuery, fuzzyIncludes, normalizeText } from './normalize';
 import { generatedPatternCandidates } from './generatedPatterns';
 import {
   buildEmbeddingIndex,
@@ -43,6 +43,7 @@ interface CandidateDraft {
 interface SimulatedProfile {
   id: string;
   label: string;
+  city?: string;
   preferences: Array<{
     terms: string[];
     reason: string;
@@ -79,6 +80,7 @@ const SIMULATED_PROFILES: SimulatedProfile[] = [
   {
     id: 'danang-traveler',
     label: 'Da Nang traveler',
+    city: 'Đà Nẵng',
     preferences: [
       {
         terms: ['da nang', 'khach san', 'hotel', 'gan bien', 'my khe', 'san bay'],
@@ -123,6 +125,8 @@ const CATEGORY_TERMS = new Map<string, IntentType>([
   ['duong den', 'Navigation'],
   ['chi duong', 'Navigation'],
 ]);
+
+const KNOWN_CITY_VALUES = ['TP.HCM', 'Hà Nội', 'Đà Nẵng', 'Đà Lạt', 'Nha Trang', 'Hải Phòng'];
 
 interface SemanticTemplate {
   triggers: string[];
@@ -338,15 +342,16 @@ function collectCandidates(
     }));
   }
 
-  return [
+  const drafts = [
     ...fromAutocomplete(dataset, understanding),
-    ...fromPois(dataset, understanding, request),
+    ...fromPois(dataset, understanding),
     ...fromPopularQueries(dataset, understanding),
     ...fromEmbedding(understanding, embeddingNeighbors),
     ...fromSemantic(dataset, understanding),
     ...fromGeneratedPatterns(dataset, understanding, entities),
     ...fromTemplates(understanding),
   ];
+  return filterCandidatesByCity(drafts, dataset, request.city);
 }
 
 function fromAutocomplete(dataset: TascoDataset, understanding: QueryUnderstanding): CandidateDraft[] {
@@ -374,13 +379,11 @@ function fromAutocomplete(dataset: TascoDataset, understanding: QueryUnderstandi
   });
 }
 
-function fromPois(dataset: TascoDataset, understanding: QueryUnderstanding, request: SuggestRequest): CandidateDraft[] {
-  const requestedCity = normalizeText(request.city ?? '');
+function fromPois(dataset: TascoDataset, understanding: QueryUnderstanding): CandidateDraft[] {
   return dataset.pois.flatMap((poi) => {
     const haystacks = [poi.poiName, poi.brand, poi.category, poi.address, poi.city, ...poi.tags].filter(Boolean);
     const matched = haystacks.filter((value) => queryMatches(value, understanding));
     const categoryHit = tokenFallbackMatches(normalizeText(poi.category), understanding.tokens);
-    const cityHit = requestedCity ? normalizeText(poi.city).includes(requestedCity) : true;
     if (matched.length === 0 && !categoryHit) {
       return [];
     }
@@ -395,7 +398,7 @@ function fromPois(dataset: TascoDataset, understanding: QueryUnderstanding, requ
       source: 'poi' as const,
       matched: matched.length > 0 ? matched : [poi.category],
       poi,
-      baseScore: cityHit ? 0.76 : 0.62,
+      baseScore: 0.76,
       frequencyScore: poi.popularityScore / 100,
       reason: `matched ${poi.category}${poi.city ? ` in ${poi.city}` : ''}${enrichmentReason}`,
     };
@@ -814,7 +817,7 @@ function rankAndMerge(
   const merged = new Map<string, Suggestion>();
 
   for (const draft of drafts) {
-    const personalization = personalizationBoost(request.userId, draft, request.behaviorEvents);
+    const personalization = personalizationBoost(request.userId, draft, request.behaviorEvents, request.city);
     const factors = scoreFactors(draft, predictedIntent, request, personalization.boost);
     const score = weightedScore(factors, request.rankingWeights);
     const normalizedText = normalizeText(draft.text);
@@ -861,7 +864,7 @@ function scoreFactors(
   personalizationBoostValue: number,
 ): ScoreFactors {
   const poi = draft.poi;
-  const cityMatch = request.city && poi ? normalizeText(poi.city).includes(normalizeText(request.city)) : false;
+  const cityMatch = request.city && poi ? sameCity(poi.city, request.city) : false;
   const factors: ScoreFactors = {
     lexical: draft.baseScore,
     intent: draft.type === predictedIntent ? 1 : 0.55,
@@ -924,6 +927,7 @@ function personalizationBoost(
   userId: string | undefined,
   draft: CandidateDraft,
   behaviorEvents: BehaviorEvent[] = [],
+  requestCity?: string,
 ): { boost: number; reason?: string } {
   if (!userId) {
     return { boost: 0 };
@@ -937,11 +941,11 @@ function personalizationBoost(
   let boost = 0;
   const profile = findSimulatedProfile(userId);
   const profileMatch = profile?.preferences.find((preference) => containsAny(haystack, preference.terms));
-  if (profile && profileMatch) {
+  if (profile && profileMatch && profileCompatibleWithCity(profile, requestCity)) {
     boost = Math.max(boost, profileMatch.boost);
     reasons.push(`${profile.label}: ${profileMatch.reason}`);
   }
-  const behavior = behaviorBoost(userId, behaviorEvents, haystack);
+  const behavior = behaviorBoost(userId, behaviorEvents, haystack, requestCity);
   if (behavior.boost > 0) {
     boost = Math.max(boost, behavior.boost);
     reasons.push(behavior.reason);
@@ -961,10 +965,12 @@ function behaviorBoost(
   userId: string,
   behaviorEvents: BehaviorEvent[],
   haystack: string,
+  requestCity?: string,
 ): { boost: number; reason: string } {
   const normalizedUser = normalizeText(userId);
   const matchingEvents = behaviorEvents
     .filter((event) => normalizeText(event.userId) === normalizedUser)
+    .filter((event) => !requestCity || !event.city || sameCity(event.city, requestCity))
     .slice(-50)
     .reverse();
   const matchedTerms = new Set<string>();
@@ -995,6 +1001,64 @@ function behaviorTerms(event: BehaviorEvent): string[] {
     event.category ?? '',
     event.city ?? '',
   ].filter(Boolean);
+}
+
+function filterCandidatesByCity(
+  drafts: CandidateDraft[],
+  dataset: TascoDataset,
+  requestCity?: string,
+): CandidateDraft[] {
+  if (!requestCity) {
+    return drafts;
+  }
+  const knownCities = [...new Set([...dataset.pois.map((poi) => poi.city).filter(Boolean), ...KNOWN_CITY_VALUES])];
+  return drafts.filter((draft) => candidateCompatibleWithCity(draft, requestCity, knownCities));
+}
+
+function candidateCompatibleWithCity(draft: CandidateDraft, requestCity: string, knownCities: string[]): boolean {
+  if (draft.poi) {
+    return sameCity(draft.poi.city, requestCity);
+  }
+  const haystack = [draft.text, draft.reason, ...draft.matched].join(' ');
+  return !knownCities.some((city) => !sameCity(city, requestCity) && cityMentioned(haystack, city));
+}
+
+function profileCompatibleWithCity(profile: SimulatedProfile, requestCity?: string): boolean {
+  return !profile.city || !requestCity || sameCity(profile.city, requestCity);
+}
+
+function sameCity(left: string, right: string): boolean {
+  const leftAliases = cityAliases(left);
+  const rightAliases = cityAliases(right);
+  return leftAliases.some((leftAlias) => rightAliases.includes(leftAlias));
+}
+
+function cityMentioned(text: string, city: string): boolean {
+  return cityAliases(city).some((alias) => alias.length >= 3 && containsTokenPhrase(text, alias));
+}
+
+function cityAliases(city: string): string[] {
+  const normalized = normalizeText(city);
+  const aliases = new Set([normalized]);
+  if (['tp.hcm', 'tp hcm', 'hcm', 'ho chi minh', 'thanh pho ho chi minh', 'sai gon', 'sg'].includes(normalized)) {
+    ['tp.hcm', 'tp hcm', 'hcm', 'ho chi minh', 'thanh pho ho chi minh', 'sai gon', 'sg'].forEach((alias) => aliases.add(alias));
+  }
+  if (['ha noi', 'hn'].includes(normalized)) {
+    ['ha noi', 'hn'].forEach((alias) => aliases.add(alias));
+  }
+  if (['da nang', 'dn'].includes(normalized)) {
+    ['da nang', 'dn'].forEach((alias) => aliases.add(alias));
+  }
+  if (['da lat', 'dl'].includes(normalized)) {
+    ['da lat', 'dl'].forEach((alias) => aliases.add(alias));
+  }
+  if (['nha trang', 'nt'].includes(normalized)) {
+    ['nha trang', 'nt'].forEach((alias) => aliases.add(alias));
+  }
+  if (['hai phong', 'hp'].includes(normalized)) {
+    ['hai phong', 'hp'].forEach((alias) => aliases.add(alias));
+  }
+  return [...aliases];
 }
 
 function containsAny(text: string, needles: string[]): boolean {

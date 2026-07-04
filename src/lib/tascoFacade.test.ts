@@ -33,6 +33,62 @@ describe('handleTascoFacadeRequest', () => {
     );
   });
 
+  it('honors city scope for autocomplete and does not leak other-city POI rows', async () => {
+    const result = await handleTascoFacadeRequest(testDataset, {
+      method: 'GET',
+      url: '/v1/autocomplete?q=caphe&city=TP.HCM&limit=8',
+    });
+    const body = result.body as TascoAutocompleteResponse;
+    const visibleText = body.suggestions
+      .map((suggestion) => `${suggestion.label} ${suggestion.address ?? ''}`)
+      .join(' ');
+
+    expect(result.status).toBe(200);
+    expect(body.meta.city).toBe('TP.HCM');
+    expect(body.suggestions.length).toBeGreaterThan(0);
+    expect(visibleText).not.toMatch(/Đà Nẵng|Đà Lạt|Hà Nội|Hải Phòng/);
+  });
+
+  it('falls back to city-scoped local results when live autocomplete only returns other-city rows', async () => {
+    const seenParams: unknown[] = [];
+    const result = await handleTascoFacadeRequest(
+      testDataset,
+      {
+        method: 'GET',
+        url: '/v1/autocomplete?q=caphe&city=TP.HCM&userId=coffee-loyal&limit=5',
+      },
+      {
+        async autocomplete(params) {
+          seenParams.push(params);
+          return [
+            {
+              id: 'poi:live-da-nang',
+              type: 'poi',
+              name: 'Live Coffee Đà Nẵng',
+              label: 'Live Coffee Đà Nẵng',
+              address: '285 Phan Chu Trinh, Đà Nẵng',
+              category: 'Quán cà phê',
+              score: 0.99,
+              source: 'tasco-api',
+            },
+          ];
+        },
+      },
+    );
+    const body = result.body as TascoAutocompleteResponse;
+
+    expect(result.status).toBe(200);
+    expect(seenParams[0]).toEqual(
+      expect.objectContaining({
+        city: 'TP.HCM',
+        userId: 'coffee-loyal',
+      }),
+    );
+    expect(body.meta.source).toBe('local-fallback');
+    expect(body.meta.upstreamUsed).toBe(false);
+    expect(body.suggestions.map((suggestion) => suggestion.label).join(' ')).not.toContain('Đà Nẵng');
+  });
+
   it('serves TASCO search from the local engine with PlaceResult mapping', async () => {
     const result = await handleTascoFacadeRequest(testDataset, {
       method: 'GET',
