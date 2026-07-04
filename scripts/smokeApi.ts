@@ -37,13 +37,17 @@ try {
   if (invalidResponse.status !== 400) {
     throw new Error(`Expected 400 for invalid limit, got ${invalidResponse.status}`);
   }
-  const autocompleteResponse = await fetch(`${baseUrl}/v1/autocomplete?q=caphe&limit=3&sessionId=smoke-1`);
+  const autocompleteResponse = await fetch(`${baseUrl}/v1/autocomplete?q=caphe&limit=8&sessionId=smoke-1&city=TP.HCM`);
   if (!autocompleteResponse.ok) {
     throw new Error(`Expected 200 from /v1/autocomplete, got ${autocompleteResponse.status}`);
   }
   const autocompleteBody = (await autocompleteResponse.json()) as TascoAutocompleteResponse;
   if (!autocompleteBody.suggestions.length || autocompleteBody.meta.expandedQuery !== 'ca phe') {
     throw new Error('Expected TASCO autocomplete facade to return local caphe fallback suggestions');
+  }
+  const autocompleteVisibleText = autocompleteBody.suggestions.map((suggestion) => `${suggestion.label} ${suggestion.address ?? ''}`).join(' ');
+  if (/Đà Nẵng|Đà Lạt|Hà Nội|Hải Phòng/.test(autocompleteVisibleText)) {
+    throw new Error(`Expected TP.HCM autocomplete scope, got out-of-city suggestions: ${autocompleteVisibleText}`);
   }
 
   const searchResponse = await fetch(`${baseUrl}/v1/search?q=coffee&limit=3`);

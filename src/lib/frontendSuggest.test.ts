@@ -45,7 +45,7 @@ describe('frontend TASCO facade adapter', () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        href: 'http://127.0.0.1:8787/v1/autocomplete?q=cap&limit=8&lang=vi&sessionId=coffee-loyal&lat=10.7769&lon=106.7009',
+        href: 'http://127.0.0.1:8787/v1/autocomplete?q=cap&limit=8&lang=vi&sessionId=coffee-loyal&userId=coffee-loyal&lat=10.7769&lon=106.7009',
       }),
       { signal: undefined },
     );
@@ -60,6 +60,63 @@ describe('frontend TASCO facade adapter', () => {
       }),
     );
     expect(response.diagnostics.expansions[0]).toBe('TASCO facade source -> local-fallback');
+  });
+
+  it('passes city scope to the facade and drops stale out-of-city API rows', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          query: 'caphe',
+          suggestions: [
+            {
+              id: 'poi:POI001',
+              type: 'poi',
+              name: 'Highlands Coffee Nguyễn Huệ',
+              label: 'Highlands Coffee Nguyễn Huệ',
+              address: '86 Nguyễn Huệ, Quận 1, TP.HCM',
+              category: 'Quán cà phê',
+              score: 0.82,
+              source: 'local-fallback',
+            },
+            {
+              id: 'poi:POI999',
+              type: 'poi',
+              name: 'Highlands Coffee Võ Nguyên Giáp Đà Nẵng',
+              label: 'Highlands Coffee Võ Nguyên Giáp Đà Nẵng',
+              address: '285 Phan Chu Trinh, Đà Nẵng',
+              category: 'Quán cà phê',
+              score: 0.92,
+              source: 'local-fallback',
+            },
+          ],
+          meta: {
+            limit: 8,
+            lang: 'vi',
+            city: 'TP.HCM',
+            source: 'local-fallback',
+            normalizedQuery: 'caphe',
+            expandedQuery: 'ca phe',
+            upstreamUsed: false,
+          },
+        }),
+        { status: 200, headers: { 'content-type': 'application/json' } },
+      ),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    const response = await fetchFrontendSuggest(
+      { q: 'caphe', city: 'TP.HCM', limit: 8 },
+      { apiBaseUrl: 'http://127.0.0.1:8787' },
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        href: 'http://127.0.0.1:8787/v1/autocomplete?q=caphe&limit=8&lang=vi&city=TP.HCM',
+      }),
+      { signal: undefined },
+    );
+    expect(response.suggestions.map((suggestion) => suggestion.text)).toEqual(['Highlands Coffee Nguyễn Huệ']);
+    expect(response.diagnostics.candidateCount).toBe(1);
   });
 
   it('falls back to browser suggestions when the facade is unavailable', async () => {

@@ -279,7 +279,9 @@ function App() {
                   <option value="TP.HCM">TP.HCM</option>
                   <option value="Hà Nội">Hà Nội</option>
                   <option value="Đà Nẵng">Đà Nẵng</option>
+                  <option value="Đà Lạt">Đà Lạt</option>
                   <option value="Nha Trang">Nha Trang</option>
+                  <option value="Hải Phòng">Hải Phòng</option>
                 </select>
               </label>
               <label>

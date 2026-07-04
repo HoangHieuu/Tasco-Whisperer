@@ -1,6 +1,6 @@
 import { browserDataset } from './browserDataset';
 import { suggest } from './engine';
-import { normalizeText } from './normalize';
+import { containsTokenPhrase, normalizeText } from './normalize';
 import type { PlaceResult, TascoAutocompleteResponse } from './tascoFacade';
 import type { IntentType, QueryEntity, ScoreFactors, SuggestRequest, SuggestResponse, Suggestion } from './types';
 
@@ -45,6 +45,10 @@ export async function fetchFrontendSuggest(
   url.searchParams.set('lang', 'vi');
   if (request.userId) {
     url.searchParams.set('sessionId', request.userId);
+    url.searchParams.set('userId', request.userId);
+  }
+  if (request.city) {
+    url.searchParams.set('city', request.city);
   }
   if (request.lat != null && request.lon != null) {
     url.searchParams.set('lat', String(request.lat));
@@ -59,8 +63,9 @@ export async function fetchFrontendSuggest(
     }
     const payload = (await response.json()) as TascoAutocompleteResponse;
     const local = suggest(browserDataset, request);
+    const scopedPlaces = payload.suggestions.filter((place) => placeCompatibleWithCity(place, request.city));
     const suggestions = applyBehaviorContext(
-      payload.suggestions.map((place, index) => placeToSuggestion(place, request.q, index)),
+      scopedPlaces.map((place, index) => placeToSuggestion(place, request.q, index)),
       request,
     );
     return {
@@ -73,14 +78,14 @@ export async function fetchFrontendSuggest(
       diagnostics: {
         ...local.diagnostics,
         expansions: buildFacadeExpansions(local.diagnostics.expansions, payload),
-        candidateCount: payload.suggestions.length,
+        candidateCount: scopedPlaces.length,
         agentic: {
           ...local.diagnostics.agentic,
           reason: payload.meta.upstreamUsed
             ? 'TASCO live autocomplete API returned results'
             : 'TASCO facade used local fallback results',
         },
-        entities: mergeFacadeEntities(local.diagnostics.entities, payload.suggestions),
+        entities: mergeFacadeEntities(local.diagnostics.entities, scopedPlaces),
       },
       transport: 'api',
       facadeSource: payload.meta.source,
@@ -162,6 +167,7 @@ function applyBehaviorContext(suggestions: Suggestion[], request: SuggestRequest
   const normalizedUser = normalizeText(request.userId);
   const events = request.behaviorEvents
     .filter((event) => normalizeText(event.userId) === normalizedUser)
+    .filter((event) => !request.city || !event.city || sameCity(event.city, request.city))
     .slice(-30)
     .reverse();
   if (!events.length) {
@@ -219,6 +225,54 @@ function behaviorTerms(event: NonNullable<SuggestRequest['behaviorEvents']>[numb
     event.category ?? '',
     event.city ?? '',
   ].filter(Boolean);
+}
+
+const KNOWN_CITY_VALUES = ['TP.HCM', 'Hà Nội', 'Đà Nẵng', 'Đà Lạt', 'Nha Trang', 'Hải Phòng'];
+
+function placeCompatibleWithCity(place: PlaceResult, city?: string): boolean {
+  if (!city) {
+    return true;
+  }
+  const explicitCity = inferCity(place) ?? KNOWN_CITY_VALUES.find((knownCity) => cityMentioned(`${place.name} ${place.label}`, knownCity));
+  if (explicitCity) {
+    return sameCity(explicitCity, city);
+  }
+  const haystack = `${place.name} ${place.label} ${place.address ?? ''}`;
+  return !KNOWN_CITY_VALUES.some((knownCity) => !sameCity(knownCity, city) && cityMentioned(haystack, knownCity));
+}
+
+function sameCity(left: string, right: string): boolean {
+  const leftAliases = cityAliases(left);
+  const rightAliases = cityAliases(right);
+  return leftAliases.some((leftAlias) => rightAliases.includes(leftAlias));
+}
+
+function cityMentioned(text: string, city: string): boolean {
+  return cityAliases(city).some((alias) => alias.length >= 3 && containsTokenPhrase(text, alias));
+}
+
+function cityAliases(city: string): string[] {
+  const normalized = normalizeText(city);
+  const aliases = new Set([normalized]);
+  if (['tp.hcm', 'tp hcm', 'hcm', 'ho chi minh', 'thanh pho ho chi minh', 'sai gon', 'sg'].includes(normalized)) {
+    ['tp.hcm', 'tp hcm', 'hcm', 'ho chi minh', 'thanh pho ho chi minh', 'sai gon', 'sg'].forEach((alias) => aliases.add(alias));
+  }
+  if (['ha noi', 'hn'].includes(normalized)) {
+    ['ha noi', 'hn'].forEach((alias) => aliases.add(alias));
+  }
+  if (['da nang', 'dn'].includes(normalized)) {
+    ['da nang', 'dn'].forEach((alias) => aliases.add(alias));
+  }
+  if (['da lat', 'dl'].includes(normalized)) {
+    ['da lat', 'dl'].forEach((alias) => aliases.add(alias));
+  }
+  if (['nha trang', 'nt'].includes(normalized)) {
+    ['nha trang', 'nt'].forEach((alias) => aliases.add(alias));
+  }
+  if (['hai phong', 'hp'].includes(normalized)) {
+    ['hai phong', 'hp'].forEach((alias) => aliases.add(alias));
+  }
+  return [...aliases];
 }
 
 function buildFacadeExpansions(existing: string[], payload: TascoAutocompleteResponse): string[] {
