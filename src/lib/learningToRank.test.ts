@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { buildLearningToRankRows, fitLinearRankingWeights } from './learningToRank';
+import { activeDefaultRankingWeights, DEFAULT_RANKING_WEIGHTS } from './engine';
+import { buildLearningToRankRows, buildPublicEvaluationRankingRows, fitLinearRankingWeights } from './learningToRank';
 import { testDataset } from './testDataset';
 
 describe('learning-to-rank baseline', () => {
-  it('exports supervised ranking rows from existing public evaluation labels', () => {
+  it('exports supervised ranking rows from robustness perturbations while holding public eval out', () => {
     const rows = buildLearningToRankRows(testDataset);
+    const heldOutRows = buildPublicEvaluationRankingRows(testDataset);
 
     expect(rows.length).toBeGreaterThan(testDataset.evaluationCases.length);
+    expect(heldOutRows.length).toBeGreaterThan(testDataset.evaluationCases.length);
+    expect(rows.every((row) => row.caseId.includes('-'))).toBe(true);
     expect(rows.some((row) => row.label === 3)).toBe(true);
     expect(rows[0].features).toEqual(
       expect.objectContaining({
@@ -26,5 +30,10 @@ describe('learning-to-rank baseline', () => {
     expect(model.train.total).toBeGreaterThan(0);
     expect(model.validation.total).toBeGreaterThan(0);
     expect(model.validation.top3Recall).toBeGreaterThan(0.8);
+  });
+
+  it('loads learned ranking weights as runtime defaults', () => {
+    expect(activeDefaultRankingWeights()).not.toEqual(DEFAULT_RANKING_WEIGHTS);
+    expect(Object.values(activeDefaultRankingWeights()).reduce((sum, value) => sum + value, 0)).toBeCloseTo(1, 5);
   });
 });

@@ -1,6 +1,7 @@
 import { DEFAULT_RANKING_WEIGHTS, suggest } from './engine';
 import { normalizeText } from './normalize';
-import type { EvaluationCase, RankingWeights, ScoreFactors, Suggestion, TascoDataset } from './types';
+import { buildRobustnessCases } from './robustness';
+import type { BehaviorEvent, EvaluationCase, RankingWeights, ScoreFactors, Suggestion, TascoDataset } from './types';
 
 export interface RankingTrainingRow {
   caseId: string;
@@ -31,26 +32,41 @@ export interface LearnedRankingModel {
 
 const FEATURE_KEYS = Object.keys(DEFAULT_RANKING_WEIGHTS) as Array<keyof RankingWeights>;
 
-export function buildLearningToRankRows(dataset: TascoDataset, limit = 12): RankingTrainingRow[] {
-  return dataset.evaluationCases.flatMap((evaluationCase) => rowsForCase(dataset, evaluationCase, limit));
+export function buildLearningToRankRows(dataset: TascoDataset, limit = 12, behaviorEvents: BehaviorEvent[] = []): RankingTrainingRow[] {
+  const robustnessRows = buildRobustnessCases(dataset).flatMap((robustnessCase) =>
+    rowsForTarget(
+      dataset,
+      {
+        caseId: robustnessCase.caseId,
+        inputPrefix: robustnessCase.inputPrefix,
+        expectedSuggestionType: robustnessCase.expectedSuggestionType,
+        expectedTopSuggestions: robustnessCase.expectedTopSuggestions,
+      },
+      limit,
+    ),
+  );
+  return [...robustnessRows, ...buildBehaviorRankingRows(dataset, behaviorEvents, limit)];
 }
 
-export function fitLinearRankingWeights(dataset: TascoDataset): LearnedRankingModel {
-  const rows = buildLearningToRankRows(dataset);
-  const validationCaseIds = new Set(
-    dataset.evaluationCases
-      .filter((_, index) => index % 5 === 0)
-      .map((evaluationCase) => evaluationCase.caseId),
-  );
-  const trainRows = rows.filter((row) => !validationCaseIds.has(row.caseId));
-  const validationRows = rows.filter((row) => validationCaseIds.has(row.caseId));
-  const weights = coordinateSearchWeights(trainRows);
+export function buildPublicEvaluationRankingRows(dataset: TascoDataset, limit = 12): RankingTrainingRow[] {
+  return dataset.evaluationCases.flatMap((evaluationCase) => rowsForTarget(dataset, evaluationCase, limit));
+}
+
+export function buildBehaviorRankingRows(dataset: TascoDataset, behaviorEvents: BehaviorEvent[], limit = 12): RankingTrainingRow[] {
+  return behaviorEvents.flatMap((event, index) => rowsForBehaviorEvent(dataset, event, index, limit));
+}
+
+export function fitLinearRankingWeights(dataset: TascoDataset, behaviorEvents: BehaviorEvent[] = []): LearnedRankingModel {
+  const trainRows = buildLearningToRankRows(dataset, 12, behaviorEvents);
+  const validationRows = buildPublicEvaluationRankingRows(dataset);
+  const weights = pairwiseLogisticWeights(trainRows);
   return {
     weights,
     train: evaluateRankingRows(trainRows, weights),
     validation: evaluateRankingRows(validationRows, weights),
-    rows: rows.length,
-    note: 'Dependency-free linear LTR baseline over existing score factors; use larger judged logs before claiming production ML ranking.',
+    rows: trainRows.length,
+    note:
+      'Pairwise logistic linear ranker trained on robustness perturbations plus optional behavior selections; public evaluation rows are held out for validation.',
   };
 }
 
@@ -76,23 +92,52 @@ export function evaluateRankingRows(rows: RankingTrainingRow[], weights: Ranking
   };
 }
 
-function rowsForCase(dataset: TascoDataset, evaluationCase: EvaluationCase, limit: number): RankingTrainingRow[] {
-  const response = suggest(dataset, { q: evaluationCase.inputPrefix, limit });
-  const expectedIntent = normalizeExpectedIntent(evaluationCase.expectedSuggestionType);
+function rowsForTarget(
+  dataset: TascoDataset,
+  target: Pick<EvaluationCase, 'caseId' | 'inputPrefix' | 'expectedSuggestionType' | 'expectedTopSuggestions'>,
+  limit: number,
+): RankingTrainingRow[] {
+  const response = suggest(dataset, { q: target.inputPrefix, limit, rankingWeights: DEFAULT_RANKING_WEIGHTS });
+  const expectedIntent = normalizeExpectedIntent(target.expectedSuggestionType);
   return response.suggestions.map((suggestion): RankingTrainingRow => ({
-    caseId: evaluationCase.caseId,
-    query: evaluationCase.inputPrefix,
+    caseId: target.caseId,
+    query: target.inputPrefix,
     suggestionId: suggestion.id,
     text: suggestion.text,
     source: suggestion.source,
     type: suggestion.type,
-    label: relevanceLabel(suggestion, evaluationCase, expectedIntent),
+    label: relevanceLabel(suggestion, target, expectedIntent),
     features: suggestion.metadata.factors,
   }));
 }
 
-function relevanceLabel(suggestion: Suggestion, evaluationCase: EvaluationCase, expectedIntent: Suggestion['type']): RankingTrainingRow['label'] {
-  if (evaluationCase.expectedTopSuggestions.some((expected) => isExpectedMatch(suggestion.text, expected))) {
+function rowsForBehaviorEvent(dataset: TascoDataset, event: BehaviorEvent, index: number, limit: number): RankingTrainingRow[] {
+  const response = suggest(dataset, {
+    q: event.query,
+    userId: event.userId,
+    city: event.city,
+    limit,
+    rankingWeights: DEFAULT_RANKING_WEIGHTS,
+    behaviorEvents: [event],
+  });
+  return response.suggestions.map((suggestion): RankingTrainingRow => ({
+    caseId: `behavior-${index}`,
+    query: event.query,
+    suggestionId: suggestion.id,
+    text: suggestion.text,
+    source: suggestion.source,
+    type: suggestion.type,
+    label: behaviorLabel(suggestion, event),
+    features: suggestion.metadata.factors,
+  }));
+}
+
+function relevanceLabel(
+  suggestion: Suggestion,
+  target: Pick<EvaluationCase, 'expectedTopSuggestions'>,
+  expectedIntent: Suggestion['type'],
+): RankingTrainingRow['label'] {
+  if (target.expectedTopSuggestions.some((expected) => isExpectedMatch(suggestion.text, expected))) {
     return 3;
   }
   if (suggestion.type === expectedIntent) {
@@ -101,36 +146,63 @@ function relevanceLabel(suggestion: Suggestion, evaluationCase: EvaluationCase, 
   return 0;
 }
 
-function coordinateSearchWeights(rows: RankingTrainingRow[]): RankingWeights {
+function behaviorLabel(suggestion: Suggestion, event: BehaviorEvent): RankingTrainingRow['label'] {
+  if (isExpectedMatch(suggestion.text, event.selectedText)) {
+    return 3;
+  }
+  if (suggestion.type === event.selectedType) {
+    return 1;
+  }
+  return 0;
+}
+
+function pairwiseLogisticWeights(rows: RankingTrainingRow[]): RankingWeights {
+  const pairs = pairwiseDeltas(rows);
+  if (!pairs.length) {
+    return DEFAULT_RANKING_WEIGHTS;
+  }
+
   let current = { ...DEFAULT_RANKING_WEIGHTS };
-  let currentScore = objective(rows, current);
-  for (const step of [0.12, 0.08, 0.05, 0.03, 0.015]) {
-    let improved = true;
-    while (improved) {
-      improved = false;
+  let learningRate = 0.16;
+  const l2 = 0.025;
+
+  for (let iteration = 0; iteration < 360; iteration += 1) {
+    const gradient = Object.fromEntries(FEATURE_KEYS.map((key) => [key, 0])) as RankingWeights;
+    for (const pair of pairs) {
+      const margin = FEATURE_KEYS.reduce((sum, key) => sum + current[key] * pair.delta[key], 0);
+      const probability = sigmoid(margin);
+      const scale = (probability - 1) * pair.weight;
       for (const key of FEATURE_KEYS) {
-        for (const direction of [1, -1]) {
-          const candidate = normalizeWeights({
-            ...current,
-            [key]: Math.max(0, current[key] + direction * step),
-          });
-          const candidateScore = objective(rows, candidate);
-          if (candidateScore > currentScore + 0.0001) {
-            current = candidate;
-            currentScore = candidateScore;
-            improved = true;
-          }
-        }
+        gradient[key] += scale * pair.delta[key];
       }
     }
+    for (const key of FEATURE_KEYS) {
+      const regularized = gradient[key] / pairs.length + l2 * (current[key] - DEFAULT_RANKING_WEIGHTS[key]);
+      current[key] = Math.max(0, current[key] - learningRate * regularized);
+    }
+    current = normalizeWeights(current);
+    learningRate *= 0.993;
   }
+
   return current;
 }
 
-function objective(rows: RankingTrainingRow[], weights: RankingWeights): number {
-  const metrics = evaluateRankingRows(rows, weights);
-  const regularization = FEATURE_KEYS.reduce((sum, key) => sum + Math.abs(weights[key] - DEFAULT_RANKING_WEIGHTS[key]), 0);
-  return metrics.ndcgAt5 * 0.45 + metrics.mrr * 0.35 + metrics.top3Recall * 0.2 - regularization * 0.015;
+function pairwiseDeltas(rows: RankingTrainingRow[]): Array<{ delta: RankingWeights; weight: number }> {
+  const pairs: Array<{ delta: RankingWeights; weight: number }> = [];
+  for (const group of groupByCase(rows).values()) {
+    for (const higher of group) {
+      for (const lower of group) {
+        if (higher.label <= lower.label) {
+          continue;
+        }
+        pairs.push({
+          delta: Object.fromEntries(FEATURE_KEYS.map((key) => [key, higher.features[key] - lower.features[key]])) as RankingWeights,
+          weight: (higher.label - lower.label) / 3,
+        });
+      }
+    }
+  }
+  return pairs;
 }
 
 function scoreRow(row: RankingTrainingRow, weights: RankingWeights): number {
@@ -165,6 +237,12 @@ function normalizeWeights(weights: RankingWeights): RankingWeights {
     return DEFAULT_RANKING_WEIGHTS;
   }
   return Object.fromEntries(FEATURE_KEYS.map((key) => [key, Math.max(0, weights[key]) / total])) as RankingWeights;
+}
+
+function sigmoid(value: number): number {
+  if (value >= 30) return 1;
+  if (value <= -30) return 0;
+  return 1 / (1 + Math.exp(-value));
 }
 
 function normalizeExpectedIntent(value: string): Suggestion['type'] {

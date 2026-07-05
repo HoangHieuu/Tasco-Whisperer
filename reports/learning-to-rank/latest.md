@@ -1,34 +1,39 @@
-# Learning-To-Rank Baseline Report
+# Pairwise Learning-To-Rank Report
 
-Generated: 2026-07-03T16:16:52.017Z
+Generated: 2026-07-05T04:46:17.305Z
 
-This is a dependency-free linear learning-to-rank baseline over the existing
-transparent score factors. It is useful as a training-ready path and regression
-guard, not as a production ML-ranker claim while labels are limited to the
-provided hackathon evaluation rows.
+This is a dependency-free pairwise logistic learning-to-rank model over the
+existing transparent score factors. It trains on metamorphic robustness
+perturbations plus optional server-side behavior selections, while the public
+evaluation rows are held out for validation.
+
+- Runtime config: `config/ranking-weights.json`
+- Robustness rows: 1626
+- Behavior rows: 0
+- Behavior log: `data/behavior-events.local.json`
 
 ## Metrics
 
 | Split | Cases | Top-1 | Top-3 | MRR | NDCG@5 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| train | 48 | 97.9% | 100% | 0.99 | 0.964 |
-| validation | 12 | 75% | 100% | 0.861 | 0.866 |
+| train | 192 | 94.3% | 100% | 0.969 | 0.952 |
+| validation | 60 | 96.7% | 100% | 0.983 | 0.955 |
 
 ## Learned Weights
 
 ```json
 {
-  "lexical": 0.31658092599920856,
-  "intent": 0.1582904629996043,
-  "source": 0.15829046299960428,
-  "popularity": 0.10552697533306951,
-  "poiQuality": 0.10302070966890912,
-  "locality": 0.052763487666534756,
-  "personalization": 0.052763487666534756,
-  "diversity": 0.052763487666534756
+  "lexical": 0.3620541218189766,
+  "intent": 0.26300701175166596,
+  "source": 0.09314885834125675,
+  "popularity": 0.058682762499052445,
+  "poiQuality": 0,
+  "locality": 0.005362823769400796,
+  "personalization": 0.005362823769400796,
+  "diversity": 0.21238159805024667
 }
 ```
 
 ## Note
 
-Dependency-free linear LTR baseline over existing score factors; use larger judged logs before claiming production ML ranking.
+Pairwise logistic linear ranker trained on robustness perturbations plus optional behavior selections; public evaluation rows are held out for validation.

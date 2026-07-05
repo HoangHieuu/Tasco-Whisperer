@@ -1,4 +1,6 @@
 {
+  "version": 1,
+  "model": "pairwise-logistic-linear",
   "weights": {
     "lexical": 0.3620541218189766,
     "intent": 0.26300701175166596,
@@ -24,5 +26,10 @@
     "ndcgAt5": 0.955
   },
   "rows": 1626,
+  "trainingRows": {
+    "robustness": 1626,
+    "behavior": 0
+  },
+  "behaviorLogPath": "data/behavior-events.local.json",
   "note": "Pairwise logistic linear ranker trained on robustness perturbations plus optional behavior selections; public evaluation rows are held out for validation."
 }
