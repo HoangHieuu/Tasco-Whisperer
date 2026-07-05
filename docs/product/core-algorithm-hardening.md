@@ -10,7 +10,7 @@ without importing outside datasets.
 | Hand-authored semantic templates | Large autocomplete systems use retrieve-and-rank pipelines: search-as-you-type indexes, query-suggestion indexes, catalog-grounded retrieval, and feature ranking. | Keep legacy templates as fallback, but add data-derived category/attribute/location phrase generation from the provided CSV entity inventory. |
 | Only 60 public evaluation rows | IR systems use test collections plus query-level failure analysis; robustness testing uses metamorphic variants when a full oracle is unavailable. | Add `npm run eval:robust` to generate accentless, compact, uppercase, spacing, truncated-prefix, and abbreviation variants from the supplied labels. |
 | No large POI corpus yet | Production map search depends on a much larger catalog and phased retrieval, but importing outside data changes provenance and license scope. | Do not add outside POIs in this slice. Strengthen corpus-ready retrieval and generated candidates against the current CSV schema. |
-| No production ML ranker | Mature search stacks use learning-to-rank, commonly LambdaMART/GBDT, after enough judged data or behavior logs exist. | Add a dependency-free linear LTR baseline over current score factors via `npm run rank:train`; treat it as training-ready scaffolding, not a production ML claim. |
+| No production ML ranker | Mature search stacks use learning-to-rank, commonly LambdaMART/GBDT, after enough judged data or behavior logs exist. | Add a dependency-free pairwise linear LTR model over current score factors via `npm run rank:train`; load the learned weights at runtime while keeping an env fallback to default weights. |
 | Vietnamese patterns are incomplete | Vietnamese NLP commonly uses word segmentation, guarded diacritic/keyboard cleanup, and dictionary-backed entity evidence. | Keep deterministic Vietnamese segmentation first, and use robustness evaluation to expose compact/spacing/accent regressions before adding model dependencies. |
 
 ## Implemented In This Slice
@@ -28,9 +28,9 @@ without importing outside datasets.
 
 ## Current Proof
 
-- Public evaluation: 60 cases, top-1 96.7%, top-3 100%, top-5 100%, intent 98.3%, MRR 0.983, p95 40 ms.
+- Public evaluation: 60 cases, top-1 93.3%, top-3 100%, top-5 100%, intent 98.3%, MRR 0.967, p95 36 ms.
 - Robustness evaluation: 192 generated cases, top-3 100%, top-5 100%, compact transform 53/53, p95 28 ms.
-- LTR baseline: 501 training rows, validation top-3 100%, validation NDCG@5 0.866.
+- LTR baseline: 1,626 robustness rows, validation top-3 100%, validation NDCG@5 0.955.
 
 ## Research Basis
 

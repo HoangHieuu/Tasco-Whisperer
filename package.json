@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "demo": "node scripts/runDemo.mjs",
     "api:dev": "tsx scripts/api.ts",
     "api:smoke": "tsx scripts/smokeApi.ts",
     "build": "tsc -b && vite build",
@@ -15,6 +16,7 @@
     "eval:robust": "tsx scripts/evaluateRobustness.ts",
     "rank:tune": "tsx scripts/tuneRanking.ts",
     "rank:train": "tsx scripts/trainRanking.ts",
+    "prediction:build": "tsx scripts/buildPredictionLm.ts",
     "embeddings:build": "tsx scripts/buildEmbeddings.ts",
     "enrich:report": "tsx scripts/enrichmentReport.ts",
     "tune:agentic": "tsx scripts/agenticTuning.ts",

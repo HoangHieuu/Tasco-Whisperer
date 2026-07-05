@@ -101,11 +101,11 @@ optional ranking weights through `SuggestRequest.rankingWeights`, and
 With only 60 public cases, this is a reproducible tuning assistant, not a
 production ML claim.
 
-`npm run rank:train` now exports supervised rows from the public labels and
-fits a regularized linear learning-to-rank baseline. This is the correct
-intermediate step before a LambdaMART/GBDT ranker: it proves feature extraction,
-label mapping, held-out evaluation, and reproducible report output while being
-honest that the current label count is too small for production ML claims.
+`npm run rank:train` now trains a pairwise linear ranker from robustness
+perturbations plus optional behavior logs, holds public labels out for
+validation, and writes deployed runtime weights to `config/ranking-weights.json`.
+This remains dependency-free and transparent while keeping a path toward a
+larger LambdaMART/GBDT ranker when more judged logs exist.
 
 ### Robustness Evaluation
 

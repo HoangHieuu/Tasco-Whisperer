@@ -16,13 +16,13 @@ todos:
     status: completed
   - id: phase3-prediction-lm
     content: Add n-gram/trie prefix-completion language model as a 'predicted' candidate source
-    status: pending
+    status: completed
   - id: phase4-ltr-deploy
     content: Retrain ranker on perturbation+behavior data with pairwise logistic regression; load learned weights at runtime from config
-    status: pending
+    status: completed
   - id: phase5-personalization
     content: Server-side behavior event log with recency decay; accept events through API and facade; unify duplicate boost logic
-    status: pending
+    status: completed
   - id: phase6-context
     content: Use lat/lon haversine distance in locality factor and time-of-day boosts from enrichment hours
     status: pending
@@ -129,6 +129,14 @@ Implementation note, 2026-07-04: Phase 0, Phase 2, and Phase 7 are complete. `np
 
 Implementation note, 2026-07-05: Phase 1 is complete. Compact alias/abbreviation token splitting now rewrites `ksd`, `coffeenear`, `nguyenhuee`, `12nguyenhueq`, and `dhbk` through the main deterministic `understandQuery` path while preserving negative compact fallback such as `capherang`. `npm run eval:robust` now reports 192 cases, 100% top-3/top-5 recall, compact 53/53 top-3, no top-3 misses, and p95 28 ms. `npm run check` passes with 17 test files, 106 tests, public eval top-1 96.7%, top-3/top-5 100%, intent 98.3%, API smoke, and production build.
 
+Implementation note, 2026-07-05: Phase 3 is complete. `src/lib/predictionLm.ts` trains a deterministic prefix-completion language model from autocomplete, popular-query, POI, and generated product-language corpora while excluding public evaluation answers. The engine now admits a `source: 'predicted'` candidate source with grounded narrator labels and keeps predictions scoped to multi-token in-progress phrases so exact autocomplete/POI evidence and compact negative fallback remain stable. `npm run prediction:build` writes `data/prediction-lm.json` with 301 phrases. `npm run test -- --run src/lib/predictionLm.test.ts src/lib/engine.test.ts src/lib/suggestionNarrator.test.ts` passes with 3 files and 27 tests.
+
+Implementation note, 2026-07-05: Phase 5 is complete. Behavior personalization now uses the shared `src/lib/behavior.ts` recency/frequency scorer, replacing the duplicate frontend boost logic and preserving city-scoped matching. The API server loads a disposable JSON log from `data/behavior-events.local.json` by default, accepts selection events through `POST /api/behavior-events` and `POST /v1/behavior-events`, and replays stored events into both `/api/suggest` and TASCO facade autocomplete/search by `userId`/`sessionId`. Browser selections still persist locally and now best-effort POST to the server. `npm run test -- --run src/lib/behavior.test.ts src/lib/engine.test.ts src/lib/suggestApi.test.ts src/lib/tascoFacade.test.ts src/lib/frontendSuggest.test.ts` passes with 5 files and 65 tests.
+
+Implementation note, 2026-07-05: Phase 4 is complete. `src/lib/learningToRank.ts` now trains a dependency-free pairwise logistic linear ranker on 1,626 robustness perturbation rows plus optional server behavior selections, while the 60 public evaluation rows are held out for validation. `npm run rank:train` writes `config/ranking-weights.json` and the engine loads those learned weights as the runtime default unless `TASCO_DISABLE_LEARNED_RANKER=true` or `VITE_TASCO_DISABLE_LEARNED_RANKER=true` is set. Current learned config reports train top-3 100%, validation top-3 100%, validation NDCG@5 0.955, and behavior rows 0 because the local behavior log is empty. `npm run test -- --run src/lib/learningToRank.test.ts src/lib/engine.test.ts src/lib/suggestApi.test.ts src/lib/tascoFacade.test.ts` passes with 4 files and 59 tests.
+
+Final verification note, 2026-07-05: `npm run check` passes with 20 test files, 117 tests, public eval top-1 93.3%, top-3/top-5 100%, intent 98.3%, MRR 0.967, p95 36 ms, API smoke including behavior-event replay, and production build. `npm run eval:robust` passes with 192 cases, top-3/top-5 100%, compact 53/53, and p95 28 ms. `npm run eval:minilm` passes with top-1 93.3%, top-3/top-5 100%, intent 98.3%, MRR 0.967, p95 31 ms, MiniLM provider on 60/60 cases, and 0 degraded cases. The learned runtime ranker trades top-1 from the prior 96.7% default to 93.3%, still above the plan's >=90% gate.
+
 Engineering cleanup:
 - `suggest()` and `suggestAsync()` duplicate most of the pipeline and should be unified before more ranking/rewrite work.
 
@@ -141,11 +149,11 @@ To-do Lists:
 
 [x] Replace rule-vote intent classifier with embedding kNN voting; shrink SEMANTIC_TEMPLATES with eval guard
 
-[ ] Add n-gram/trie prefix-completion language model as a 'predicted' candidate source
+[x] Add n-gram/trie prefix-completion language model as a 'predicted' candidate source
 
-[ ] Retrain ranker on perturbation+behavior data with pairwise logistic regression; load learned weights at runtime from config
+[x] Retrain ranker on perturbation+behavior data with pairwise logistic regression; load learned weights at runtime from config
 
-[ ] Server-side behavior event log with recency decay; accept events through API and facade; unify duplicate boost logic
+[x] Server-side behavior event log with recency decay; accept events through API and facade; unify duplicate boost logic
 
 [ ] Use lat/lon haversine distance in locality factor and time-of-day boosts from enrichment hours
 

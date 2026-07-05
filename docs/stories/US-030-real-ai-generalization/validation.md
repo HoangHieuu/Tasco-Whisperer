@@ -41,21 +41,22 @@ npm run check
 - `npm run embeddings:build`: generated
   `data/semantic-embeddings.minilm.json` with 316 documents and 384 dimensions
   using `Xenova/paraphrase-multilingual-MiniLM-L12-v2`.
-- `npm run test`: 17 test files passed, 106 tests passed.
-- `npm run eval`: 60 cases, top-1 96.7%, top-3 100%, top-5 100%,
-  intent 98.3%, MRR 0.983, p95 40 ms in `npm run check`.
+- `npm run test`: 20 test files passed, 117 tests passed.
+- `npm run eval`: 60 cases, top-1 93.3%, top-3 100%, top-5 100%,
+  intent 98.3%, MRR 0.967, p95 36 ms in `npm run check`.
 - `npm run eval:minilm`: 60 cases through the async MiniLM server path,
-  top-1 96.7%, top-3 100%, top-5 100%, intent 98.3%, MRR 0.983,
-  p95 28 ms, 60/60 MiniLM provider cases, and 0 degraded embedding cases.
+  top-1 93.3%, top-3 100%, top-5 100%, intent 98.3%, MRR 0.967,
+  p95 31 ms, 60/60 MiniLM provider cases, and 0 degraded embedding cases.
 - `npm run eval:robust`: 192 cases, top-3 100%, top-5 100%,
   compact transform 53/53 top-3, no top-3 misses, p95 28 ms.
 - `npm run api:smoke`: `/api/suggest` and TASCO facade routes returned
-  `ok: true`, including route, POI enrichment, mock errors, and local fallback.
+  `ok: true`, including behavior-event replay, route, POI enrichment, mock
+  errors, and local fallback.
 - `npm run build`: TypeScript and Vite production build passed.
 - `npm run check`: repeated tests, public eval, API smoke, and build
   successfully.
 - Template pruning was guarded by sync and MiniLM eval; the rendered template
-  count is now 83 while maintaining top-1 96.7% and intent 98.3%.
+  count is now 83 while maintaining top-1 93.3%, top-3 100%, and intent 98.3%.
 - kNN intent voting is measured in the async path; coordinate/navigation and
   direct-evidence safeguards remain in place for deterministic fallback quality.
 - Runtime alias-memory write-back is wired through accepted hosted/local rewrite

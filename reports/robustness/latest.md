@@ -1,6 +1,6 @@
 # Robustness Evaluation Report
 
-Generated: 2026-07-05T03:31:57.065Z
+Generated: 2026-07-05T04:41:32.241Z
 
 This report is generated only from the provided hackathon CSVs. It adds
 metamorphic variants such as accentless, compact, uppercase, spacing,

@@ -14,15 +14,15 @@
         "Vinpearl",
         "Vincom Center",
         "Vinmec",
-        "Vincom Center Đồng Khởi",
         "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Vincom Center Đồng Khởi",
         "Vinmec Times City",
-        "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
-        "vincom đồng khởi"
+        "vincom đồng khởi",
+        "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 39
+      "latencyMs": 45
     },
     {
       "caseId": "PUB002-uppercase",
@@ -38,15 +38,15 @@
         "Quán cà phê gần đây",
         "Coffee near me",
         "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
-        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
         "Highlands Coffee Nguyễn Huệ",
         "The Coffee House Trần Duy Hưng",
-        "Cà phê mở cửa 24/7"
+        "Lotte Mart Quán cà phê Phan Chu Trinh Hải Phòng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 29
+      "latencyMs": 33
     },
     {
       "caseId": "PUB002-truncated",
@@ -63,14 +63,14 @@
         "Highlands Coffee Nguyễn Huệ",
         "Cà phê mở cửa 24/7",
         "Highlands Coffee",
-        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
-        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Cây xăng gần đây",
         "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
-        "Bệnh viện Bạch Mai"
+        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 17
+      "latencyMs": 21
     },
     {
       "caseId": "PUB003-uppercase",
@@ -94,7 +94,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 18
+      "latencyMs": 19
     },
     {
       "caseId": "PUB004-compact",
@@ -111,13 +111,13 @@
         "12 Nguyễn Huệ, Quận 1, TP.HCM",
         "Phố đi bộ Nguyễn Huệ",
         "Bãi biển Mỹ Khê",
-        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "Khách sạn Nguyễn Huệ TP.HCM"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 27
+      "latencyMs": 31
     },
     {
       "caseId": "PUB004-uppercase",
@@ -134,13 +134,13 @@
         "12 Nguyễn Huệ, Quận 1, TP.HCM",
         "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "Khách sạn Nguyễn Huệ TP.HCM",
-        "Nhà hàng Nguyễn Huệ Đà Nẵng",
         "Nhà hàng Nguyễn Huệ Hải Phòng",
-        "Phố đi bộ Nguyễn Huệ"
+        "Nhà hàng Nguyễn Huệ Đà Nẵng",
+        "Nhà hàng Nguyễn Huệ Nha Trang"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 24
     },
     {
       "caseId": "PUB004-spaced",
@@ -157,13 +157,13 @@
         "12 Nguyễn Huệ, Quận 1, TP.HCM",
         "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "Khách sạn Nguyễn Huệ TP.HCM",
-        "Nhà hàng Nguyễn Huệ Đà Nẵng",
         "Nhà hàng Nguyễn Huệ Hải Phòng",
-        "Phố đi bộ Nguyễn Huệ"
+        "Nhà hàng Nguyễn Huệ Đà Nẵng",
+        "Nhà hàng Nguyễn Huệ Nha Trang"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 22
+      "latencyMs": 24
     },
     {
       "caseId": "PUB005-compact",
@@ -181,12 +181,12 @@
         "Bệnh viện Bạch Mai",
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
         "Bệnh viện Trần Duy Hưng TP.HCM",
-        "Vinmec Times City",
-        "Bệnh viện Trần Duy Hưng Hải Phòng"
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Vinmec Times City"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 25
     },
     {
       "caseId": "PUB005-uppercase",
@@ -203,13 +203,13 @@
         "Bệnh viện Bạch Mai",
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
         "Bệnh viện Trần Duy Hưng TP.HCM",
-        "Vinmec Times City",
         "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Vinmec Times City",
         "Bến xe Miền Đông mới"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 20
+      "latencyMs": 22
     },
     {
       "caseId": "PUB005-spaced",
@@ -226,13 +226,13 @@
         "Bệnh viện Bạch Mai",
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
         "Bệnh viện Trần Duy Hưng TP.HCM",
-        "Vinmec Times City",
         "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Vinmec Times City",
         "Bến xe Miền Đông mới"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 20
+      "latencyMs": 22
     },
     {
       "caseId": "PUB006-compact",
@@ -255,7 +255,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 46
+      "latencyMs": 27
     },
     {
       "caseId": "PUB006-uppercase",
@@ -273,12 +273,12 @@
         "Hotel Đà Nẵng",
         "Khách sạn gần biển Mỹ Khê",
         "Khách sạn gần Chợ Bến Thành",
-        "Khách sạn gần đây",
-        "Khách sạn Nguyễn Huệ TP.HCM"
+        "Khách sạn Đà Lạt",
+        "Khách sạn gần đây"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 28
+      "latencyMs": 26
     },
     {
       "caseId": "PUB006-spaced",
@@ -296,12 +296,12 @@
         "Hotel Đà Nẵng",
         "Khách sạn gần biển Mỹ Khê",
         "Khách sạn gần Chợ Bến Thành",
-        "Khách sạn gần đây",
-        "Khách sạn Nguyễn Huệ TP.HCM"
+        "Khách sạn Đà Lạt",
+        "Khách sạn gần đây"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 27
+      "latencyMs": 26
     },
     {
       "caseId": "PUB007-compact",
@@ -313,17 +313,17 @@
       ],
       "actual": [
         "Bệnh viện Bạch Mai",
+        "Bệnh viện gần đây",
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
         "Bệnh viện Trần Duy Hưng TP.HCM",
-        "Vinmec Times City",
         "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Vinmec Times City",
         "Bệnh viện Điện Biên Phủ Nha Trang",
-        "Bệnh viện Lê Lợi Đà Lạt",
-        "Bệnh viện gần đây"
+        "Bệnh viện Lý Thường Kiệt Hà Nội"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 27
+      "latencyMs": 26
     },
     {
       "caseId": "PUB007-uppercase",
@@ -338,14 +338,14 @@
         "Trường Đại học Bách Khoa Hà Nội",
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
         "Bệnh viện Trần Duy Hưng TP.HCM",
-        "Vinmec Times City",
         "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Vinmec Times City",
         "Bệnh viện Điện Biên Phủ Nha Trang",
-        "Bệnh viện Lê Lợi Đà Lạt"
+        "Bệnh viện Lý Thường Kiệt Hà Nội"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 26
     },
     {
       "caseId": "PUB007-spaced",
@@ -360,14 +360,14 @@
         "Trường Đại học Bách Khoa Hà Nội",
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
         "Bệnh viện Trần Duy Hưng TP.HCM",
-        "Vinmec Times City",
         "Bệnh viện Trần Duy Hưng Hải Phòng",
+        "Vinmec Times City",
         "Bệnh viện Điện Biên Phủ Nha Trang",
-        "Bệnh viện Lê Lợi Đà Lạt"
+        "Bệnh viện Lý Thường Kiệt Hà Nội"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 26
     },
     {
       "caseId": "PUB007-truncated",
@@ -380,16 +380,16 @@
       "actual": [
         "Bệnh viện Bạch Mai",
         "Bệnh viện gần sân bay",
+        "Bệnh viện gần đây",
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
         "Bệnh viện Trần Duy Hưng TP.HCM",
-        "Vinmec Times City",
         "Bệnh viện Trần Duy Hưng Hải Phòng",
-        "Bệnh viện gần đây",
-        "Bệnh viện Điện Biên Phủ Nha Trang"
+        "Vinmec Times City",
+        "bệnh viện gần nhất"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 29
     },
     {
       "caseId": "PUB008-compact",
@@ -404,14 +404,14 @@
         "Trạm xăng gần đây",
         "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "BIDV Cây xăng Trần Duy Hưng TP.HCM",
-        "The Coffee House Cây xăng Lý Thường Kiệt Đà Nẵng",
         "Cây xăng Petrolimex Nguyễn Trãi",
+        "The Coffee House Cây xăng Lý Thường Kiệt Đà Nẵng",
         "CGV Cây xăng Pasteur Hà Nội",
         "Vincom Cây xăng Điện Biên Phủ Nha Trang"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 31
     },
     {
       "caseId": "PUB008-uppercase",
@@ -424,16 +424,16 @@
       "actual": [
         "Cây xăng gần đây",
         "Trạm xăng gần đây",
-        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
-        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
-        "The Coffee House Cây xăng Lý Thường Kiệt Đà Nẵng",
         "Cây xăng Petrolimex Nguyễn Trãi",
-        "CGV Cây xăng Pasteur Hà Nội",
-        "Vincom Cây xăng Điện Biên Phủ Nha Trang"
+        "Cây xăng Đà Lạt",
+        "Cây xăng Đà Nẵng",
+        "Cây xăng Hà Nội",
+        "Cây xăng Hải Phòng",
+        "Cây xăng Nha Trang"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 19
+      "latencyMs": 22
     },
     {
       "caseId": "PUB008-spaced",
@@ -446,16 +446,16 @@
       "actual": [
         "Cây xăng gần đây",
         "Trạm xăng gần đây",
-        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
-        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
-        "The Coffee House Cây xăng Lý Thường Kiệt Đà Nẵng",
         "Cây xăng Petrolimex Nguyễn Trãi",
-        "CGV Cây xăng Pasteur Hà Nội",
-        "Vincom Cây xăng Điện Biên Phủ Nha Trang"
+        "Cây xăng Đà Lạt",
+        "Cây xăng Đà Nẵng",
+        "Cây xăng Hà Nội",
+        "Cây xăng Hải Phòng",
+        "Cây xăng Nha Trang"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 20
+      "latencyMs": 21
     },
     {
       "caseId": "PUB009-compact",
@@ -471,7 +471,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 22
     },
     {
       "caseId": "PUB009-uppercase",
@@ -484,12 +484,12 @@
       "actual": [
         "Phở Thìn Lò Đúc",
         "Nhà hàng Nguyễn Huệ Hải Phòng",
+        "Phố đi bộ Nguyễn Huệ",
         "Khách sạn Lý Thường Kiệt Hải Phòng",
         "BIDV Trung tâm thương mại Võ Nguyên Giáp Hải Phòng",
-        "Phố đi bộ Nguyễn Huệ",
         "Lotte Mart Quán cà phê Phan Chu Trinh Hải Phòng",
         "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
-        "Bệnh viện Bạch Mai"
+        "Bệnh viện Trần Duy Hưng Hải Phòng"
       ],
       "top3Hit": true,
       "top5Hit": true,
@@ -506,16 +506,16 @@
       "actual": [
         "Phở Thìn Lò Đúc",
         "Nhà hàng Nguyễn Huệ Hải Phòng",
+        "Phố đi bộ Nguyễn Huệ",
         "Khách sạn Lý Thường Kiệt Hải Phòng",
         "BIDV Trung tâm thương mại Võ Nguyên Giáp Hải Phòng",
-        "Phố đi bộ Nguyễn Huệ",
         "Lotte Mart Quán cà phê Phan Chu Trinh Hải Phòng",
         "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
-        "Bệnh viện Bạch Mai"
+        "Bệnh viện Trần Duy Hưng Hải Phòng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 19
+      "latencyMs": 20
     },
     {
       "caseId": "PUB010-compact",
@@ -530,15 +530,15 @@
         "Quán cà phê gần đây",
         "Coffee near me",
         "Khách sạn gần đây",
-        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
         "Phở gần đây",
         "Bệnh viện gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
         "Lotte Mart Quán cà phê Lê Lợi Hà Nội",
         "cây xăng gần đây"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 24
     },
     {
       "caseId": "PUB010-uppercase",
@@ -552,8 +552,8 @@
       "actual": [
         "Quán cà phê gần đây",
         "Coffee near me",
-        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
         "ăn đêm gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
         "Lotte Mart Quán cà phê Lê Lợi Hà Nội",
         "Khách sạn gần đây",
         "cây xăng gần đây",
@@ -575,8 +575,8 @@
       "actual": [
         "Quán cà phê gần đây",
         "Coffee near me",
-        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
         "ăn đêm gần đây",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
         "Lotte Mart Quán cà phê Lê Lợi Hà Nội",
         "Khách sạn gần đây",
         "cây xăng gần đây",
@@ -598,16 +598,16 @@
       "actual": [
         "Quán cà phê gần đây",
         "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
-        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
         "Highlands Coffee Nguyễn Huệ",
         "The Coffee House Trần Duy Hưng",
         "Lotte Mart Quán cà phê Phan Chu Trinh Hải Phòng",
-        "Lotte Mart Quán cà phê Lê Lợi Hà Nội"
+        "Highlands Coffee Quán cà phê Lê Lợi Nha Trang"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 26
     },
     {
       "caseId": "PUB011-compact",
@@ -624,12 +624,12 @@
         "Phố đi bộ Nguyễn Huệ",
         "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "Khách sạn Nguyễn Huệ TP.HCM",
-        "Nhà hàng Nguyễn Huệ Đà Nẵng",
-        "Nhà hàng Nguyễn Huệ Hải Phòng"
+        "Nhà hàng Nguyễn Huệ Hải Phòng",
+        "Nhà hàng Nguyễn Huệ Đà Nẵng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 26
     },
     {
       "caseId": "PUB011-uppercase",
@@ -646,12 +646,12 @@
         "Phố đi bộ Nguyễn Huệ",
         "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "Khách sạn Nguyễn Huệ TP.HCM",
-        "Nhà hàng Nguyễn Huệ Đà Nẵng",
-        "Nhà hàng Nguyễn Huệ Hải Phòng"
+        "Nhà hàng Nguyễn Huệ Hải Phòng",
+        "Nhà hàng Nguyễn Huệ Đà Nẵng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 26
     },
     {
       "caseId": "PUB011-spaced",
@@ -668,12 +668,12 @@
         "Phố đi bộ Nguyễn Huệ",
         "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "Khách sạn Nguyễn Huệ TP.HCM",
-        "Nhà hàng Nguyễn Huệ Đà Nẵng",
-        "Nhà hàng Nguyễn Huệ Hải Phòng"
+        "Nhà hàng Nguyễn Huệ Hải Phòng",
+        "Nhà hàng Nguyễn Huệ Đà Nẵng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 26
     },
     {
       "caseId": "PUB011-truncated",
@@ -689,13 +689,13 @@
         "12 Nguyễn Huệ, Quận 1, TP.HCM",
         "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "Khách sạn Nguyễn Huệ TP.HCM",
-        "Nhà hàng Nguyễn Huệ Đà Nẵng",
         "Nhà hàng Nguyễn Huệ Hải Phòng",
-        "Phố đi bộ Nguyễn Huệ"
+        "Nhà hàng Nguyễn Huệ Đà Nẵng",
+        "Nhà hàng Nguyễn Huệ Nha Trang"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 20
+      "latencyMs": 23
     },
     {
       "caseId": "PUB012-compact",
@@ -710,10 +710,10 @@
         "vincom đồng khởi",
         "Vinpearl",
         "Vincom Center",
-        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
         "Vinmec",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
         "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
-        "Vincom ATM Võ Nguyên Giáp TP.HCM"
+        "Vincom Cây xăng Điện Biên Phủ Nha Trang"
       ],
       "top3Hit": true,
       "top5Hit": true,
@@ -761,18 +761,18 @@
         "ATM Vietcombank Quận 7"
       ],
       "actual": [
+        "ATM Vietcombank gần nhất",
         "ATM Vietcombank Quận 1",
         "ATM Vietcombank Quận 7",
-        "ATM Vietcombank gần nhất",
         "ATM BIDV gần đây",
-        "Highlands Coffee ATM Pasteur Nha Trang",
-        "ATM Vietcombank Nguyễn Huệ",
         "ATM gần sân bay",
+        "ATM Vietcombank Nguyễn Huệ",
+        "Highlands Coffee ATM Pasteur Nha Trang",
         "WinMart ATM Pasteur Hải Phòng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 24
     },
     {
       "caseId": "PUB013-uppercase",
@@ -784,18 +784,18 @@
         "ATM Vietcombank Quận 7"
       ],
       "actual": [
+        "ATM Vietcombank gần nhất",
         "ATM Vietcombank Quận 1",
         "ATM Vietcombank Quận 7",
-        "ATM Vietcombank gần nhất",
         "ATM BIDV gần đây",
         "atm vcb gần nhất",
-        "Highlands Coffee ATM Pasteur Nha Trang",
+        "ATM gần sân bay",
         "ATM Vietcombank Nguyễn Huệ",
-        "ATM gần sân bay"
+        "Highlands Coffee ATM Pasteur Nha Trang"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 25
     },
     {
       "caseId": "PUB013-spaced",
@@ -807,18 +807,18 @@
         "ATM Vietcombank Quận 7"
       ],
       "actual": [
+        "ATM Vietcombank gần nhất",
         "ATM Vietcombank Quận 1",
         "ATM Vietcombank Quận 7",
-        "ATM Vietcombank gần nhất",
         "ATM BIDV gần đây",
         "atm vcb gần nhất",
-        "Highlands Coffee ATM Pasteur Nha Trang",
+        "ATM gần sân bay",
         "ATM Vietcombank Nguyễn Huệ",
-        "ATM gần sân bay"
+        "Highlands Coffee ATM Pasteur Nha Trang"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 24
     },
     {
       "caseId": "PUB014-compact",
@@ -884,7 +884,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 21
+      "latencyMs": 22
     },
     {
       "caseId": "PUB015-compact",
@@ -958,7 +958,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 25
     },
     {
       "caseId": "PUB016-uppercase",
@@ -975,13 +975,13 @@
         "Khách sạn gần biển Đà Nẵng",
         "Hotel Đà Nẵng",
         "Khách sạn gần biển Mỹ Khê",
-        "Bãi biển Mỹ Khê",
-        "Bệnh viện Trần Duy Hưng Đà Nẵng",
-        "Khách sạn Mường Thanh Đà Nẵng"
+        "Khách sạn gần Chợ Bến Thành",
+        "Bãi biển Mỹ Khê Đà Nẵng",
+        "cây xăng gần đây"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 29
+      "latencyMs": 28
     },
     {
       "caseId": "PUB016-spaced",
@@ -998,13 +998,13 @@
         "Khách sạn gần biển Đà Nẵng",
         "Hotel Đà Nẵng",
         "Khách sạn gần biển Mỹ Khê",
-        "Bãi biển Mỹ Khê",
-        "Bệnh viện Trần Duy Hưng Đà Nẵng",
-        "Khách sạn Mường Thanh Đà Nẵng"
+        "Khách sạn gần Chợ Bến Thành",
+        "Bãi biển Mỹ Khê Đà Nẵng",
+        "cây xăng gần đây"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 26
+      "latencyMs": 29
     },
     {
       "caseId": "PUB017-compact",
@@ -1019,9 +1019,9 @@
         "Sân bay Nội Bài",
         "Khách sạn Lý Thường Kiệt Hà Nội",
         "Phở Thìn Lò Đúc",
+        "ATM gần sân bay",
         "Trường Đại học Bách Khoa Hà Nội",
         "Vinmec Times City",
-        "ATM gần sân bay",
         "CGV Cây xăng Pasteur Hà Nội"
       ],
       "top3Hit": true,
@@ -1038,16 +1038,17 @@
       ],
       "actual": [
         "Sân bay Nội Bài",
+        "Sân bay Nha Trang",
         "Bệnh viện gần sân bay",
         "Chỉ đường đến sân bay Nội Bài",
         "Chỉ đường đến sân bay Tân Sơn Nhất",
         "Phở Thìn Lò Đúc",
-        "Khách sạn Lý Thường Kiệt Hà Nội",
-        "ATM gần sân bay"
+        "ATM gần sân bay",
+        "Khách sạn Lý Thường Kiệt Hà Nội"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 20
+      "latencyMs": 19
     },
     {
       "caseId": "PUB017-spaced",
@@ -1059,16 +1060,17 @@
       ],
       "actual": [
         "Sân bay Nội Bài",
+        "Sân bay Nha Trang",
         "Bệnh viện gần sân bay",
         "Chỉ đường đến sân bay Nội Bài",
         "Chỉ đường đến sân bay Tân Sơn Nhất",
         "Phở Thìn Lò Đúc",
-        "Khách sạn Lý Thường Kiệt Hà Nội",
-        "ATM gần sân bay"
+        "ATM gần sân bay",
+        "Khách sạn Lý Thường Kiệt Hà Nội"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 21
+      "latencyMs": 19
     },
     {
       "caseId": "PUB018-compact",
@@ -1083,14 +1085,14 @@
         "ATM gần sân bay Nội Bài",
         "ATM Vietcombank gần nhất",
         "ATM BIDV gần đây",
-        "Highlands Coffee ATM Pasteur Nha Trang",
         "ATM Vietcombank Nguyễn Huệ",
+        "Highlands Coffee ATM Pasteur Nha Trang",
         "WinMart ATM Pasteur Hải Phòng",
         "Vietcombank ATM Nguyễn Huệ Đà Lạt"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 35
+      "latencyMs": 24
     },
     {
       "caseId": "PUB018-uppercase",
@@ -1105,14 +1107,14 @@
         "ATM gần sân bay Nội Bài",
         "ATM Vietcombank gần nhất",
         "ATM BIDV gần đây",
-        "Highlands Coffee ATM Pasteur Nha Trang",
         "ATM Vietcombank Nguyễn Huệ",
+        "Highlands Coffee ATM Pasteur Nha Trang",
         "WinMart ATM Pasteur Hải Phòng",
         "Vietcombank ATM Nguyễn Huệ Đà Lạt"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 22
+      "latencyMs": 23
     },
     {
       "caseId": "PUB018-spaced",
@@ -1127,8 +1129,8 @@
         "ATM gần sân bay Nội Bài",
         "ATM Vietcombank gần nhất",
         "ATM BIDV gần đây",
-        "Highlands Coffee ATM Pasteur Nha Trang",
         "ATM Vietcombank Nguyễn Huệ",
+        "Highlands Coffee ATM Pasteur Nha Trang",
         "WinMart ATM Pasteur Hải Phòng",
         "Vietcombank ATM Nguyễn Huệ Đà Lạt"
       ],
@@ -1150,13 +1152,13 @@
         "ATM Vietcombank gần nhất",
         "ATM BIDV gần đây",
         "atm vcb gần nhất",
-        "Highlands Coffee ATM Pasteur Nha Trang",
         "ATM Vietcombank Nguyễn Huệ",
+        "Highlands Coffee ATM Pasteur Nha Trang",
         "WinMart ATM Pasteur Hải Phòng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 24
     },
     {
       "caseId": "PUB019-uppercase",
@@ -1276,7 +1278,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 26
+      "latencyMs": 29
     },
     {
       "caseId": "PUB021-uppercase",
@@ -1294,12 +1296,12 @@
         "Cafe làm việc",
         "Quán cà phê yên tĩnh",
         "Quán cà phê đẹp để check-in",
-        "Cà phê mở cửa 24/7",
-        "quán cafe học bài"
+        "quán cafe học bài",
+        "Cà phê mở cửa 24/7"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 26
+      "latencyMs": 28
     },
     {
       "caseId": "PUB021-spaced",
@@ -1317,12 +1319,12 @@
         "Cafe làm việc",
         "Quán cà phê yên tĩnh",
         "Quán cà phê đẹp để check-in",
-        "Cà phê mở cửa 24/7",
-        "quán cafe học bài"
+        "quán cafe học bài",
+        "Cà phê mở cửa 24/7"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 26
+      "latencyMs": 28
     },
     {
       "caseId": "PUB022-compact",
@@ -1336,15 +1338,15 @@
         "Nguyễn Huệ, Quận 1, TP.HCM",
         "Highlands Coffee Nguyễn Huệ",
         "12 Nguyễn Huệ, Quận 1, TP.HCM",
-        "Bãi biển Mỹ Khê",
         "Phố đi bộ Nguyễn Huệ",
-        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Bãi biển Mỹ Khê",
         "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "Khách sạn Nguyễn Huệ TP.HCM"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 26
+      "latencyMs": 29
     },
     {
       "caseId": "PUB022-uppercase",
@@ -1358,15 +1360,15 @@
         "Nguyễn Huệ, Quận 1, TP.HCM",
         "Highlands Coffee Nguyễn Huệ",
         "12 Nguyễn Huệ, Quận 1, TP.HCM",
-        "Bãi biển Mỹ Khê",
         "Phố đi bộ Nguyễn Huệ",
-        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Bãi biển Mỹ Khê",
         "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "Khách sạn Nguyễn Huệ TP.HCM"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 28
     },
     {
       "caseId": "PUB022-spaced",
@@ -1380,15 +1382,15 @@
         "Nguyễn Huệ, Quận 1, TP.HCM",
         "Highlands Coffee Nguyễn Huệ",
         "12 Nguyễn Huệ, Quận 1, TP.HCM",
-        "Bãi biển Mỹ Khê",
         "Phố đi bộ Nguyễn Huệ",
-        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "Bãi biển Mỹ Khê",
         "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "Khách sạn Nguyễn Huệ TP.HCM"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 28
     },
     {
       "caseId": "PUB023-compact",
@@ -1404,8 +1406,8 @@
         "12 Nguyễn Huệ, Quận 1, TP.HCM",
         "Phố đi bộ Nguyễn Huệ",
         "ATM Vietcombank Nguyễn Huệ",
+        "Lotte Mart Quán cà phê Lê Lợi Hà Nội",
         "Khách sạn Nguyễn Huệ TP.HCM",
-        "Nhà hàng Nguyễn Huệ Đà Nẵng",
         "Nhà hàng Nguyễn Huệ Nha Trang"
       ],
       "top3Hit": true,
@@ -1427,12 +1429,12 @@
         "Phố đi bộ Nguyễn Huệ",
         "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "Khách sạn Nguyễn Huệ TP.HCM",
-        "Nhà hàng Nguyễn Huệ Đà Nẵng",
-        "Nhà hàng Nguyễn Huệ Hải Phòng"
+        "Nhà hàng Nguyễn Huệ Hải Phòng",
+        "Nhà hàng Nguyễn Huệ Đà Nẵng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 27
+      "latencyMs": 28
     },
     {
       "caseId": "PUB023-spaced",
@@ -1449,12 +1451,12 @@
         "Phố đi bộ Nguyễn Huệ",
         "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "Khách sạn Nguyễn Huệ TP.HCM",
-        "Nhà hàng Nguyễn Huệ Đà Nẵng",
-        "Nhà hàng Nguyễn Huệ Hải Phòng"
+        "Nhà hàng Nguyễn Huệ Hải Phòng",
+        "Nhà hàng Nguyễn Huệ Đà Nẵng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 31
+      "latencyMs": 28
     },
     {
       "caseId": "PUB024-accentless",
@@ -1472,12 +1474,12 @@
         "Bệnh viện Trần Duy Hưng TP.HCM",
         "Bệnh viện Trần Duy Hưng Hải Phòng",
         "BIDV Cây xăng Trần Duy Hưng TP.HCM",
-        "WinMart ATM Pasteur Hải Phòng",
-        "Cây xăng Petrolimex Nguyễn Trãi"
+        "Cây xăng Petrolimex Nguyễn Trãi",
+        "WinMart ATM Pasteur Hải Phòng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 26
     },
     {
       "caseId": "PUB024-compact",
@@ -1514,12 +1516,12 @@
         "Bệnh viện Trần Duy Hưng TP.HCM",
         "Bệnh viện Trần Duy Hưng Hải Phòng",
         "BIDV Cây xăng Trần Duy Hưng TP.HCM",
-        "WinMart ATM Pasteur Hải Phòng",
-        "Cây xăng Petrolimex Nguyễn Trãi"
+        "Cây xăng Petrolimex Nguyễn Trãi",
+        "WinMart ATM Pasteur Hải Phòng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 27
     },
     {
       "caseId": "PUB024-spaced",
@@ -1537,12 +1539,12 @@
         "Bệnh viện Trần Duy Hưng TP.HCM",
         "Bệnh viện Trần Duy Hưng Hải Phòng",
         "BIDV Cây xăng Trần Duy Hưng TP.HCM",
-        "WinMart ATM Pasteur Hải Phòng",
-        "Cây xăng Petrolimex Nguyễn Trãi"
+        "Cây xăng Petrolimex Nguyễn Trãi",
+        "WinMart ATM Pasteur Hải Phòng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 26
     },
     {
       "caseId": "PUB025-uppercase",
@@ -1560,7 +1562,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 17
+      "latencyMs": 15
     },
     {
       "caseId": "PUB026-uppercase",
@@ -1577,10 +1579,10 @@
         "Lotteria",
         "Lotte Cinema",
         "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
-        "Phở Thìn Lò Đúc",
         "Lotteria Nguyễn Văn Linh",
         "Lotte Mart Quán cà phê Phan Chu Trinh Hải Phòng",
-        "Lotte Mart Quán cà phê Lê Lợi Hà Nội"
+        "Lotte Mart Quán cà phê Lê Lợi Hà Nội",
+        "Phở Thìn Lò Đúc"
       ],
       "top3Hit": true,
       "top5Hit": true,
@@ -1607,7 +1609,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 15
+      "latencyMs": 16
     },
     {
       "caseId": "PUB027-compact",
@@ -1630,7 +1632,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 27
     },
     {
       "caseId": "PUB027-uppercase",
@@ -1648,12 +1650,12 @@
         "Ăn đêm gần đây",
         "Nhà hàng phù hợp cho trẻ em",
         "Quán ăn vặt gần đây",
-        "Nhà hàng Lý Thường Kiệt Hà Nội",
-        "Sân bay Nội Bài"
+        "quán cafe học bài",
+        "Nhà hàng Lý Thường Kiệt Hà Nội"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 20
+      "latencyMs": 21
     },
     {
       "caseId": "PUB027-spaced",
@@ -1671,8 +1673,8 @@
         "Ăn đêm gần đây",
         "Nhà hàng phù hợp cho trẻ em",
         "Quán ăn vặt gần đây",
-        "Nhà hàng Lý Thường Kiệt Hà Nội",
-        "Sân bay Nội Bài"
+        "quán cafe học bài",
+        "Nhà hàng Lý Thường Kiệt Hà Nội"
       ],
       "top3Hit": true,
       "top5Hit": true,
@@ -1699,7 +1701,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 27
     },
     {
       "caseId": "PUB028-compact",
@@ -1712,16 +1714,16 @@
       "actual": [
         "Địa điểm check-in đẹp ở Đà Lạt",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
-        "Bệnh viện Lê Lợi Đà Lạt",
         "Vietcombank ATM Nguyễn Huệ Đà Lạt",
-        "Nhà hàng Phan Chu Trinh Đà Lạt",
-        "Khách sạn Võ Nguyên Giáp Đà Lạt",
         "CGV Trung tâm thương mại Nguyễn Huệ Đà Lạt",
+        "Khách sạn Võ Nguyên Giáp Đà Lạt",
+        "Bệnh viện Lê Lợi Đà Lạt",
+        "Nhà hàng Phan Chu Trinh Đà Lạt",
         "BIDV Cây xăng Pasteur Đà Lạt"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 24
     },
     {
       "caseId": "PUB028-uppercase",
@@ -1734,11 +1736,11 @@
       "actual": [
         "Địa điểm check-in đẹp ở Đà Lạt",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
-        "Bệnh viện Lê Lợi Đà Lạt",
         "Vietcombank ATM Nguyễn Huệ Đà Lạt",
-        "Nhà hàng Phan Chu Trinh Đà Lạt",
-        "Khách sạn Võ Nguyên Giáp Đà Lạt",
         "CGV Trung tâm thương mại Nguyễn Huệ Đà Lạt",
+        "Khách sạn Võ Nguyên Giáp Đà Lạt",
+        "Bệnh viện Lê Lợi Đà Lạt",
+        "Nhà hàng Phan Chu Trinh Đà Lạt",
         "BIDV Cây xăng Pasteur Đà Lạt"
       ],
       "top3Hit": true,
@@ -1756,16 +1758,16 @@
       "actual": [
         "Địa điểm check-in đẹp ở Đà Lạt",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
-        "Bệnh viện Lê Lợi Đà Lạt",
         "Vietcombank ATM Nguyễn Huệ Đà Lạt",
-        "Nhà hàng Phan Chu Trinh Đà Lạt",
-        "Khách sạn Võ Nguyên Giáp Đà Lạt",
         "CGV Trung tâm thương mại Nguyễn Huệ Đà Lạt",
+        "Khách sạn Võ Nguyên Giáp Đà Lạt",
+        "Bệnh viện Lê Lợi Đà Lạt",
+        "Nhà hàng Phan Chu Trinh Đà Lạt",
         "BIDV Cây xăng Pasteur Đà Lạt"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 21
+      "latencyMs": 23
     },
     {
       "caseId": "PUB028-truncated",
@@ -1779,15 +1781,15 @@
         "Địa điểm check-in đẹp ở Đà Lạt",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
         "Vietcombank ATM Nguyễn Huệ Đà Lạt",
-        "Bệnh viện Lê Lợi Đà Lạt",
-        "Nhà hàng Phan Chu Trinh Đà Lạt",
         "CGV Trung tâm thương mại Nguyễn Huệ Đà Lạt",
         "Khách sạn Võ Nguyên Giáp Đà Lạt",
+        "Bệnh viện Lê Lợi Đà Lạt",
+        "Nhà hàng Phan Chu Trinh Đà Lạt",
         "BIDV Cây xăng Pasteur Đà Lạt"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 22
+      "latencyMs": 23
     },
     {
       "caseId": "PUB029-compact",
@@ -1864,7 +1866,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 25
     },
     {
       "caseId": "PUB030-uppercase",
@@ -1887,7 +1889,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 28
+      "latencyMs": 25
     },
     {
       "caseId": "PUB030-spaced",
@@ -1910,7 +1912,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 25
     },
     {
       "caseId": "PUB030-truncated",
@@ -1933,7 +1935,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 25
     },
     {
       "caseId": "PUB031-compact",
@@ -1967,7 +1969,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 20
+      "latencyMs": 21
     },
     {
       "caseId": "PUB031-spaced",
@@ -1999,11 +2001,11 @@
         "Nhà hàng chay gần đây",
         "Quán chay",
         "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
-        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
         "Cộng Cà Phê Hồ Gươm",
-        "Rooftop Chill Skybar",
-        "Highlands Coffee Nguyễn Huệ"
+        "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
+        "Highlands Coffee Nguyễn Huệ",
+        "Rooftop Chill Skybar"
       ],
       "top3Hit": true,
       "top5Hit": true,
@@ -2022,7 +2024,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 11
+      "latencyMs": 10
     },
     {
       "caseId": "PUB032-uppercase",
@@ -2036,15 +2038,15 @@
         "Nhà hàng halal TP.HCM",
         "quán cà phê gần đây",
         "Chợ Bến Thành",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "khách sạn đà nẵng gần biển",
         "Vincom Center Đồng Khởi",
         "Nhà hàng Pizza 4P's Bến Nghé",
-        "Bệnh viện Trần Duy Hưng TP.HCM",
-        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
         "Khách sạn Nguyễn Huệ TP.HCM"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 25
     },
     {
       "caseId": "PUB032-spaced",
@@ -2058,15 +2060,15 @@
         "Nhà hàng halal TP.HCM",
         "quán cà phê gần đây",
         "Chợ Bến Thành",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+        "khách sạn đà nẵng gần biển",
         "Vincom Center Đồng Khởi",
         "Nhà hàng Pizza 4P's Bến Nghé",
-        "Bệnh viện Trần Duy Hưng TP.HCM",
-        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
         "Khách sạn Nguyễn Huệ TP.HCM"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 22
+      "latencyMs": 24
     },
     {
       "caseId": "PUB033-compact",
@@ -2080,15 +2082,15 @@
         "Bãi biển Mỹ Khê",
         "Chợ Bến Thành",
         "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn gần Chợ Bến Thành",
+        "Bãi biển Mỹ Khê Đà Nẵng",
+        "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
         "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
-        "AEON Mall Long Biên",
-        "Nhà hàng Pizza 4P's Bến Nghé",
-        "Bệnh viện Trần Duy Hưng TP.HCM",
-        "Vincom Quán cà phê Phan Chu Trinh TP.HCM"
+        "AEON Mall Long Biên"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 28
     },
     {
       "caseId": "PUB033-uppercase",
@@ -2100,17 +2102,17 @@
       ],
       "actual": [
         "Bãi biển Mỹ Khê",
-        "AEON Mall Long Biên",
         "Bãi biển Mỹ Khê Đà Nẵng",
+        "AEON Mall Long Biên",
         "Nhà hàng Điện Biên Phủ TP.HCM",
         "Khách sạn Mường Thanh Đà Nẵng",
         "Khách sạn Nguyễn Trãi Nha Trang",
         "Vietcombank Trung tâm thương mại Điện Biên Phủ Hà Nội",
-        "Bệnh viện Trần Duy Hưng TP.HCM"
+        "Khách sạn Đà Nẵng gần biển"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 20
+      "latencyMs": 21
     },
     {
       "caseId": "PUB033-spaced",
@@ -2122,17 +2124,17 @@
       ],
       "actual": [
         "Bãi biển Mỹ Khê",
-        "AEON Mall Long Biên",
         "Bãi biển Mỹ Khê Đà Nẵng",
+        "AEON Mall Long Biên",
         "Nhà hàng Điện Biên Phủ TP.HCM",
         "Khách sạn Mường Thanh Đà Nẵng",
         "Khách sạn Nguyễn Trãi Nha Trang",
         "Vietcombank Trung tâm thương mại Điện Biên Phủ Hà Nội",
-        "Bệnh viện Trần Duy Hưng TP.HCM"
+        "Khách sạn Đà Nẵng gần biển"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 20
+      "latencyMs": 21
     },
     {
       "caseId": "PUB034-compact",
@@ -2154,7 +2156,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 25
     },
     {
       "caseId": "PUB034-uppercase",
@@ -2171,12 +2173,12 @@
         "Khách sạn gần biển Mỹ Khê",
         "Khách sạn gần biển Đà Nẵng",
         "Hotel Đà Nẵng",
-        "Khách sạn Nguyễn Huệ TP.HCM",
-        "Khách sạn Mường Thanh Đà Nẵng"
+        "Khách sạn gần Chợ Bến Thành",
+        "Khách sạn Nguyễn Huệ TP.HCM"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 25
     },
     {
       "caseId": "PUB034-spaced",
@@ -2193,12 +2195,12 @@
         "Khách sạn gần biển Mỹ Khê",
         "Khách sạn gần biển Đà Nẵng",
         "Hotel Đà Nẵng",
-        "Khách sạn Nguyễn Huệ TP.HCM",
-        "Khách sạn Mường Thanh Đà Nẵng"
+        "Khách sạn gần Chợ Bến Thành",
+        "Khách sạn Nguyễn Huệ TP.HCM"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 26
     },
     {
       "caseId": "PUB034-truncated",
@@ -2235,13 +2237,13 @@
         "Trường Đại học Bách Khoa Hà Nội",
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
-        "Highlands Coffee Nguyễn Huệ",
         "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
-        "The Coffee House Trần Duy Hưng"
+        "Highlands Coffee Nguyễn Huệ",
+        "Vietcombank ATM Nguyễn Huệ Đà Lạt"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 26
     },
     {
       "caseId": "PUB035-uppercase",
@@ -2255,15 +2257,15 @@
         "Đại học Bách Khoa Hà Nội",
         "Đại học Bách Khoa",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
-        "Highlands Coffee Nguyễn Huệ",
         "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+        "Highlands Coffee Nguyễn Huệ",
         "The Coffee House Trần Duy Hưng",
-        "Trường Đại học Bách Khoa Hà Nội",
-        "Khách sạn Nguyễn Trãi Nha Trang"
+        "Khách sạn Nguyễn Trãi Nha Trang",
+        "Trường Đại học Bách Khoa Hà Nội"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 22
+      "latencyMs": 25
     },
     {
       "caseId": "PUB035-spaced",
@@ -2277,15 +2279,15 @@
         "Đại học Bách Khoa Hà Nội",
         "Đại học Bách Khoa",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
-        "Highlands Coffee Nguyễn Huệ",
         "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+        "Highlands Coffee Nguyễn Huệ",
         "The Coffee House Trần Duy Hưng",
-        "Trường Đại học Bách Khoa Hà Nội",
-        "Khách sạn Nguyễn Trãi Nha Trang"
+        "Khách sạn Nguyễn Trãi Nha Trang",
+        "Trường Đại học Bách Khoa Hà Nội"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 26
     },
     {
       "caseId": "PUB035-truncated",
@@ -2302,12 +2304,12 @@
         "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
         "Highlands Coffee Nguyễn Huệ",
         "The Coffee House Trần Duy Hưng",
-        "Trường Đại học Bách Khoa Hà Nội",
-        "Khách sạn Nguyễn Trãi Nha Trang"
+        "Khách sạn Nguyễn Trãi Nha Trang",
+        "Trường Đại học Bách Khoa Hà Nội"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 20
+      "latencyMs": 22
     },
     {
       "caseId": "PUB035-abbreviation",
@@ -2322,14 +2324,14 @@
         "Đại học Bách Khoa",
         "Bệnh viện Bạch Mai",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
-        "Highlands Coffee Nguyễn Huệ",
         "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+        "Highlands Coffee Nguyễn Huệ",
         "The Coffee House Trần Duy Hưng",
-        "Trường Đại học Bách Khoa Hà Nội"
+        "Khách sạn Nguyễn Trãi Nha Trang"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 26
     },
     {
       "caseId": "PUB036-compact",
@@ -2345,13 +2347,13 @@
         "Trường Đại học Bách Khoa Hà Nội",
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
-        "Highlands Coffee Nguyễn Huệ",
         "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
-        "The Coffee House Trần Duy Hưng"
+        "Highlands Coffee Nguyễn Huệ",
+        "quán cafe học bài"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 27
     },
     {
       "caseId": "PUB036-uppercase",
@@ -2365,15 +2367,15 @@
         "Đại học Bách Khoa Hà Nội",
         "Đại học Bách Khoa",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
-        "Highlands Coffee Nguyễn Huệ",
         "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
-        "Trường Đại học Bách Khoa Hà Nội",
+        "Highlands Coffee Nguyễn Huệ",
         "The Coffee House Trần Duy Hưng",
-        "Khách sạn Nguyễn Trãi Nha Trang"
+        "Khách sạn Nguyễn Trãi Nha Trang",
+        "Trường Đại học Bách Khoa Hà Nội"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 26
     },
     {
       "caseId": "PUB036-spaced",
@@ -2387,15 +2389,15 @@
         "Đại học Bách Khoa Hà Nội",
         "Đại học Bách Khoa",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
-        "Highlands Coffee Nguyễn Huệ",
         "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
-        "Trường Đại học Bách Khoa Hà Nội",
+        "Highlands Coffee Nguyễn Huệ",
         "The Coffee House Trần Duy Hưng",
-        "Khách sạn Nguyễn Trãi Nha Trang"
+        "Khách sạn Nguyễn Trãi Nha Trang",
+        "Trường Đại học Bách Khoa Hà Nội"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 27
     },
     {
       "caseId": "PUB037-compact",
@@ -2413,7 +2415,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 24
     },
     {
       "caseId": "PUB037-uppercase",
@@ -2514,7 +2516,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 22
     },
     {
       "caseId": "PUB038-spaced",
@@ -2554,7 +2556,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 18
+      "latencyMs": 19
     },
     {
       "caseId": "PUB039-compact",
@@ -2568,12 +2570,12 @@
         "Quán cà phê gần Hồ Gươm",
         "Quán cà phê gần đây",
         "Cà phê mở cửa 24/7",
-        "Cộng Cà Phê Hồ Gươm",
-        "Highlands Coffee"
+        "Highlands Coffee",
+        "Cộng Cà Phê Hồ Gươm"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 27
+      "latencyMs": 23
     },
     {
       "caseId": "PUB039-uppercase",
@@ -2587,12 +2589,12 @@
         "Quán cà phê gần Hồ Gươm",
         "Cà phê mở cửa 24/7",
         "Quán cà phê gần đây",
-        "Cộng Cà Phê Hồ Gươm",
-        "Highlands Coffee"
+        "Highlands Coffee",
+        "Cộng Cà Phê Hồ Gươm"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 24
     },
     {
       "caseId": "PUB039-spaced",
@@ -2606,12 +2608,12 @@
         "Quán cà phê gần Hồ Gươm",
         "Cà phê mở cửa 24/7",
         "Quán cà phê gần đây",
-        "Cộng Cà Phê Hồ Gươm",
-        "Highlands Coffee"
+        "Highlands Coffee",
+        "Cộng Cà Phê Hồ Gươm"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 23
     },
     {
       "caseId": "PUB039-truncated",
@@ -2663,7 +2665,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 18
+      "latencyMs": 17
     },
     {
       "caseId": "PUB040-spaced",
@@ -2758,7 +2760,13 @@
         "Garage ô tô gần đây"
       ],
       "actual": [
-        "Garage ô tô gần đây"
+        "Garage ô tô gần đây",
+        "Garage ô tô Hà Nội",
+        "Garage ô tô Hải Phòng",
+        "Garage ô tô Nha Trang",
+        "Garage ô tô Đà Lạt",
+        "Garage ô tô Đà Nẵng",
+        "Garage ô tô TP.HCM"
       ],
       "top3Hit": true,
       "top5Hit": true,
@@ -2773,7 +2781,13 @@
         "Garage ô tô gần đây"
       ],
       "actual": [
-        "Garage ô tô gần đây"
+        "Garage ô tô gần đây",
+        "Garage ô tô Hà Nội",
+        "Garage ô tô Hải Phòng",
+        "Garage ô tô Nha Trang",
+        "Garage ô tô Đà Lạt",
+        "Garage ô tô Đà Nẵng",
+        "Garage ô tô TP.HCM"
       ],
       "top3Hit": true,
       "top5Hit": true,
@@ -2799,7 +2813,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 22
+      "latencyMs": 23
     },
     {
       "caseId": "PUB043-uppercase",
@@ -2821,7 +2835,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 22
     },
     {
       "caseId": "PUB043-spaced",
@@ -2858,11 +2872,11 @@
         "Chỉ đường đến sân bay Nội Bài",
         "Chỉ đường đến sân bay Tân Sơn Nhất",
         "Sân bay Nội Bài",
-        "Galaxy Cinema Nguyễn Du",
         "Rooftop Chill Skybar",
         "Khách sạn Mường Thanh Đà Nẵng",
-        "Khách sạn Lý Thường Kiệt Hải Phòng",
-        "Khách sạn Đà Nẵng gần biển"
+        "Galaxy Cinema Nguyễn Du",
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn Lý Thường Kiệt Hải Phòng"
       ],
       "top3Hit": true,
       "top5Hit": true,
@@ -2881,15 +2895,15 @@
         "Chỉ đường đến sân bay Nội Bài",
         "Chỉ đường đến sân bay Tân Sơn Nhất",
         "Sân bay Nội Bài",
-        "Galaxy Cinema Nguyễn Du",
         "Rooftop Chill Skybar",
         "Khách sạn Mường Thanh Đà Nẵng",
-        "Khách sạn Lý Thường Kiệt Hải Phòng",
-        "Khách sạn Đà Nẵng gần biển"
+        "Galaxy Cinema Nguyễn Du",
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn Lý Thường Kiệt Hải Phòng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 21
+      "latencyMs": 22
     },
     {
       "caseId": "PUB044-spaced",
@@ -2904,15 +2918,15 @@
         "Chỉ đường đến sân bay Nội Bài",
         "Chỉ đường đến sân bay Tân Sơn Nhất",
         "Sân bay Nội Bài",
-        "Galaxy Cinema Nguyễn Du",
         "Rooftop Chill Skybar",
         "Khách sạn Mường Thanh Đà Nẵng",
-        "Khách sạn Lý Thường Kiệt Hải Phòng",
-        "Khách sạn Đà Nẵng gần biển"
+        "Galaxy Cinema Nguyễn Du",
+        "Khách sạn Đà Nẵng gần biển",
+        "Khách sạn Lý Thường Kiệt Hải Phòng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 22
+      "latencyMs": 27
     },
     {
       "caseId": "PUB045-truncated",
@@ -2927,7 +2941,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 14
+      "latencyMs": 15
     },
     {
       "caseId": "PUB046-compact",
@@ -2961,15 +2975,15 @@
         "Cây xăng trên đường đi",
         "Trạm dừng có cây xăng",
         "Cây xăng gần đây",
-        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "Cây xăng Petrolimex Nguyễn Trãi",
-        "The Coffee House Trung tâm thương mại Điện Biên Phủ Nha Trang",
         "Vincom Cây xăng Điện Biên Phủ Nha Trang",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "The Coffee House Trung tâm thương mại Điện Biên Phủ Nha Trang",
         "Vincom ATM Võ Nguyên Giáp TP.HCM"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 21
+      "latencyMs": 22
     },
     {
       "caseId": "PUB046-spaced",
@@ -2984,15 +2998,15 @@
         "Cây xăng trên đường đi",
         "Trạm dừng có cây xăng",
         "Cây xăng gần đây",
-        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
         "Cây xăng Petrolimex Nguyễn Trãi",
-        "The Coffee House Trung tâm thương mại Điện Biên Phủ Nha Trang",
         "Vincom Cây xăng Điện Biên Phủ Nha Trang",
+        "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+        "The Coffee House Trung tâm thương mại Điện Biên Phủ Nha Trang",
         "Vincom ATM Võ Nguyên Giáp TP.HCM"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 22
     },
     {
       "caseId": "PUB046-truncated",
@@ -3008,8 +3022,8 @@
         "Trạm dừng có cây xăng",
         "Cây xăng gần đây",
         "Cây xăng Petrolimex Nguyễn Trãi",
-        "The Coffee House Trung tâm thương mại Điện Biên Phủ Nha Trang",
-        "Vincom Cây xăng Điện Biên Phủ Nha Trang"
+        "Vincom Cây xăng Điện Biên Phủ Nha Trang",
+        "The Coffee House Trung tâm thương mại Điện Biên Phủ Nha Trang"
       ],
       "top3Hit": true,
       "top5Hit": true,
@@ -3035,7 +3049,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 24
     },
     {
       "caseId": "PUB047-uppercase",
@@ -3055,7 +3069,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 18
+      "latencyMs": 19
     },
     {
       "caseId": "PUB047-spaced",
@@ -3075,7 +3089,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 18
+      "latencyMs": 19
     },
     {
       "caseId": "PUB048-compact",
@@ -3098,7 +3112,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 27
     },
     {
       "caseId": "PUB048-uppercase",
@@ -3121,7 +3135,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 27
     },
     {
       "caseId": "PUB048-spaced",
@@ -3144,7 +3158,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 27
     },
     {
       "caseId": "PUB048-truncated",
@@ -3162,12 +3176,12 @@
         "Cafe làm việc",
         "Quán cà phê yên tĩnh",
         "Quán cà phê đẹp để check-in",
-        "Bệnh viện Trần Duy Hưng Đà Nẵng",
+        "Cà phê làm việc",
         "quán cafe học bài"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 25
     },
     {
       "caseId": "PUB049-compact",
@@ -3178,18 +3192,18 @@
         "ATM BIDV gần đây"
       ],
       "actual": [
-        "ATM BIDV gần đây",
         "ATM BIDV gần nhất",
+        "ATM BIDV gần đây",
         "ATM gần đây",
         "ATM Vietcombank gần nhất",
-        "Highlands Coffee ATM Pasteur Nha Trang",
-        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
         "ATM gần sân bay",
-        "BIDV Trung tâm thương mại Võ Nguyên Giáp Hải Phòng"
+        "ATM Vietcombank Nguyễn Huệ",
+        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
+        "Highlands Coffee ATM Pasteur Nha Trang"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 30
+      "latencyMs": 23
     },
     {
       "caseId": "PUB049-uppercase",
@@ -3200,13 +3214,13 @@
         "ATM BIDV gần đây"
       ],
       "actual": [
-        "ATM BIDV gần đây",
         "ATM BIDV gần nhất",
+        "ATM BIDV gần đây",
         "ATM Vietcombank gần nhất",
-        "Highlands Coffee ATM Pasteur Nha Trang",
-        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
         "ATM gần sân bay",
         "ATM Vietcombank Nguyễn Huệ",
+        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
+        "Highlands Coffee ATM Pasteur Nha Trang",
         "WinMart ATM Pasteur Hải Phòng"
       ],
       "top3Hit": true,
@@ -3222,13 +3236,13 @@
         "ATM BIDV gần đây"
       ],
       "actual": [
-        "ATM BIDV gần đây",
         "ATM BIDV gần nhất",
+        "ATM BIDV gần đây",
         "ATM Vietcombank gần nhất",
-        "Highlands Coffee ATM Pasteur Nha Trang",
-        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
         "ATM gần sân bay",
         "ATM Vietcombank Nguyễn Huệ",
+        "BIDV Cây xăng Trần Duy Hưng TP.HCM",
+        "Highlands Coffee ATM Pasteur Nha Trang",
         "WinMart ATM Pasteur Hải Phòng"
       ],
       "top3Hit": true,
@@ -3245,17 +3259,17 @@
       ],
       "actual": [
         "ATM BIDV gần đây",
-        "Highlands Coffee ATM Pasteur Nha Trang",
         "ATM Vietcombank Nguyễn Huệ",
+        "Highlands Coffee ATM Pasteur Nha Trang",
         "WinMart ATM Pasteur Hải Phòng",
         "Vietcombank ATM Nguyễn Huệ Đà Lạt",
-        "Vincom ATM Võ Nguyên Giáp TP.HCM",
         "Vietcombank ATM Trần Duy Hưng Hà Nội",
+        "Vincom ATM Võ Nguyên Giáp TP.HCM",
         "CGV ATM Hai Bà Trưng Đà Nẵng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 20
     },
     {
       "caseId": "PUB050-compact",
@@ -3270,9 +3284,9 @@
         "Bệnh viện gần đây",
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
         "Bệnh viện Trần Duy Hưng TP.HCM",
+        "Bệnh viện Trần Duy Hưng Hải Phòng",
         "Bệnh viện Bạch Mai",
         "Vinmec Times City",
-        "Bệnh viện Trần Duy Hưng Hải Phòng",
         "Bệnh viện Điện Biên Phủ Nha Trang"
       ],
       "top3Hit": true,
@@ -3290,16 +3304,16 @@
       "actual": [
         "Bệnh viện gần sân bay",
         "Bệnh viện gần đây",
+        "Bệnh viện gần sân bay Hà Nội",
+        "Bệnh viện gần sân bay Đà Nẵng",
+        "Bệnh viện gần sân bay TP.HCM",
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
         "Bệnh viện Trần Duy Hưng TP.HCM",
-        "Bệnh viện Bạch Mai",
-        "Vinmec Times City",
-        "Bệnh viện Trần Duy Hưng Hải Phòng",
-        "Bệnh viện Điện Biên Phủ Nha Trang"
+        "Bệnh viện Trần Duy Hưng Hải Phòng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 24
     },
     {
       "caseId": "PUB050-spaced",
@@ -3312,16 +3326,16 @@
       "actual": [
         "Bệnh viện gần sân bay",
         "Bệnh viện gần đây",
+        "Bệnh viện gần sân bay Hà Nội",
+        "Bệnh viện gần sân bay Đà Nẵng",
+        "Bệnh viện gần sân bay TP.HCM",
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
         "Bệnh viện Trần Duy Hưng TP.HCM",
-        "Bệnh viện Bạch Mai",
-        "Vinmec Times City",
-        "Bệnh viện Trần Duy Hưng Hải Phòng",
-        "Bệnh viện Điện Biên Phủ Nha Trang"
+        "Bệnh viện Trần Duy Hưng Hải Phòng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 24
     },
     {
       "caseId": "PUB050-abbreviation",
@@ -3334,16 +3348,16 @@
       "actual": [
         "Bệnh viện gần sân bay",
         "Bệnh viện gần đây",
+        "Bệnh viện gần sân bay Hà Nội",
+        "Bệnh viện gần sân bay Đà Nẵng",
+        "Bệnh viện gần sân bay TP.HCM",
+        "ATM gần sân bay",
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
-        "Bệnh viện Trần Duy Hưng TP.HCM",
-        "Bệnh viện Bạch Mai",
-        "Vinmec Times City",
-        "Bệnh viện Trần Duy Hưng Hải Phòng",
-        "ATM gần sân bay"
+        "Bệnh viện Trần Duy Hưng TP.HCM"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 25
     },
     {
       "caseId": "PUB051-compact",
@@ -3380,7 +3394,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 21
+      "latencyMs": 22
     },
     {
       "caseId": "PUB051-spaced",
@@ -3432,7 +3446,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 17
+      "latencyMs": 16
     },
     {
       "caseId": "PUB052-spaced",
@@ -3447,7 +3461,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 18
+      "latencyMs": 17
     },
     {
       "caseId": "PUB053-compact",
@@ -3477,7 +3491,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 22
     },
     {
       "caseId": "PUB053-spaced",
@@ -3492,7 +3506,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 28
+      "latencyMs": 21
     },
     {
       "caseId": "PUB054-compact",
@@ -3507,7 +3521,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 22
     },
     {
       "caseId": "PUB054-uppercase",
@@ -3522,7 +3536,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 24
+      "latencyMs": 23
     },
     {
       "caseId": "PUB054-spaced",
@@ -3559,7 +3573,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 26
     },
     {
       "caseId": "PUB055-uppercase",
@@ -3581,7 +3595,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 27
     },
     {
       "caseId": "PUB055-spaced",
@@ -3603,7 +3617,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 27
     },
     {
       "caseId": "PUB055-truncated",
@@ -3661,12 +3675,12 @@
         "Hotel Đà Nẵng",
         "Khách sạn gần biển Mỹ Khê",
         "Khách sạn gần đây",
-        "Bãi biển Mỹ Khê",
-        "Bệnh viện Trần Duy Hưng Đà Nẵng"
+        "Bãi biển Mỹ Khê Đà Nẵng",
+        "cây xăng gần đây"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 27
+      "latencyMs": 28
     },
     {
       "caseId": "PUB056-spaced",
@@ -3683,12 +3697,12 @@
         "Hotel Đà Nẵng",
         "Khách sạn gần biển Mỹ Khê",
         "Khách sạn gần đây",
-        "Bãi biển Mỹ Khê",
-        "Bệnh viện Trần Duy Hưng Đà Nẵng"
+        "Bãi biển Mỹ Khê Đà Nẵng",
+        "cây xăng gần đây"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 27
+      "latencyMs": 29
     },
     {
       "caseId": "PUB056-truncated",
@@ -3710,7 +3724,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 26
+      "latencyMs": 27
     },
     {
       "caseId": "PUB057-accentless",
@@ -3798,7 +3812,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 18
+      "latencyMs": 19
     },
     {
       "caseId": "PUB058-compact",
@@ -3814,14 +3828,14 @@
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
         "Trường Đại học Bách Khoa Hà Nội",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
-        "Highlands Coffee Nguyễn Huệ",
         "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
-        "The Coffee House Trần Duy Hưng",
-        "Vietcombank ATM Nguyễn Huệ Đà Lạt"
+        "Highlands Coffee Nguyễn Huệ",
+        "quán cafe học bài",
+        "The Coffee House Trần Duy Hưng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 29
+      "latencyMs": 25
     },
     {
       "caseId": "PUB058-uppercase",
@@ -3837,10 +3851,10 @@
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
         "Trường Đại học Bách Khoa Hà Nội",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
-        "Highlands Coffee Nguyễn Huệ",
         "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
-        "The Coffee House Trần Duy Hưng",
-        "Vietcombank ATM Nguyễn Huệ Đà Lạt"
+        "Highlands Coffee Nguyễn Huệ",
+        "quán cafe học bài",
+        "The Coffee House Trần Duy Hưng"
       ],
       "top3Hit": true,
       "top5Hit": true,
@@ -3860,14 +3874,14 @@
         "Bệnh viện Trần Duy Hưng Đà Nẵng",
         "Trường Đại học Bách Khoa Hà Nội",
         "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
-        "Highlands Coffee Nguyễn Huệ",
         "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
-        "The Coffee House Trần Duy Hưng",
-        "Vietcombank ATM Nguyễn Huệ Đà Lạt"
+        "Highlands Coffee Nguyễn Huệ",
+        "quán cafe học bài",
+        "The Coffee House Trần Duy Hưng"
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 23
+      "latencyMs": 24
     },
     {
       "caseId": "PUB059-compact",
@@ -3946,7 +3960,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 25
+      "latencyMs": 26
     },
     {
       "caseId": "PUB060-uppercase",
@@ -3968,7 +3982,7 @@
       ],
       "top3Hit": true,
       "top5Hit": true,
-      "latencyMs": 26
+      "latencyMs": 27
     },
     {
       "caseId": "PUB060-spaced",

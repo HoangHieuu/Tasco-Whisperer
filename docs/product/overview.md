@@ -37,11 +37,17 @@ and durable Harness proof.
 - `SPEC.md`: accepted product specification.
 - `data/*.csv`: synthetic hackathon datasets.
 - `src/lib/*`: deterministic autocomplete engine, semantic runtime, local and
-  optional provider-backed agentic rewrite path, loaders, ranking, API
-  contract, and evaluation logic.
+  optional provider-backed agentic rewrite path, grounded suggestion narrator,
+  loaders, ranking, API contract, and evaluation logic.
 - `src/App.tsx`: T Maps-style browser demo.
 - `scripts/api.ts`: local `/api/suggest` and TASCO facade HTTP service.
+- `scripts/behaviorStore.ts`: local disposable JSON behavior-event store for
+  server-side personalization.
 - `scripts/buildEmbeddings.ts`: MiniLM corpus embedding artifact builder.
+- `scripts/buildPredictionLm.ts`: deterministic prefix-completion LM artifact
+  builder.
+- `scripts/trainRanking.ts`: pairwise learning-to-rank trainer that writes
+  runtime ranking weights.
 - `scripts/smokeApi.ts`: API smoke proof.
 - `docs/demo/iphone-mirroring-demo.md`: presentation script and recording
   checklist.
@@ -49,6 +55,7 @@ and durable Harness proof.
   provider, and self-improvement contract.
 - `docs/product/generalization-roadmap.md`: tiered roadmap for moving beyond
   fixture-heavy rules.
+- `docs/submission/example-gallery.md`: judge-facing generated example table.
 - `docs/decisions/0008-agentic-correction-loop.md`: durable architecture
   decision for hybrid deterministic plus optional agentic correction.
 - `docs/TEST_MATRIX.md`: planned proof matrix.
@@ -59,12 +66,14 @@ and durable Harness proof.
 The current repo has a local demo baseline with dataset loading, normalization,
 algorithmic compact Vietnamese segmentation, Telex/VNI cleanup, entity-aware
 intent prediction, lexical and model-backed semantic candidate generation,
-transparent ranking, configurable ranking weights, browser demo, public
-evaluation runner, local autocomplete API and TASCO facade, local
-behavior-feedback personalization, persistent runtime-writable alias memory, MiniLM
-artifact-backed kNN intent voting with lexical fallback, and validated
-local/hosted rewrite-agent provider runtime wiring. Remaining hackathon slices
-should focus on grounded explanations and final submission polish.
+deterministic prefix-completion prediction, transparent ranking, configurable
+and learned runtime ranking weights, grounded suggestion explanations, browser
+demo, public evaluation runner, local autocomplete API and TASCO facade, server-side
+behavior-feedback personalization with recency decay, persistent
+runtime-writable alias memory, MiniLM artifact-backed kNN intent voting with
+lexical fallback, and validated local/hosted rewrite-agent provider runtime
+wiring. The README, generated example gallery, one-command local launcher, and
+browser/API smoke proof now package the project for submission.
 
 ## Agentic Learning Direction
 
@@ -80,7 +89,8 @@ system uses:
 - agentic rewrite only for low-confidence/no-result cases that remain hard
 - structured and validated agent output
 - persistent alias memory with runtime write-back for accepted corrections
-- local behavior events for profile-specific ranking boosts
+- server-side behavior events plus browser-local fallback for profile-specific
+  ranking boosts
 - explicit ranking-weight presets measured by evaluation
 - developer/evaluation approval before global alias promotion
 - optional Hermes-class local provider only after Vietnamese quality proof

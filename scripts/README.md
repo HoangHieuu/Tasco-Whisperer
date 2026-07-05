@@ -47,6 +47,61 @@ Requires: the prebuilt Rust CLI at `scripts/bin/harness-cli` on macOS/Linux or
 Direct database inspection may still use SQLite tools, but normal Harness use
 should go through the Rust CLI.
 
+## Demo Launcher
+
+`scripts/runDemo.mjs` powers `npm run demo`. It starts the local TASCO
+Whisperer API and Vite UI together, sets `VITE_TASCO_API_BASE_URL` for the UI
+process, and stops both child processes on Ctrl+C.
+
+Default URLs:
+
+- API: `http://127.0.0.1:8787`
+- UI: `http://127.0.0.1:5173`
+
+Optional environment overrides:
+
+```bash
+TASCO_DEMO_API_PORT=8790 TASCO_DEMO_UI_PORT=5174 npm run demo
+```
+
+The API process persists accepted browser/demo selections in a disposable local
+JSON behavior log for personalization. Override the default path when needed:
+
+```bash
+TASCO_BEHAVIOR_LOG_PATH=data/behavior-events.local.json npm run api:dev
+npm run api:dev -- --behaviorLogPath data/behavior-events.local.json
+```
+
+## Prediction LM Builder
+
+`npm run prediction:build` trains the deterministic prefix-completion language
+model from autocomplete, popular-query, POI, and generated product-language
+corpora. It writes `data/prediction-lm.json` and intentionally excludes public
+evaluation answers so the artifact can be used as non-leaking demo evidence.
+
+```bash
+npm run prediction:build
+npm run prediction:build -- --out data/prediction-lm.json
+```
+
+## Ranking Trainer
+
+`npm run rank:train` trains the transparent linear ranker with pairwise
+logistic regression over the existing score factors. Training rows come from
+robustness perturbations plus any events in the server behavior log; public
+evaluation rows stay held out for validation. The command writes runtime
+weights to `config/ranking-weights.json` and reports under
+`reports/learning-to-rank/`.
+
+```bash
+npm run rank:train
+npm run rank:train -- --behaviorLogPath data/behavior-events.local.json --config config/ranking-weights.json
+```
+
+Set `TASCO_DISABLE_LEARNED_RANKER=true` for Node scripts/API, or
+`VITE_TASCO_DISABLE_LEARNED_RANKER=true` for the browser bundle, to fall back
+to the hand-authored default weights.
+
 ### Rust CLI Commands
 
 Current migrated commands:
