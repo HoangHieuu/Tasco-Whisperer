@@ -1,10 +1,12 @@
 import { normalizeText } from './normalize';
+import { generatedPatternCorpus, type GeneratedPatternCandidate } from './generatedPatterns';
 import type { AutocompleteRecord, IntentType, PoiRecord, PopularQueryRecord, TascoDataset } from './types';
 
 export type SemanticDocument =
   | { id: string; kind: 'autocomplete'; text: string; record: AutocompleteRecord }
   | { id: string; kind: 'poi'; text: string; record: PoiRecord }
-  | { id: string; kind: 'popular-query'; text: string; record: PopularQueryRecord };
+  | { id: string; kind: 'popular-query'; text: string; record: PopularQueryRecord }
+  | { id: string; kind: 'generated-pattern'; text: string; record: GeneratedPatternCandidate };
 
 export interface EmbeddingDocument {
   document: SemanticDocument;
@@ -24,6 +26,22 @@ export interface EmbeddingIntentVote {
   neighbors: Array<{ id: string; kind: SemanticDocument['kind']; similarity: number; intent?: IntentType }>;
 }
 
+export interface EmbeddingContext {
+  provider: 'minilm' | 'lexical-fallback';
+  model?: string;
+  degraded?: boolean;
+  reason?: string;
+  neighbors: EmbeddingNeighbor[];
+  intentVote?: EmbeddingIntentVote;
+}
+
+export interface SerializedEmbeddingDocument {
+  id: string;
+  kind: SemanticDocument['kind'];
+  intent?: IntentType;
+  vector: number[];
+}
+
 const SEMANTIC_EXPANSIONS = new Map<string, string[]>([
   ['song ao', ['check in', 'chup hinh', 'dep', 'du lich']],
   ['chup hinh', ['check in', 'song ao', 'dep']],
@@ -40,8 +58,11 @@ const SEMANTIC_EXPANSIONS = new Map<string, string[]>([
   ['hotel', ['khach san', 'gan bien', 'du lich']],
 ]);
 
-export function semanticDocuments(dataset: TascoDataset): SemanticDocument[] {
-  return [
+export function semanticDocuments(
+  dataset: TascoDataset,
+  options: { includeGeneratedPatterns?: boolean } = {},
+): SemanticDocument[] {
+  const documents: SemanticDocument[] = [
     ...dataset.autocomplete.map((record): SemanticDocument => ({
       id: `semantic-autocomplete-${record.suggestionId}`,
       kind: 'autocomplete',
@@ -61,6 +82,19 @@ export function semanticDocuments(dataset: TascoDataset): SemanticDocument[] {
       record,
     })),
   ];
+
+  if (options.includeGeneratedPatterns) {
+    documents.push(
+      ...generatedPatternCorpus(dataset).map((record, index): SemanticDocument => ({
+        id: `semantic-generated-${index}`,
+        kind: 'generated-pattern',
+        text: `${record.text} ${record.type} ${record.matched.join(' ')} ${record.reason}`,
+        record,
+      })),
+    );
+  }
+
+  return documents;
 }
 
 export function buildEmbeddingIndex(dataset: TascoDataset): EmbeddingDocument[] {
@@ -69,6 +103,15 @@ export function buildEmbeddingIndex(dataset: TascoDataset): EmbeddingDocument[] 
     vector: embedText(document.text),
     intent: intentForDocument(document),
   }));
+}
+
+export function lexicalEmbeddingContext(dataset: TascoDataset, query: string): EmbeddingContext {
+  const neighbors = searchEmbeddingIndex(query, buildEmbeddingIndex(dataset), 10).filter((neighbor) => neighbor.similarity >= 0.38);
+  return {
+    provider: 'lexical-fallback',
+    neighbors,
+    intentVote: voteIntentFromNeighbors(neighbors),
+  };
 }
 
 export function embedText(value: string): Map<string, number> {
@@ -95,6 +138,34 @@ export function searchEmbeddingIndex(query: string, index: EmbeddingDocument[], 
       intent: item.intent,
     }))
     .filter((neighbor) => neighbor.similarity > 0)
+    .sort((a, b) => b.similarity - a.similarity)
+    .slice(0, limit);
+}
+
+export function searchSerializedEmbeddingIndex(
+  dataset: TascoDataset,
+  queryVector: number[],
+  documents: SerializedEmbeddingDocument[],
+  limit = 10,
+): EmbeddingNeighbor[] {
+  const byId = new Map(semanticDocuments(dataset, { includeGeneratedPatterns: true }).map((document) => [document.id, document]));
+  return documents
+    .flatMap((item): EmbeddingNeighbor[] => {
+      const document = byId.get(item.id);
+      if (!document) {
+        return [];
+      }
+      const similarity = round(cosineArray(queryVector, item.vector));
+      if (similarity <= 0) {
+        return [];
+      }
+      const intent = item.intent ?? intentForDocument(document);
+      return [{
+        document,
+        similarity,
+        ...(intent ? { intent } : {}),
+      }];
+    })
     .sort((a, b) => b.similarity - a.similarity)
     .slice(0, limit);
 }
@@ -190,7 +261,14 @@ function intentForDocument(document: SemanticDocument): IntentType | undefined {
   if (document.kind === 'popular-query') {
     return document.record.intentType;
   }
+  if (document.kind === 'generated-pattern') {
+    return document.record.type;
+  }
   return undefined;
+}
+
+export function semanticIntentForDocument(document: SemanticDocument): IntentType | undefined {
+  return intentForDocument(document);
 }
 
 function addWeight(vector: Map<string, number>, key: string, weight: number): void {
@@ -212,6 +290,23 @@ function cosineSimilarity(a: Map<string, number>, b: Map<string, number>): numbe
     score += value * (larger.get(key) ?? 0);
   }
   return score;
+}
+
+function cosineArray(a: number[], b: number[]): number {
+  const length = Math.min(a.length, b.length);
+  if (length === 0) {
+    return 0;
+  }
+  let dot = 0;
+  let aNorm = 0;
+  let bNorm = 0;
+  for (let index = 0; index < length; index += 1) {
+    dot += a[index] * b[index];
+    aNorm += a[index] * a[index];
+    bNorm += b[index] * b[index];
+  }
+  const denominator = Math.sqrt(aNorm) * Math.sqrt(bNorm);
+  return denominator ? dot / denominator : 0;
 }
 
 function charNgrams(value: string): Set<string> {
