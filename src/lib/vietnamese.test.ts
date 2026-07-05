@@ -8,6 +8,30 @@ import {
 import { testDataset } from './testDataset';
 
 const knowledge = buildVietnameseQueryKnowledge(testDataset);
+const universityKnowledge = buildVietnameseQueryKnowledge({
+  ...testDataset,
+  abbreviations: [
+    ...testDataset.abbreviations,
+    { abbreviation: 'dh', expandedForm: 'Đại học', type: 'category' },
+  ],
+  pois: [
+    ...testDataset.pois,
+    {
+      poiId: 'POI999',
+      poiName: 'Trường Đại học Bách Khoa Hà Nội',
+      category: 'Đại học',
+      brand: '',
+      address: '1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội',
+      city: 'Hà Nội',
+      latitude: 21.0055,
+      longitude: 105.8435,
+      rating: 4.6,
+      reviewCount: 6100,
+      popularityScore: 93,
+      tags: ['đại học', 'giáo dục'],
+    },
+  ],
+});
 
 describe('Vietnamese query intelligence', () => {
   it('segments compact Vietnamese category forms from a reusable lexicon', () => {
@@ -22,6 +46,22 @@ describe('Vietnamese query intelligence', () => {
     expect(segmentCompactQuery('cap', knowledge)).toBe('ca phe');
     expect(segmentCompactQuery('cayx', knowledge)).toBe('cay xang');
     expect(segmentCompactQuery('benhv', knowledge)).toBe('benh vien');
+  });
+
+  it('splits compact abbreviation, typo, address, and mixed-language variants into reusable query tokens', () => {
+    expect(segmentCompactQuery('ksd', knowledge, testDataset.abbreviations)).toBe('ks d');
+    expect(segmentCompactQuery('coffeenear', knowledge, testDataset.abbreviations)).toBe('coffee near');
+    expect(segmentCompactQuery('nguyenhuee', knowledge, testDataset.abbreviations)).toBe('nguyen huee');
+    expect(proposeVietnameseRewrites('nguyenhuee', knowledge, testDataset.abbreviations).map((rewrite) => rewrite.rewrite)).toContain(
+      'nguyen huee',
+    );
+    expect(segmentCompactQuery('12nguyenhueq', knowledge, testDataset.abbreviations)).toBe('12 nguyen hue q');
+    expect(
+      segmentCompactQuery('dhbk', universityKnowledge, [
+        ...testDataset.abbreviations,
+        { abbreviation: 'dh', expandedForm: 'Đại học', type: 'category' },
+      ]),
+    ).toBe('dh bk');
   });
 
   it('does not force over-specific unknown strings into a generic rewrite', () => {

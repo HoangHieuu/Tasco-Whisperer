@@ -1,4 +1,4 @@
-import { normalizeText } from './normalize';
+import { normalizeText, queryAliasEntries } from './normalize';
 import type { AbbreviationRecord, TascoDataset } from './types';
 
 export interface VietnameseQueryKnowledge {
@@ -120,6 +120,13 @@ export function buildVietnameseQueryKnowledge(dataset: TascoDataset): Vietnamese
   for (const abbreviation of dataset.abbreviations) {
     addPhrase(phrases, tokens, abbreviation.abbreviation);
     addPhrase(phrases, tokens, abbreviation.expandedForm);
+    addCompactToken(tokens, abbreviation.abbreviation);
+  }
+
+  for (const [alias, replacement] of queryAliasEntries()) {
+    addPhrase(phrases, tokens, alias);
+    addPhrase(phrases, tokens, replacement);
+    addCompactToken(tokens, alias);
   }
 
   for (const row of dataset.autocomplete) {
@@ -201,7 +208,7 @@ export function segmentCompactQuery(
     return phraseMatch;
   }
 
-  const segmented = segmentByTokenDictionary(compactQuery, knowledge.tokens);
+  const segmented = segmentByTokenDictionary(compactQuery, knowledge.tokens, compactPrefixAnchors(abbreviations));
   if (segmented && segmented.includes(' ')) {
     return segmented;
   }
@@ -265,7 +272,11 @@ function phraseForCompactPrefix(
   return candidates[0];
 }
 
-function segmentByTokenDictionary(compactQuery: string, tokens: Set<string>): string | undefined {
+function segmentByTokenDictionary(
+  compactQuery: string,
+  tokens: Set<string>,
+  prefixAnchors: Set<string>,
+): string | undefined {
   const dp: Array<{ score: number; parts: string[] } | undefined> = Array(compactQuery.length + 1).fill(undefined);
   dp[0] = { score: 0, parts: [] };
 
@@ -273,13 +284,17 @@ function segmentByTokenDictionary(compactQuery: string, tokens: Set<string>): st
     for (let start = Math.max(0, end - 12); start < end; start += 1) {
       const token = compactQuery.slice(start, end);
       const previous = dp[start];
-      if (!previous || !tokens.has(token)) {
+      if (!previous) {
         continue;
       }
-      const score = previous.score + tokenScore(token);
+      const candidate = segmentTokenCandidate(token, tokens, end === compactQuery.length, previous.parts, prefixAnchors);
+      if (!candidate) {
+        continue;
+      }
+      const score = previous.score + tokenScore(candidate.token) + candidate.scoreAdjustment;
       const current = dp[end];
       if (!current || score > current.score) {
-        dp[end] = { score, parts: [...previous.parts, token] };
+        dp[end] = { score, parts: [...previous.parts, candidate.token] };
       }
     }
   }
@@ -303,6 +318,52 @@ function addPhrase(phrases: Set<string>, tokens: Set<string>, phrase: string): v
       tokens.add(token);
     }
   }
+}
+
+function addCompactToken(tokens: Set<string>, phrase: string): void {
+  const normalized = normalizeText(phrase);
+  if (normalized && !normalized.includes(' ')) {
+    tokens.add(normalized);
+  }
+}
+
+function compactPrefixAnchors(abbreviations: AbbreviationRecord[]): Set<string> {
+  return new Set([
+    ...abbreviations.map((item) => normalizeText(item.abbreviation)).filter((item) => item && !item.includes(' ')),
+    ...queryAliasEntries()
+      .map(([alias]) => normalizeText(alias))
+      .filter((item) => item && !item.includes(' ')),
+  ]);
+}
+
+function segmentTokenCandidate(
+  token: string,
+  tokens: Set<string>,
+  finalToken: boolean,
+  previousParts: string[],
+  prefixAnchors: Set<string>,
+): { token: string; scoreAdjustment: number } | undefined {
+  if (tokens.has(token) || /^\d+$/.test(token)) {
+    return { token, scoreAdjustment: /^\d$/.test(token) ? -0.5 : 0 };
+  }
+
+  const decoded = decodeTelexToken(token, { tokens, phrases: [] });
+  if (decoded !== token && tokens.has(decoded)) {
+    return { token: decoded, scoreAdjustment: -0.25 };
+  }
+
+  const canUseShortFinalPrefix =
+    token.length > 1 || previousParts.some((part) => prefixAnchors.has(part));
+  if (
+    finalToken &&
+    previousParts.length > 0 &&
+    canUseShortFinalPrefix &&
+    [...tokens].some((known) => known.length > token.length && known.startsWith(token))
+  ) {
+    return { token, scoreAdjustment: -0.5 };
+  }
+
+  return undefined;
 }
 
 function tokenScore(token: string): number {

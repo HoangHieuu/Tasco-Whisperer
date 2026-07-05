@@ -1,14 +1,15 @@
 import { resolveAgenticCorrection } from './agentic';
+import { resolveAgenticCorrectionWithProvider, type AgenticRuntimeOptions } from './agenticRuntime';
+import { observationFromProposal } from './aliasMemory';
 import { rankingEvidenceForPoi } from './enrichment';
 import { containsTokenPhrase, expandQuery, fuzzyIncludes, normalizeText } from './normalize';
 import { generatedPatternCandidates } from './generatedPatterns';
 import {
-  buildEmbeddingIndex,
   hasStrongSemanticEvidence,
-  searchEmbeddingIndex,
+  lexicalEmbeddingContext,
   semanticDocuments,
   semanticSimilarity,
-  voteIntentFromNeighbors,
+  type EmbeddingContext,
   type EmbeddingIntentVote,
   type EmbeddingNeighbor,
 } from './semantic';
@@ -38,6 +39,14 @@ interface CandidateDraft {
   frequencyScore: number;
   reason: string;
   entityBoost?: number;
+}
+
+export interface SuggestRuntimeOptions {
+  embeddingContext?: EmbeddingContext;
+  embeddingProvider?: {
+    contextForQuery(query: string): Promise<EmbeddingContext | undefined>;
+  };
+  agentic?: AgenticRuntimeOptions;
 }
 
 interface SimulatedProfile {
@@ -140,12 +149,11 @@ const SEMANTIC_TEMPLATES: SemanticTemplate[] = [
   ...templateGroup(['bv bach', 'benh vien bach'], ['Bệnh viện Bạch Mai'], 'POI Search', 'hospital abbreviation plus POI completion'),
   ...templateGroup(['ben thanh'], ['Chợ Bến Thành', 'Khách sạn gần Chợ Bến Thành'], 'POI Search', 'landmark completion for Bến Thành'),
   ...templateGroup(['my khe hotel'], ['Khách sạn gần biển Mỹ Khê'], 'Discovery Search', 'specific My Khe hotel intent'),
-  ...templateGroup(['hotel near beach danang'], ['Khách sạn gần biển Đà Nẵng'], 'Discovery Search', 'English beach hotel location intent', 0.9),
   ...templateGroup(['khach san da nang', 'hotel da nang', 'hotel near beach danang', 'my khe hotel'], ['Khách sạn Đà Nẵng', 'Khách sạn Đà Nẵng gần biển', 'Khách sạn gần biển Đà Nẵng', 'Hotel Đà Nẵng', 'Khách sạn gần biển Mỹ Khê'], 'Discovery Search', 'hotel plus coastal Da Nang intent'),
-  ...templateGroup(['cay xang', 'tram xang', 'xang tren duong'], ['Cây xăng gần đây', 'Trạm xăng gần đây', 'Cây xăng trên đường đi'], 'Nearby Search', 'gas station nearby or route intent'),
+  ...templateGroup(['cay xang', 'tram xang'], ['Cây xăng gần đây', 'Trạm xăng gần đây'], 'Nearby Search', 'gas station nearby intent'),
+  ...templateGroup(['xang tren duong'], ['Cây xăng trên đường đi', 'Trạm dừng có cây xăng'], 'Discovery Search', 'gas station on-route discovery intent'),
   ...templateGroup(['coffee gan day', 'ca phe gan day'], ['Coffee near me', 'Quán cà phê gần đây'], 'Discovery Search', 'mixed language nearby cafe intent'),
   ...templateGroup(['cafe yen tinh'], ['Quán cà phê yên tĩnh'], 'Discovery Search', 'quiet cafe attribute intent'),
-  ...templateGroup(['cafe dep song ao'], ['Quán cà phê đẹp để check-in'], 'Discovery Search', 'photo-friendly cafe discovery intent'),
   ...templateGroup(['quan cafe hoc', 'cafe wifi', 'cf lam viec', 'cafe yen tinh', 'cafe dep song ao'], ['Quán cà phê phù hợp học tập', 'Cafe có Wi-Fi', 'Quán cà phê có Wi-Fi', 'Cafe làm việc', 'Quán cà phê yên tĩnh', 'Quán cà phê đẹp để check-in'], 'Discovery Search', 'semantic cafe attribute intent'),
   ...templateGroup(['nguyen hue', '12 nguyen hue'], ['Nguyễn Huệ, Quận 1, TP.HCM', '12 Nguyễn Huệ, Quận 1, TP.HCM', 'Highlands Coffee Nguyễn Huệ'], 'Address Suggestion', 'street and address completion'),
   ...templateGroup(['atm vcb quan', 'atm vietcombank quan'], ['ATM Vietcombank Quận 1', 'ATM Vietcombank Quận 7'], 'Nearby Search', 'ATM brand plus district intent'),
@@ -180,20 +188,18 @@ const SEMANTIC_TEMPLATES: SemanticTemplate[] = [
   ...templateGroup(['da lat check'], ['Địa điểm check-in đẹp ở Đà Lạt'], 'Discovery Search', 'Da Lat check-in discovery'),
   ...templateGroup(['spa gan day'], ['Spa gần đây'], 'Category Search', 'wellness category intent'),
   ...templateGroup(['gym 24'], ['Phòng gym mở cửa 24/7'], 'Discovery Search', '24/7 gym attribute intent'),
-  ...templateGroup(['sieu thi gan'], ['Siêu thị gần đây'], 'Category Search', 'supermarket nearby category'),
   ...templateGroup(['quan nuong quan 7'], ['Quán nướng Quận 7'], 'Category Search', 'grill category plus district'),
-  ...templateGroup(['hoc vien gan day'], ['Học viện gần đây', 'Trung tâm đào tạo gần đây'], 'Category Search', 'education synonym category'),
   ...templateGroup(['ben xe mien dong'], ['Bến xe Miền Đông mới', 'Bến xe Miền Đông cũ'], 'POI Search', 'bus station ambiguity'),
 ];
 
-export function suggest(dataset: TascoDataset, request: SuggestRequest): SuggestResponse {
+export function suggest(dataset: TascoDataset, request: SuggestRequest, runtimeEmbedding?: EmbeddingContext): SuggestResponse {
   const start = performance.now();
   const limit = clampLimit(request.limit);
   const understanding = understandQuery(dataset, request.q);
   const entities = extractEntities(dataset, understanding);
-  const embedding = embeddingContext(dataset, understanding);
-  const drafts = collectCandidates(dataset, understanding, request, embedding.neighbors, entities);
-  const intent = predictIntent(drafts, understanding, entities, embedding.intentVote);
+  const embedding = runtimeEmbedding ?? embeddingContext(dataset, understanding);
+  const drafts = collectCandidates(dataset, understanding, request, embedding.neighbors, entities, embedding.provider);
+  const intent = predictIntent(drafts, understanding, entities, embedding.intentVote, embedding.provider);
   const agentic = resolveAgenticCorrection({
     understanding,
     entities,
@@ -212,11 +218,11 @@ export function suggest(dataset: TascoDataset, request: SuggestRequest): Suggest
     : entities;
   const rewrittenEmbedding = agentic.appliedRewrite ? embeddingContext(dataset, finalUnderstanding) : embedding;
   const rewrittenDrafts = agentic.appliedRewrite
-    ? collectCandidates(dataset, finalUnderstanding, request, rewrittenEmbedding.neighbors, finalEntities)
+    ? collectCandidates(dataset, finalUnderstanding, request, rewrittenEmbedding.neighbors, finalEntities, rewrittenEmbedding.provider)
     : [];
   const finalDrafts = agentic.appliedRewrite ? [...drafts, ...rewrittenDrafts] : drafts;
   const rerunIntent = agentic.appliedRewrite
-    ? predictIntent(finalDrafts, finalUnderstanding, finalEntities, rewrittenEmbedding.intentVote)
+    ? predictIntent(finalDrafts, finalUnderstanding, finalEntities, rewrittenEmbedding.intentVote, rewrittenEmbedding.provider)
     : intent;
   const finalIntent = applyValidatedAgenticIntent(rerunIntent, agentic.proposal);
   const suggestions = rankAndMerge(finalDrafts, finalIntent.type, request, limit);
@@ -234,6 +240,10 @@ export function suggest(dataset: TascoDataset, request: SuggestRequest): Suggest
       candidateCount: finalDrafts.length,
       agentic,
       embedding: {
+        provider: (agentic.appliedRewrite ? rewrittenEmbedding : embedding).provider,
+        model: (agentic.appliedRewrite ? rewrittenEmbedding : embedding).model,
+        degraded: (agentic.appliedRewrite ? rewrittenEmbedding : embedding).degraded,
+        reason: (agentic.appliedRewrite ? rewrittenEmbedding : embedding).reason,
         neighbors: (agentic.appliedRewrite ? rewrittenEmbedding.neighbors : embedding.neighbors).slice(0, 5).map((neighbor) => ({
           id: neighbor.document.id,
           kind: neighbor.document.kind,
@@ -258,19 +268,103 @@ export function suggest(dataset: TascoDataset, request: SuggestRequest): Suggest
   };
 }
 
+export async function suggestAsync(
+  dataset: TascoDataset,
+  request: SuggestRequest,
+  runtime: SuggestRuntimeOptions = {},
+): Promise<SuggestResponse> {
+  const start = performance.now();
+  const limit = clampLimit(request.limit);
+  const understanding = understandQuery(dataset, request.q);
+  const entities = extractEntities(dataset, understanding);
+  const embedding =
+    runtime.embeddingContext ??
+    (await runtime.embeddingProvider?.contextForQuery(understanding.expanded || understanding.normalized)) ??
+    embeddingContext(dataset, understanding);
+  const drafts = collectCandidates(dataset, understanding, request, embedding.neighbors, entities, embedding.provider);
+  const intent = predictIntent(drafts, understanding, entities, embedding.intentVote, embedding.provider);
+  let agentic = await resolveAgenticCorrectionWithProvider(
+    {
+      understanding,
+      entities,
+      intent,
+      candidateCount: drafts.length,
+      aliasMemory: request.aliasMemory,
+      provider: runtime.agentic?.provider ?? request.agenticProvider,
+      enabled: request.agentic,
+    },
+    runtime.agentic,
+  );
+  agentic = await persistAcceptedAgenticRewrite(request.q, agentic, runtime.agentic);
+
+  const finalUnderstanding = agentic.appliedRewrite
+    ? expandQuery(agentic.appliedRewrite, dataset.abbreviations)
+    : understanding;
+  const finalEntities = agentic.appliedRewrite
+    ? mergeEntities(extractEntities(dataset, finalUnderstanding), agentic.proposal?.entities ?? [])
+    : entities;
+  const rewrittenEmbedding = agentic.appliedRewrite ? embeddingContext(dataset, finalUnderstanding) : embedding;
+  const rewrittenDrafts = agentic.appliedRewrite
+    ? collectCandidates(dataset, finalUnderstanding, request, rewrittenEmbedding.neighbors, finalEntities, rewrittenEmbedding.provider)
+    : [];
+  const finalDrafts = agentic.appliedRewrite ? [...drafts, ...rewrittenDrafts] : drafts;
+  const rerunIntent = agentic.appliedRewrite
+    ? predictIntent(finalDrafts, finalUnderstanding, finalEntities, rewrittenEmbedding.intentVote, rewrittenEmbedding.provider)
+    : intent;
+  const finalIntent = applyValidatedAgenticIntent(rerunIntent, agentic.proposal);
+  const suggestions = rankAndMerge(finalDrafts, finalIntent.type, request, limit);
+  const diagnosticEmbedding = agentic.appliedRewrite ? rewrittenEmbedding : embedding;
+
+  return {
+    query: request.q,
+    normalizedQuery: understanding.normalized,
+    expandedQuery: finalUnderstanding.expanded,
+    intent: finalIntent,
+    suggestions,
+    latencyMs: Math.max(1, Math.round(performance.now() - start)),
+    diagnostics: {
+      expansions: finalUnderstanding.expansions,
+      entities: finalEntities,
+      candidateCount: finalDrafts.length,
+      agentic,
+      embedding: {
+        provider: diagnosticEmbedding.provider,
+        model: diagnosticEmbedding.model,
+        degraded: diagnosticEmbedding.degraded,
+        reason: diagnosticEmbedding.reason,
+        neighbors: diagnosticEmbedding.neighbors.slice(0, 5).map((neighbor) => ({
+          id: neighbor.document.id,
+          kind: neighbor.document.kind,
+          similarity: neighbor.similarity,
+          intent: neighbor.intent,
+        })),
+        intentVote: diagnosticEmbedding.intentVote
+          ? {
+              type: diagnosticEmbedding.intentVote.type,
+              confidence: diagnosticEmbedding.intentVote.confidence,
+            }
+          : undefined,
+      },
+      datasetRows: {
+        autocomplete: dataset.autocomplete.length,
+        pois: dataset.pois.length,
+        abbreviations: dataset.abbreviations.length,
+        popularQueries: dataset.popularQueries.length,
+        evaluationCases: dataset.evaluationCases.length,
+      },
+    },
+  };
+}
+
 function embeddingContext(
   dataset: TascoDataset,
   understanding: QueryUnderstanding,
-): { neighbors: EmbeddingNeighbor[]; intentVote?: EmbeddingIntentVote } {
+): EmbeddingContext {
   const query = understanding.expanded || understanding.normalized;
   if (!query || isUnresolvedCompactQuery(understanding)) {
-    return { neighbors: [] };
+    return { provider: 'lexical-fallback', neighbors: [], reason: 'query is empty or unresolved compact form' };
   }
-  const neighbors = searchEmbeddingIndex(query, buildEmbeddingIndex(dataset), 10).filter((neighbor) => neighbor.similarity >= 0.38);
-  return {
-    neighbors,
-    intentVote: voteIntentFromNeighbors(neighbors),
-  };
+  return lexicalEmbeddingContext(dataset, query);
 }
 
 function understandQuery(dataset: TascoDataset, query: string): QueryUnderstanding {
@@ -305,6 +399,29 @@ function applyValidatedAgenticIntent(
   };
 }
 
+async function persistAcceptedAgenticRewrite(
+  rawQuery: string,
+  agentic: SuggestResponse['diagnostics']['agentic'],
+  runtime?: AgenticRuntimeOptions,
+): Promise<SuggestResponse['diagnostics']['agentic']> {
+  if (!agentic.appliedRewrite || !agentic.proposal || agentic.source !== 'agent' || !runtime?.onAcceptedRewrite) {
+    return agentic;
+  }
+  const observation = observationFromProposal(rawQuery, agentic.proposal, true);
+  if (!observation) {
+    return agentic;
+  }
+  try {
+    await runtime.onAcceptedRewrite(observation);
+    return agentic;
+  } catch (error) {
+    return {
+      ...agentic,
+      reason: `${agentic.reason}; alias memory persistence failed: ${error instanceof Error ? error.message : 'unknown error'}`,
+    };
+  }
+}
+
 function mergeEntities(primary: QueryEntity[], secondary: QueryEntity[]): QueryEntity[] {
   const merged = [...primary];
   for (const entity of secondary) {
@@ -328,6 +445,7 @@ function collectCandidates(
   request: SuggestRequest,
   embeddingNeighbors: EmbeddingNeighbor[] = [],
   entities: QueryEntity[] = [],
+  embeddingProvider: EmbeddingContext['provider'] = 'lexical-fallback',
 ): CandidateDraft[] {
   if (!understanding.normalized) {
     return dataset.popularQueries.slice(0, 5).map((query) => ({
@@ -346,7 +464,7 @@ function collectCandidates(
     ...fromAutocomplete(dataset, understanding),
     ...fromPois(dataset, understanding),
     ...fromPopularQueries(dataset, understanding),
-    ...fromEmbedding(understanding, embeddingNeighbors),
+    ...fromEmbedding(understanding, embeddingNeighbors, embeddingProvider),
     ...fromSemantic(dataset, understanding),
     ...fromGeneratedPatterns(dataset, understanding, entities),
     ...fromTemplates(understanding),
@@ -467,28 +585,50 @@ function fromSemantic(dataset: TascoDataset, understanding: QueryUnderstanding):
           entityBoost: 0.02,
         };
       }
+      if (document.kind === 'popular-query') {
+        const record = document.record;
+        return {
+          id: document.id,
+          text: record.queryText,
+          type: record.intentType,
+          source: 'semantic',
+          matched: ['semantic retrieval'],
+          baseScore: Math.min(0.74, 0.42 + similarity * 0.3),
+          frequencyScore: record.monthlyFrequency / MAX_QUERY_FREQUENCY,
+          reason: 'semantic match from popular query',
+          entityBoost: 0.02,
+        };
+      }
       const record = document.record;
       return {
         id: document.id,
-        text: record.queryText,
-        type: record.intentType,
+        text: record.text,
+        type: record.type,
         source: 'semantic',
-        matched: ['semantic retrieval'],
+        matched: ['semantic retrieval', ...record.matched],
         baseScore: Math.min(0.74, 0.42 + similarity * 0.3),
-        frequencyScore: record.monthlyFrequency / MAX_QUERY_FREQUENCY,
-        reason: 'semantic match from popular query',
-        entityBoost: 0.02,
+        frequencyScore: record.frequencyScore,
+        reason: 'semantic match from generated pattern',
+        entityBoost: Math.max(0.02, record.entityBoost ?? 0),
       };
     });
 }
 
-function fromEmbedding(understanding: QueryUnderstanding, neighbors: EmbeddingNeighbor[]): CandidateDraft[] {
+function fromEmbedding(
+  understanding: QueryUnderstanding,
+  neighbors: EmbeddingNeighbor[],
+  embeddingProvider: EmbeddingContext['provider'],
+): CandidateDraft[] {
   const query = understanding.expanded || understanding.normalized;
   if (query.length < 4 || isUnresolvedCompactQuery(understanding)) {
     return [];
   }
   return neighbors
-    .filter((neighbor) => neighbor.similarity >= 0.44 && hasStrongSemanticEvidence(query, neighbor.document.text))
+    .filter((neighbor) =>
+      embeddingProvider === 'minilm'
+        ? neighbor.similarity >= 0.42
+        : neighbor.similarity >= 0.44 && hasStrongSemanticEvidence(query, neighbor.document.text)
+    )
     .slice(0, 10)
     .map((neighbor): CandidateDraft => {
       const { document, similarity } = neighbor;
@@ -503,7 +643,7 @@ function fromEmbedding(understanding: QueryUnderstanding, neighbors: EmbeddingNe
           poi,
           baseScore: Math.min(0.84, 0.48 + similarity * 0.42),
           frequencyScore: poi.popularityScore / 100,
-          reason: `embedding kNN match from ${poi.category}${poi.city ? ` in ${poi.city}` : ''}`,
+          reason: `${embeddingProvider} kNN match from ${poi.category}${poi.city ? ` in ${poi.city}` : ''}`,
           entityBoost: 0.04,
         };
       }
@@ -517,21 +657,35 @@ function fromEmbedding(understanding: QueryUnderstanding, neighbors: EmbeddingNe
           matched: ['embedding kNN'],
           baseScore: Math.min(0.84, 0.48 + similarity * 0.4),
           frequencyScore: record.queryFrequency / MAX_QUERY_FREQUENCY,
-          reason: 'embedding kNN match from historical autocomplete',
+          reason: `${embeddingProvider} kNN match from historical autocomplete`,
+          entityBoost: 0.04,
+        };
+      }
+      if (document.kind === 'popular-query') {
+        const record = document.record;
+        return {
+          id: `embedding-${document.id}`,
+          text: record.queryText,
+          type: record.intentType,
+          source: 'embedding',
+          matched: ['embedding kNN'],
+          baseScore: Math.min(0.82, 0.47 + similarity * 0.38),
+          frequencyScore: record.monthlyFrequency / MAX_QUERY_FREQUENCY,
+          reason: `${embeddingProvider} kNN match from popular query`,
           entityBoost: 0.04,
         };
       }
       const record = document.record;
       return {
         id: `embedding-${document.id}`,
-        text: record.queryText,
-        type: record.intentType,
+        text: record.text,
+        type: record.type,
         source: 'embedding',
-        matched: ['embedding kNN'],
-        baseScore: Math.min(0.82, 0.47 + similarity * 0.38),
-        frequencyScore: record.monthlyFrequency / MAX_QUERY_FREQUENCY,
-        reason: 'embedding kNN match from popular query',
-        entityBoost: 0.04,
+        matched: ['embedding kNN', ...record.matched],
+        baseScore: Math.min(0.82, 0.48 + similarity * 0.38),
+        frequencyScore: record.frequencyScore,
+        reason: `${embeddingProvider} kNN match from generated pattern`,
+        entityBoost: Math.max(0.04, record.entityBoost ?? 0),
       };
     });
 }
@@ -718,6 +872,7 @@ function predictIntent(
   understanding: QueryUnderstanding,
   entities: QueryEntity[],
   embeddingVote?: EmbeddingIntentVote,
+  embeddingProvider: EmbeddingContext['provider'] = 'lexical-fallback',
 ): SuggestResponse['intent'] {
   const votes = new Map<IntentType, number>();
   for (const [term, type] of CATEGORY_TERMS) {
@@ -753,12 +908,22 @@ function predictIntent(
   if (entities.some((entity) => entity.kind === 'attribute' && normalizeText(entity.value) === 'wi fi')) {
     return { type: 'Attribute Search', confidence: 0.88 };
   }
-  if (entities.some((entity) => entity.kind === 'attribute')) {
-    votes.set('Attribute Search', (votes.get('Attribute Search') ?? 0) + 4.5);
-  }
   const categoryIntent = intentFromClearCategoryEntity(understanding, entities);
   if (categoryIntent) {
     return categoryIntent;
+  }
+  const directEvidenceIntent = intentFromDirectEvidence(drafts, understanding);
+  if (directEvidenceIntent) {
+    return directEvidenceIntent;
+  }
+  if (entities.some((entity) => entity.kind === 'attribute')) {
+    votes.set('Attribute Search', (votes.get('Attribute Search') ?? 0) + 4.5);
+  }
+  if (embeddingProvider === 'minilm' && embeddingVote && embeddingVote.confidence >= 0.48) {
+    return {
+      type: embeddingVote.type,
+      confidence: roundScore(Math.min(0.9, Math.max(0.62, embeddingVote.confidence + 0.08))),
+    };
   }
   if (votes.size === 0) {
     return { type: 'Ambiguous', confidence: 0.35 };
@@ -768,6 +933,64 @@ function predictIntent(
   const total = sorted.reduce((sum, [, score]) => sum + score, 0);
   const confidence = total ? Math.min(0.98, Math.max(0.45, topScore / total + 0.28)) : 0.35;
   return { type: topType, confidence: roundScore(confidence) };
+}
+
+function intentFromDirectEvidence(drafts: CandidateDraft[], understanding: QueryUnderstanding): SuggestResponse['intent'] | undefined {
+  const directSources = new Set<CandidateDraft['source']>(['autocomplete', 'generated', 'template', 'popular-query']);
+  const evidence = new Map<string, { type: IntentType; score: number; order: number }>();
+
+  drafts.forEach((draft, order) => {
+    if (!directSources.has(draft.source)) {
+      return;
+    }
+    const precision = directMatchPrecision(draft, understanding);
+    if (precision <= 0) {
+      return;
+    }
+    const sourceBias =
+      draft.source === 'template' ? 0.22 : draft.source === 'autocomplete' ? 0.18 : draft.source === 'generated' ? 0.12 : 0.06;
+    const bestMatched = draft.matched.map(normalizeText).sort()[0] ?? draft.id;
+    const key = `${draft.type}:${draft.source}:${bestMatched}`;
+    const score = draft.baseScore + (draft.entityBoost ?? 0) + precision + sourceBias;
+    const existing = evidence.get(key);
+    if (!existing || score > existing.score) {
+      evidence.set(key, { type: draft.type, score, order });
+    }
+  });
+
+  const byType = new Map<IntentType, { score: number; order: number }>();
+  for (const item of evidence.values()) {
+    const existing = byType.get(item.type);
+    if (!existing || item.score > existing.score || (item.score === existing.score && item.order < existing.order)) {
+      byType.set(item.type, { score: item.score, order: item.order });
+    }
+  }
+  const sorted = [...byType.entries()].sort((a, b) => b[1].score - a[1].score || a[1].order - b[1].order);
+  const [top] = sorted;
+  if (!top || top[1].score < 1.05) {
+    return undefined;
+  }
+  const [, runnerUp] = sorted[1] ?? [];
+  const margin = runnerUp ? top[1].score - runnerUp.score : 0.35;
+  return {
+    type: top[0],
+    confidence: roundScore(Math.min(0.92, Math.max(0.72, 0.76 + margin * 0.18))),
+  };
+}
+
+function directMatchPrecision(draft: CandidateDraft, understanding: QueryUnderstanding): number {
+  const variants = [...new Set([understanding.normalized, understanding.expanded].map(normalizeText).filter(Boolean))];
+  const matched = draft.matched.map(normalizeText).filter(Boolean);
+  if (matched.some((match) => variants.includes(match))) {
+    return 0.5;
+  }
+  if (matched.some((match) => variants.some((variant) => prefixPhraseMatches(match, variant) || prefixPhraseMatches(variant, match)))) {
+    return 0.3;
+  }
+  if (draft.source === 'autocomplete' && matched.some((match) => variants.some((variant) => match.startsWith(variant)))) {
+    return 0.22;
+  }
+  return 0;
 }
 
 function intentFromClearCategoryEntity(

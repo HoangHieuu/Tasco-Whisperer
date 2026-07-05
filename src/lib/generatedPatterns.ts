@@ -56,7 +56,7 @@ const CATEGORY_LEXICON: CategorySignal[] = [
 ];
 
 const ATTRIBUTE_LEXICON: AttributeSignal[] = [
-  attribute('nearby', 'gần đây', 'Nearby Search', ['gan day', 'gan nhat', 'near', 'near me']),
+  attribute('nearby', 'gần đây', 'Nearby Search', ['gan', 'gan day', 'gan nhat', 'near', 'near me']),
   attribute('open-24h', 'mở cửa 24/7', 'Discovery Search', ['24/7', '24h', 'mo cua', 'open now']),
   attribute('wifi', 'có Wi-Fi', 'Attribute Search', ['wifi', 'wi fi']),
   attribute('quiet', 'yên tĩnh', 'Discovery Search', ['yen tinh', 'quiet']),
@@ -100,7 +100,16 @@ export function generatedPatternCandidates(
       const targetCities = cities.length ? cities : [undefined];
       for (const city of targetCities) {
         for (const text of renderCategoryAttribute(categorySignal, attributeSignal, city)) {
-        candidates.push(candidate(text, attributeSignal.type, categorySignal, city, attributeSignal, attributeSignal.key === 'nearby' ? 0.7 : 0.8));
+          candidates.push(
+            candidate(
+              text,
+              generatedTypeForAttribute(categorySignal, attributeSignal),
+              categorySignal,
+              city,
+              attributeSignal,
+              attributeSignal.key === 'nearby' ? 0.7 : 0.8,
+            ),
+          );
         }
       }
     }
@@ -124,6 +133,63 @@ export function generatedPatternCandidates(
   return dedupe(candidates).slice(0, 18);
 }
 
+export function generatedPatternCorpus(dataset: TascoDataset): GeneratedPatternCandidate[] {
+  const categories = corpusCategories(dataset);
+  const cities = corpusCities(dataset);
+  const candidates: GeneratedPatternCandidate[] = [];
+
+  for (const categorySignal of categories) {
+    candidates.push(candidate(categorySignal.label, categorySignal.type, categorySignal, undefined, undefined, 0.62));
+
+    for (const city of cities) {
+      candidates.push(candidate(`${categorySignal.label} ${city.label}`, categorySignal.type, categorySignal, city, undefined, 0.68));
+    }
+
+    for (const attributeSignal of corpusAttributesForCategory(categorySignal)) {
+      const targetCities = corpusCitiesForAttribute(attributeSignal, cities);
+      for (const city of targetCities) {
+        for (const text of renderCategoryAttribute(categorySignal, attributeSignal, city)) {
+          candidates.push(
+            candidate(text, generatedTypeForAttribute(categorySignal, attributeSignal), categorySignal, city, attributeSignal, 0.7),
+          );
+        }
+      }
+    }
+  }
+
+  return dedupe(candidates);
+}
+
+function corpusAttributesForCategory(categorySignal: CategorySignal): AttributeSignal[] {
+  const key = categorySignal.key;
+  const attributeKeys =
+    key.includes('cafe') || key.includes('ca phe') || key.includes('quan ca phe')
+      ? ['nearby', 'open-24h', 'wifi', 'quiet', 'work-study', 'check-in', 'rooftop']
+      : key.includes('hotel') || key.includes('khach san')
+        ? ['nearby', 'beach', 'airport', 'family']
+        : key.includes('nha hang') || key.includes('quan an') || key.includes('restaurant') || key.includes('eatery')
+          ? ['nearby', 'open-24h', 'late-night', 'family', 'vegetarian', 'halal', 'rooftop']
+          : key.includes('atm') || key.includes('benh vien') || key.includes('hospital')
+            ? ['nearby', 'airport']
+            : key.includes('xang') || key.includes('gas')
+              ? ['nearby', 'on-route']
+              : key.includes('gym')
+                ? ['nearby', 'open-24h']
+                : ['nearby'];
+  return ATTRIBUTE_LEXICON.filter((attributeSignal) => attributeKeys.includes(attributeSignal.key));
+}
+
+function corpusCitiesForAttribute(attributeSignal: AttributeSignal, cities: CitySignal[]): Array<CitySignal | undefined> {
+  if (attributeSignal.key === 'beach') {
+    const coastalCities = cities.filter((city) => ['da nang', 'nha trang'].some((value) => city.key.includes(value)));
+    return coastalCities.length ? coastalCities : cities;
+  }
+  if (attributeSignal.key === 'airport') {
+    return cities.filter((city) => ['ha noi', 'tp.hcm', 'da nang'].some((value) => city.key.includes(value)));
+  }
+  return [undefined];
+}
+
 function detectCategories(dataset: TascoDataset, query: string, entities: QueryEntity[]): CategorySignal[] {
   const entityCategories = entities
     .filter((entity) => entity.kind === 'category')
@@ -133,6 +199,22 @@ function detectCategories(dataset: TascoDataset, query: string, entities: QueryE
   return [...CATEGORY_LEXICON, ...datasetCategories]
     .filter((item) => entityCategories.includes(normalizeText(item.label)) || item.aliases.some((alias) => phraseEvidence(query, alias)))
     .filter((item, index, all) => all.findIndex((other) => other.key === item.key) === index);
+}
+
+function corpusCategories(dataset: TascoDataset): CategorySignal[] {
+  const datasetCategories = [...new Set(dataset.pois.map((poi) => poi.category).filter(Boolean))]
+    .map((label) => category(normalizeText(label), label, inferCategoryType(label), [label]));
+  return [...CATEGORY_LEXICON, ...datasetCategories].filter(
+    (item, index, all) => all.findIndex((other) => other.key === item.key) === index,
+  );
+}
+
+function corpusCities(dataset: TascoDataset): CitySignal[] {
+  return [...new Set(dataset.pois.map((poi) => poi.city).filter(Boolean))].map((label) => ({
+    key: normalizeText(label),
+    label,
+    aliases: [label],
+  }));
 }
 
 function detectAttributes(query: string, entities: QueryEntity[]): AttributeSignal[] {
@@ -179,6 +261,13 @@ function renderCategoryAttribute(categorySignal: CategorySignal, attributeSignal
   if (attributeSignal.key === 'on-route') return [`${categoryLabel} trên đường đi${suffix}`];
   if (['vegetarian', 'halal', 'rooftop'].includes(attributeSignal.key)) return [`${categoryLabel} ${attributeSignal.label}${suffix}`];
   return [`${categoryLabel} ${attributeSignal.label}${suffix}`];
+}
+
+function generatedTypeForAttribute(categorySignal: CategorySignal, attributeSignal: AttributeSignal): IntentType {
+  if (attributeSignal.key === 'nearby') {
+    return categorySignal.type;
+  }
+  return attributeSignal.type;
 }
 
 function candidate(

@@ -248,9 +248,13 @@ export interface SuggestResponse {
       aliasMemoryHits?: AliasMemoryRecord[];
     };
     embedding?: {
+      provider: 'minilm' | 'lexical-fallback';
+      model?: string;
+      degraded?: boolean;
+      reason?: string;
       neighbors: Array<{
         id: string;
-        kind: 'autocomplete' | 'poi' | 'popular-query';
+        kind: 'autocomplete' | 'poi' | 'popular-query' | 'generated-pattern';
         similarity: number;
         intent?: IntentType;
       }>;

@@ -47,7 +47,7 @@ interface LocalRewriteFixture {
   evidence: string[];
 }
 
-interface AgenticTriggerContext {
+export interface AgenticTriggerContext {
   understanding: QueryUnderstanding;
   entities: QueryEntity[];
   intent: SuggestResponse['intent'];

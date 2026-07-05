@@ -1,6 +1,6 @@
 import { normalizeText } from './normalize';
-import { suggest } from './engine';
-import type { EvaluationCase, IntentType, SuggestRequest, TascoDataset } from './types';
+import { suggest, suggestAsync, type SuggestRuntimeOptions } from './engine';
+import type { EvaluationCase, IntentType, SuggestRequest, SuggestResponse, TascoDataset } from './types';
 
 export interface EvaluationCaseResult {
   caseId: string;
@@ -16,6 +16,8 @@ export interface EvaluationCaseResult {
   top3Hit: boolean;
   top5Hit: boolean;
   latencyMs: number;
+  embeddingProvider?: 'minilm' | 'lexical-fallback';
+  embeddingDegraded?: boolean;
 }
 
 export interface EvaluationReport {
@@ -40,6 +42,10 @@ export interface EvaluationOptions {
   request?: Omit<Partial<SuggestRequest>, 'q' | 'limit'>;
 }
 
+export interface AsyncEvaluationOptions extends EvaluationOptions {
+  runtime?: SuggestRuntimeOptions | ((evaluationCase: EvaluationCase) => Promise<SuggestRuntimeOptions> | SuggestRuntimeOptions);
+}
+
 export function evaluateDataset(dataset: TascoDataset, options: EvaluationOptions = {}): EvaluationReport {
   const cases = dataset.evaluationCases.map((evaluationCase) => evaluateCase(dataset, evaluationCase, options));
   return {
@@ -62,6 +68,44 @@ export function evaluateDataset(dataset: TascoDataset, options: EvaluationOption
 
 function evaluateCase(dataset: TascoDataset, evaluationCase: EvaluationCase, options: EvaluationOptions): EvaluationCaseResult {
   const response = suggest(dataset, { ...options.request, q: evaluationCase.inputPrefix, limit: options.limit ?? 8 });
+  return resultFromResponse(evaluationCase, response, response.latencyMs);
+}
+
+export async function evaluateDatasetAsync(dataset: TascoDataset, options: AsyncEvaluationOptions = {}): Promise<EvaluationReport> {
+  const cases: EvaluationCaseResult[] = [];
+  for (const evaluationCase of dataset.evaluationCases) {
+    cases.push(await evaluateCaseAsync(dataset, evaluationCase, options));
+  }
+  return {
+    cases,
+    summary: {
+      total: cases.length,
+      top1Accuracy: ratio(cases.filter((result) => result.top1Hit).length, cases.length),
+      top3Recall: ratio(cases.filter((result) => result.top3Hit).length, cases.length),
+      top5Recall: ratio(cases.filter((result) => result.top5Hit).length, cases.length),
+      intentAccuracy: ratio(cases.filter((result) => result.intentHit).length, cases.length),
+      mrr: average(cases.map((result) => result.reciprocalRank)),
+      averageLatencyMs: average(cases.map((result) => result.latencyMs)),
+      p95LatencyMs: percentile(cases.map((result) => result.latencyMs), 0.95),
+      maxLatencyMs: Math.max(...cases.map((result) => result.latencyMs)),
+      byDifficulty: byDifficulty(cases),
+      byExpectedType: byExpectedType(cases),
+    },
+  };
+}
+
+async function evaluateCaseAsync(
+  dataset: TascoDataset,
+  evaluationCase: EvaluationCase,
+  options: AsyncEvaluationOptions,
+): Promise<EvaluationCaseResult> {
+  const started = performance.now();
+  const runtime = typeof options.runtime === 'function' ? await options.runtime(evaluationCase) : options.runtime;
+  const response = await suggestAsync(dataset, { ...options.request, q: evaluationCase.inputPrefix, limit: options.limit ?? 8 }, runtime);
+  return resultFromResponse(evaluationCase, response, Math.max(1, Math.round(performance.now() - started)));
+}
+
+function resultFromResponse(evaluationCase: EvaluationCase, response: SuggestResponse, latencyMs: number): EvaluationCaseResult {
   const actual = response.suggestions.map((suggestion) => suggestion.text);
   const expected = evaluationCase.expectedTopSuggestions;
   const expectedIntentType = normalizeExpectedIntent(evaluationCase.expectedSuggestionType);
@@ -84,7 +128,9 @@ function evaluateCase(dataset: TascoDataset, evaluationCase: EvaluationCase, opt
     top1Hit: bestRank === 1,
     top3Hit: bestRank > 0 && bestRank <= 3,
     top5Hit: bestRank > 0 && bestRank <= 5,
-    latencyMs: response.latencyMs,
+    latencyMs,
+    embeddingProvider: response.diagnostics.embedding?.provider,
+    embeddingDegraded: response.diagnostics.embedding?.degraded,
   };
 }
 

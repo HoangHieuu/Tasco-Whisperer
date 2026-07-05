@@ -27,6 +27,10 @@ const COMMON_ALIASES = new Map<string, string>([
   ['q', 'quận'],
 ]);
 
+export function queryAliasEntries(): Array<[string, string]> {
+  return [...COMMON_ALIASES.entries()];
+}
+
 export function stripVietnameseAccents(value: string): string {
   return value
     .normalize('NFD')
@@ -53,8 +57,7 @@ export function expandQuery(query: string, abbreviations: AbbreviationRecord[]):
   let expanded = normalized;
   const expansions: string[] = [];
 
-  const aliasEntries = [...COMMON_ALIASES.entries()];
-  for (const [alias, replacement] of aliasEntries) {
+  for (const [alias, replacement] of queryAliasEntries()) {
     const normalizedAlias = normalizeText(alias);
     if (containsTokenPhrase(expanded, normalizedAlias)) {
       const normalizedReplacement = normalizeText(replacement);

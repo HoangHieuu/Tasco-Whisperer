@@ -120,10 +120,15 @@ export function buildDatasetFromCsvs(csvs: DatasetCsvText): TascoDataset {
 
 function toIntentType(value: string): IntentType {
   const aliases: Record<string, IntentType> = {
+    'Brand Suggestion': 'Brand Search',
     'Brand Suggestions': 'Brand Search',
+    'Category Suggestion': 'Category Search',
     'Category Suggestions': 'Category Search',
+    'Nearby Suggestion': 'Nearby Search',
     'Nearby Suggestions': 'Nearby Search',
+    'POI Suggestion': 'POI Search',
     'POI Suggestions': 'POI Search',
+    'Address Suggestion': 'Address Suggestion',
     'Address Suggestions': 'Address Suggestion',
   };
   return (aliases[value] ?? value) as IntentType;
