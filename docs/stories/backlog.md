@@ -17,6 +17,7 @@ front. Create a detailed story file only when a slice enters implementation.
 | E06 Submission | US-017 to US-018 | README, example gallery, deployment, and final smoke proof. | planned |
 | E07 Generalization | US-019 to US-027 | Move beyond fixture-heavy rules with Vietnamese segmentation, semantic retrieval, generated pattern candidates, robustness evaluation, alias memory, embeddings, optional LLM provider, behavior feedback, and measured ranking/LTR tuning. | implemented |
 | E08 TASCO API Integration | US-026, US-028 to US-029 | Expose the full TASCO Maps hackathon-compatible REST facade with optional live upstream data, local fallback, grounded enrichment metadata, and city-scoped suggestion filtering. | implemented |
+| E09 Real-AI Generalization | US-030 | Convert the earlier lexical/fixture-heavy AI story into model-backed semantic context, runtime rewrite providers, explicit fallback diagnostics, and corrected proof metrics. | implemented |
 
 ## Planned Stories
 
@@ -51,3 +52,4 @@ front. Create a detailed story file only when a slice enters implementation.
 | US-027 | Core algorithm hardening | Phase 7 | normal | implemented: generated pattern candidates, metamorphic robustness report, and linear LTR baseline without outside datasets. |
 | US-028 | Grounded POI enrichment | Phase 8 | normal | implemented: field provenance/confidence, Vietnamese summaries, deterministic attributes, enrichment report, ranking evidence, and future provider interfaces. |
 | US-029 | City-scoped suggestion filtering | Phase 8 | normal | implemented: explicit city filters are hard scopes across engine, facade, frontend adapter, live fallback, and profile/behavior personalization. |
+| US-030 | Real-AI generalization runtime | Phase 9 | high-risk | implemented: MiniLM embedding artifact/runtime, kNN/direct-evidence intent resolution, runtime rewrite provider wiring, startup alias memory, facade degradation metadata, and `npm run check` plus robustness proof. |

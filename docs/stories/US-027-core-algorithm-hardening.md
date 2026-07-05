@@ -65,6 +65,6 @@ No Harness policy changes expected.
 ## Evidence
 
 - `npm test -- --run src/lib/engine.test.ts src/lib/robustness.test.ts src/lib/learningToRank.test.ts`: 3 files, 22 tests passed.
-- `npm run eval`: 60 cases, top-1 93.3%, top-3 100%, top-5 100%, MRR 0.964, p95 33 ms.
-- `npm run eval:robust`: 192 generated cases, top-3 97.4%, top-5 97.4%, p95 72 ms.
+- `npm run eval`: 60 cases, top-1 96.7%, top-3 100%, top-5 100%, intent 98.3%, MRR 0.983, p95 40 ms.
+- `npm run eval:robust`: 192 generated cases, top-3 100%, top-5 100%, compact transform 53/53, p95 28 ms.
 - `npm run rank:train`: 501 supervised rows, validation top-3 100%, validation NDCG@5 0.866.

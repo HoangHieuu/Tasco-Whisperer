@@ -77,8 +77,8 @@ or live model self-training.
   `src/lib/suggestApi.test.ts` cover parser validation, disabled provider
   fallback, deterministic compact-prefix fallback, `caphe -> cà phê`,
   positive/negative fixtures, API diagnostics, and alias-memory reuse.
-- `npm run check` passes: 38 tests, 60 public evaluation cases, top-1 88.3%,
-  top-3 100%, top-5 100%, intent 51.7%, MRR 0.922, p95 latency 14 ms, API
+- `npm run check` passes: 106 tests, 60 public evaluation cases, top-1 96.7%,
+  top-3 100%, top-5 100%, intent 98.3%, MRR 0.983, p95 latency 40 ms, API
   smoke, and Vite production build.
 - Browser smoke at `http://127.0.0.1:5174/` verifies typing `cap` shows coffee
   suggestions, typing `cayx` shows gas-station suggestions, and no browser

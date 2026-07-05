@@ -28,8 +28,8 @@ without importing outside datasets.
 
 ## Current Proof
 
-- Public evaluation: 60 cases, top-1 93.3%, top-3 100%, top-5 100%, MRR 0.964, p95 33 ms.
-- Robustness evaluation: 192 generated cases, top-3 97.4%, top-5 97.4%, p95 72 ms.
+- Public evaluation: 60 cases, top-1 96.7%, top-3 100%, top-5 100%, intent 98.3%, MRR 0.983, p95 40 ms.
+- Robustness evaluation: 192 generated cases, top-3 100%, top-5 100%, compact transform 53/53, p95 28 ms.
 - LTR baseline: 501 training rows, validation top-3 100%, validation NDCG@5 0.866.
 
 ## Research Basis

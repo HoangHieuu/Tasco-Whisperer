@@ -6,9 +6,9 @@ Mobility Track P9 problem statement: AI-Powered Autocomplete & Query
 Suggestions.
 
 The project started from a Harness scaffold and now includes a working
-React/Vite demo, deterministic autocomplete engine, optional agentic rewrite
-correction, public evaluation runner, local `/api/suggest` service, and
-Harness-backed product contract.
+React/Vite demo, deterministic autocomplete engine, model-backed semantic
+runtime, optional agentic rewrite correction, public evaluation runner, local
+`/api/suggest` service, and Harness-backed product contract.
 
 ## Product Contract
 
@@ -56,14 +56,15 @@ and update story/proof records as work moves from planned to implemented.
 - `SPEC.md` exists and defines the Tasco Whisperer product.
 - Harness DB is initialized locally.
 - Planned stories US-001 through US-018 are seeded in the Harness story matrix.
-- US-001 through US-015 and US-019 through US-025 have working proof; US-016
+- US-001 through US-015 and US-019 through US-030 have working proof; US-016
   through US-018 remain planned packaging/explanation slices.
 - The app runs as a React/Vite TypeScript demo with a deterministic local
   autocomplete engine, Vietnamese segmentation/Telex cleanup, semantic
-  candidate retrieval, persistent alias-memory utilities, validated rewrite
-  correction path, behavior-feedback personalization, configurable ranking
-  weights, data-derived generated query patterns, robustness evaluation,
-  learning-to-rank feature export, and local API service.
+  candidate retrieval, MiniLM embedding artifact/runtime for Node API usage,
+  persistent runtime-writable alias memory, validated rewrite correction path,
+  behavior-feedback personalization, configurable ranking weights, data-derived
+  generated query patterns, robustness evaluation, learning-to-rank feature
+  export, and local API service.
 
 ## Setup
 
@@ -71,6 +72,7 @@ macOS/Linux:
 
 ```bash
 npm install
+npm run embeddings:build
 npm run dev -- --host 127.0.0.1 --port 5173
 ```
 
@@ -78,6 +80,7 @@ Windows PowerShell:
 
 ```powershell
 npm install
+npm run embeddings:build
 npm run dev -- --host 127.0.0.1 --port 5173
 ```
 
@@ -113,6 +116,21 @@ The endpoint accepts `q`, `city`, `userId`, `lat`, `lng`, `limit`, and
 `agentic`. Set `agentic=false` to prove deterministic-only fallback behavior.
 Invalid parameters return a `4xx` JSON error. Empty `q` returns deterministic
 popular query fallback suggestions.
+
+The Node API can use the generated MiniLM artifact and optional rewrite
+providers while preserving deterministic fallback:
+
+```bash
+TASCO_SEMANTIC_ARTIFACT="data/semantic-embeddings.minilm.json" \
+TASCO_REWRITE_PROVIDER="hosted-mini" \
+TASCO_REWRITE_ENDPOINT="http://127.0.0.1:11434/api/generate" \
+TASCO_REWRITE_MODEL="qwen2.5:3b" \
+npm run api:dev -- --host 127.0.0.1 --port 8787
+```
+
+If the semantic artifact or rewrite endpoint is missing, responses degrade to
+the lexical/deterministic path and expose provider/degradation metadata instead
+of failing the request.
 
 ### TASCO Maps Facade
 
@@ -203,7 +221,9 @@ See `integrations/flutter/README.md` for the copy/import snippet and
 ```bash
 npm run test
 npm run eval
+npm run eval:minilm
 npm run eval:robust
+npm run embeddings:build
 npm run rank:tune
 npm run rank:train
 npm run enrich:report
@@ -217,19 +237,32 @@ npm run check
 Current public evaluation baseline:
 
 - 60 cases run.
-- Top-1 accuracy: 93.3%.
+- Top-1 accuracy: 96.7%.
 - Top-3 recall: 100%.
 - Top-5 recall: 100%.
-- Intent accuracy: 68.3%.
-- MRR: 0.964.
-- P95 latency: 33 ms.
+- Intent accuracy: 98.3%.
+- MRR: 0.983.
+- P95 latency: 40 ms.
+
+MiniLM async server-path evaluation:
+
+- Artifact: 316 documents, 384 dimensions.
+- 60 cases run through `suggestAsync()`.
+- Top-1 accuracy: 96.7%.
+- Top-3 recall: 100%.
+- Top-5 recall: 100%.
+- Intent accuracy: 98.3%.
+- MRR: 0.983.
+- P95 latency: 28 ms after the cold model-load outlier.
+- Embedding provider: MiniLM for 60/60 cases, with 0 degraded embedding cases.
 
 Supplemental robustness baseline:
 
 - 192 generated cases from the provided CSV labels only.
-- Top-3 recall: 97.4%.
-- Top-5 recall: 97.4%.
-- P95 latency: 72 ms.
+- Top-3 recall: 100%.
+- Top-5 recall: 100%.
+- Compact transform top-3 recall: 100%.
+- P95 latency: 28 ms.
 
 Learning-to-rank baseline:
 
@@ -244,26 +277,34 @@ Enrichment coverage baseline:
 - Average deterministic attributes per POI: 6.194.
 - No outside enrichment corpus is imported.
 
-This is a Phase 5 local demo baseline. It uses Vietnamese normalization,
+This is the current local demo baseline. It uses Vietnamese normalization,
 abbreviation expansion, algorithmic compact syllable segmentation, guarded
-Telex/VNI cleanup, a local embedding kNN index with intent voting, entity
-extraction, semantic templates, transparent score factors, simulated profile
-boosts, local behavior feedback from selected suggestions, configurable ranking
-weights, a local `/api/suggest` HTTP service, persistent alias-memory helpers,
-and a validated agentic rewrite contract for low-confidence variants that
-remain hard after the deterministic tiers. Simulated profiles include
+Telex/VNI cleanup, a generated MiniLM embedding artifact with lexical fallback,
+kNN/direct-evidence intent voting, entity extraction, semantic templates,
+transparent score factors, simulated profile boosts, local behavior feedback
+from selected suggestions, configurable ranking weights, a local `/api/suggest`
+HTTP service, runtime-writable alias memory, and a validated agentic rewrite
+contract for low-confidence variants that remain hard after the deterministic
+tiers. Simulated profiles include
 `coffee-loyal`, `danang-traveler`, and `commuter`; the demo also has a
 `local-demo` learner profile backed by browser local storage. Boosted
-suggestions expose the reason in metadata. The current embedding source is
-local and dependency-free; it can be swapped for a multilingual sentence model
-later. A hosted/local rewrite-provider adapter exists through
-`npm run rewrite:agent`, but it only runs when an endpoint is configured and
-remains outside the per-keystroke path.
+suggestions expose the reason in metadata. The browser/synchronous path keeps a
+local lexical fallback; the Node API can load
+`data/semantic-embeddings.minilm.json` and embed only the query at runtime. A
+hosted/local rewrite-provider adapter exists through `npm run rewrite:agent`
+and the API runtime env vars above, but it only runs when an endpoint is
+configured and remains outside the per-keystroke path.
+Accepted hosted/local rewrites are written back to alias memory during serving:
+the API mutates the loaded records and persists `data/alias-memory.local.json`
+so repeat queries become deterministic without restarting the process.
 `npm run rank:tune` compares named ranking-weight presets against the public
 evaluation suite and writes reports to `reports/ranking-tuning/latest.json` and
 `reports/ranking-tuning/latest.md`.
 `npm run eval:robust` writes supplemental metamorphic robustness reports to
 `reports/robustness/latest.json` and `reports/robustness/latest.md`.
+Compact alias/abbreviation variants such as `ksd`, `coffeenear`,
+`nguyenhuee`, `12nguyenhueq`, and `dhbk` now resolve through the same
+deterministic understanding path rather than the agentic fallback.
 `npm run rank:train` writes a dependency-free linear learning-to-rank baseline
 to `reports/learning-to-rank/latest.json` and
 `reports/learning-to-rank/latest.md`; this is training-ready scaffolding, not a

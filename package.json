@@ -11,9 +11,11 @@
     "preview": "vite preview",
     "test": "vitest run",
     "eval": "tsx scripts/evaluate.ts",
+    "eval:minilm": "tsx scripts/evaluateMiniLM.ts",
     "eval:robust": "tsx scripts/evaluateRobustness.ts",
     "rank:tune": "tsx scripts/tuneRanking.ts",
     "rank:train": "tsx scripts/trainRanking.ts",
+    "embeddings:build": "tsx scripts/buildEmbeddings.ts",
     "enrich:report": "tsx scripts/enrichmentReport.ts",
     "tune:agentic": "tsx scripts/agenticTuning.ts",
     "alias:memory": "tsx scripts/aliasMemory.ts",
@@ -21,6 +23,7 @@
     "check": "npm run test && npm run eval && npm run api:smoke && npm run build"
   },
   "dependencies": {
+    "@huggingface/transformers": "^4.2.0",
     "@vitejs/plugin-react": "^5.1.1",
     "lucide-react": "^0.561.0",
     "react": "^19.2.3",
