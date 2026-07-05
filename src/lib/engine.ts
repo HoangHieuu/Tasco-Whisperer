@@ -1,9 +1,13 @@
 import { resolveAgenticCorrection } from './agentic';
 import { resolveAgenticCorrectionWithProvider, type AgenticRuntimeOptions } from './agenticRuntime';
 import { observationFromProposal } from './aliasMemory';
+import { behaviorBoostForHaystack } from './behavior';
 import { rankingEvidenceForPoi } from './enrichment';
 import { containsTokenPhrase, expandQuery, fuzzyIncludes, normalizeText } from './normalize';
 import { generatedPatternCandidates } from './generatedPatterns';
+import { predictQueryCompletions } from './predictionLm';
+import { withSuggestionExplanation } from './suggestionNarrator';
+import rankingWeightConfig from '../../config/ranking-weights.json';
 import {
   hasStrongSemanticEvidence,
   lexicalEmbeddingContext,
@@ -73,6 +77,9 @@ export const DEFAULT_RANKING_WEIGHTS: RankingWeights = {
   personalization: 0.05,
   diversity: 0.05,
 };
+
+const RANKING_FACTOR_KEYS = Object.keys(DEFAULT_RANKING_WEIGHTS) as Array<keyof RankingWeights>;
+const CONFIG_RANKING_WEIGHTS = parseRankingConfigWeights(rankingWeightConfig);
 
 const SIMULATED_PROFILES: SimulatedProfile[] = [
   {
@@ -467,6 +474,7 @@ function collectCandidates(
     ...fromEmbedding(understanding, embeddingNeighbors, embeddingProvider),
     ...fromSemantic(dataset, understanding),
     ...fromGeneratedPatterns(dataset, understanding, entities),
+    ...fromPredictedCompletions(dataset, understanding),
     ...fromTemplates(understanding),
   ];
   return filterCandidatesByCity(drafts, dataset, request.city);
@@ -711,6 +719,20 @@ function fromGeneratedPatterns(
   }));
 }
 
+function fromPredictedCompletions(dataset: TascoDataset, understanding: QueryUnderstanding): CandidateDraft[] {
+  return predictQueryCompletions(dataset, understanding).map((candidate): CandidateDraft => ({
+    id: candidate.id,
+    text: candidate.text,
+    type: candidate.type,
+    source: 'predicted',
+    matched: candidate.matched,
+    baseScore: candidate.baseScore,
+    frequencyScore: candidate.frequencyScore,
+    reason: candidate.reason,
+    entityBoost: Math.max(0.08, candidate.confidence * 0.18),
+  }));
+}
+
 function isUnresolvedCompactQuery(understanding: QueryUnderstanding): boolean {
   return (
     !understanding.normalized.includes(' ') &&
@@ -936,7 +958,7 @@ function predictIntent(
 }
 
 function intentFromDirectEvidence(drafts: CandidateDraft[], understanding: QueryUnderstanding): SuggestResponse['intent'] | undefined {
-  const directSources = new Set<CandidateDraft['source']>(['autocomplete', 'generated', 'template', 'popular-query']);
+  const directSources = new Set<CandidateDraft['source']>(['autocomplete', 'generated', 'predicted', 'template', 'popular-query']);
   const evidence = new Map<string, { type: IntentType; score: number; order: number }>();
 
   drafts.forEach((draft, order) => {
@@ -1045,7 +1067,7 @@ function rankAndMerge(
     const score = weightedScore(factors, request.rankingWeights);
     const normalizedText = normalizeText(draft.text);
     const existing = merged.get(normalizedText);
-    const suggestion: Suggestion = {
+    const suggestion = withSuggestionExplanation({
       id: draft.id,
       text: draft.text,
       normalizedText,
@@ -1064,7 +1086,7 @@ function rankAndMerge(
         enrichedAttributes: draft.poi ? rankingEvidenceForPoi(draft.poi) : undefined,
         factors,
       },
-    };
+    });
 
     if (!existing || suggestion.score > existing.score) {
       merged.set(normalizedText, suggestion);
@@ -1093,9 +1115,11 @@ function scoreFactors(
     intent: draft.type === predictedIntent ? 1 : 0.55,
     source:
       draft.source === 'autocomplete'
-        ? 0.95
+          ? 0.95
         : draft.source === 'generated'
           ? 0.94
+        : draft.source === 'predicted'
+          ? 0.9
         : draft.source === 'template'
           ? 0.92
         : draft.source === 'embedding'
@@ -1109,7 +1133,7 @@ function scoreFactors(
     poiQuality: poi ? clamp01((poi.rating / 5) * 0.45 + (poi.reviewCount / MAX_REVIEWS) * 0.25 + (poi.popularityScore / 100) * 0.3) : 0.68,
     locality: cityMatch ? 1 : request.city ? 0.45 : 0.7,
     personalization: clamp01(personalizationBoostValue),
-    diversity: ['generated', 'template'].includes(draft.source) ? 0.92 : ['semantic', 'embedding'].includes(draft.source) ? 0.6 : 0.66,
+    diversity: ['generated', 'predicted', 'template'].includes(draft.source) ? 0.92 : ['semantic', 'embedding'].includes(draft.source) ? 0.6 : 0.66,
   };
   if (draft.entityBoost) {
     factors.lexical = Math.min(1.18, factors.lexical + draft.entityBoost);
@@ -1132,8 +1156,9 @@ function weightedScore(factors: ScoreFactors, requestedWeights?: Partial<Ranking
 }
 
 function resolveRankingWeights(requestedWeights?: Partial<RankingWeights>): RankingWeights {
+  const defaultWeights = activeDefaultRankingWeights();
   const merged: RankingWeights = {
-    ...DEFAULT_RANKING_WEIGHTS,
+    ...defaultWeights,
     ...requestedWeights,
   };
   const sanitized = Object.fromEntries(
@@ -1141,9 +1166,43 @@ function resolveRankingWeights(requestedWeights?: Partial<RankingWeights>): Rank
   ) as RankingWeights;
   const total = Object.values(sanitized).reduce((sum, value) => sum + value, 0);
   if (total <= 0) {
-    return DEFAULT_RANKING_WEIGHTS;
+    return defaultWeights;
   }
   return Object.fromEntries(Object.entries(sanitized).map(([key, value]) => [key, value / total])) as RankingWeights;
+}
+
+export function activeDefaultRankingWeights(): RankingWeights {
+  if (learnedRankerDisabled() || !CONFIG_RANKING_WEIGHTS) {
+    return DEFAULT_RANKING_WEIGHTS;
+  }
+  return CONFIG_RANKING_WEIGHTS;
+}
+
+function parseRankingConfigWeights(value: unknown): RankingWeights | undefined {
+  if (!value || typeof value !== 'object') {
+    return undefined;
+  }
+  const weights = (value as { weights?: unknown }).weights;
+  if (!weights || typeof weights !== 'object') {
+    return undefined;
+  }
+  const parsed = Object.fromEntries(
+    RANKING_FACTOR_KEYS.map((key) => {
+      const raw = (weights as Record<string, unknown>)[key];
+      return [key, typeof raw === 'number' && Number.isFinite(raw) ? Math.max(0, raw) : 0];
+    }),
+  ) as RankingWeights;
+  const total = Object.values(parsed).reduce((sum, item) => sum + item, 0);
+  return total > 0
+    ? (Object.fromEntries(Object.entries(parsed).map(([key, item]) => [key, item / total])) as RankingWeights)
+    : undefined;
+}
+
+function learnedRankerDisabled(): boolean {
+  const runtimeEnv = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env;
+  const viteEnv = (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env;
+  const value = runtimeEnv?.TASCO_DISABLE_LEARNED_RANKER ?? viteEnv?.VITE_TASCO_DISABLE_LEARNED_RANKER;
+  return ['1', 'true', 'yes'].includes((value ?? '').toLowerCase());
 }
 
 function personalizationBoost(
@@ -1168,7 +1227,7 @@ function personalizationBoost(
     boost = Math.max(boost, profileMatch.boost);
     reasons.push(`${profile.label}: ${profileMatch.reason}`);
   }
-  const behavior = behaviorBoost(userId, behaviorEvents, haystack, requestCity);
+  const behavior = behaviorBoostForHaystack({ userId, behaviorEvents, haystack, requestCity });
   if (behavior.boost > 0) {
     boost = Math.max(boost, behavior.boost);
     reasons.push(behavior.reason);
@@ -1182,48 +1241,6 @@ function personalizationBoost(
 function findSimulatedProfile(userId: string): SimulatedProfile | undefined {
   const normalizedUser = normalizeText(userId);
   return SIMULATED_PROFILES.find((profile) => normalizeText(profile.id) === normalizedUser);
-}
-
-function behaviorBoost(
-  userId: string,
-  behaviorEvents: BehaviorEvent[],
-  haystack: string,
-  requestCity?: string,
-): { boost: number; reason: string } {
-  const normalizedUser = normalizeText(userId);
-  const matchingEvents = behaviorEvents
-    .filter((event) => normalizeText(event.userId) === normalizedUser)
-    .filter((event) => !requestCity || !event.city || sameCity(event.city, requestCity))
-    .slice(-50)
-    .reverse();
-  const matchedTerms = new Set<string>();
-
-  for (const event of matchingEvents) {
-    for (const term of behaviorTerms(event)) {
-      if (term.length >= 3 && haystack.includes(normalizeText(term))) {
-        matchedTerms.add(term);
-      }
-    }
-  }
-
-  if (matchedTerms.size === 0) {
-    return { boost: 0, reason: '' };
-  }
-
-  const terms = [...matchedTerms].slice(0, 3);
-  return {
-    boost: Math.min(1, 0.55 + terms.length * 0.12),
-    reason: `Local learner: prior selections match ${terms.join(', ')}`,
-  };
-}
-
-function behaviorTerms(event: BehaviorEvent): string[] {
-  return [
-    event.selectedText,
-    event.brand ?? '',
-    event.category ?? '',
-    event.city ?? '',
-  ].filter(Boolean);
 }
 
 function filterCandidatesByCity(
@@ -1301,7 +1318,7 @@ function tokenEvidence(haystack: string, token: string): boolean {
 }
 
 function sourcePriority(source: Suggestion['source']): number {
-  return { autocomplete: 0, 'popular-query': 1, poi: 2, generated: 3, template: 4, embedding: 5, semantic: 6 }[source];
+  return { autocomplete: 0, 'popular-query': 1, poi: 2, generated: 3, predicted: 4, template: 5, embedding: 6, semantic: 7 }[source];
 }
 
 function clampLimit(limit: number | undefined): number {

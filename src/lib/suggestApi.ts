@@ -1,17 +1,27 @@
 import { suggest, suggestAsync } from './engine';
 import type { EmbeddingContext } from './semantic';
 import type { AgenticRuntimeOptions } from './agenticRuntime';
-import type { AgenticRewriteProvider, AliasMemoryRecord, SuggestRequest, SuggestResponse, TascoDataset } from './types';
+import type {
+  AgenticRewriteProvider,
+  AliasMemoryRecord,
+  BehaviorEvent,
+  BehaviorEventRuntime,
+  IntentType,
+  SuggestRequest,
+  SuggestResponse,
+  TascoDataset,
+} from './types';
 
 export interface ApiRequest {
   method: string;
   url: string;
+  body?: unknown;
 }
 
 export interface ApiResult {
   status: number;
   headers: Record<string, string>;
-  body: SuggestResponse | ApiErrorResponse;
+  body: SuggestResponse | ApiBehaviorEventResponse | ApiErrorResponse;
   log: {
     action: string;
     query: string;
@@ -30,6 +40,14 @@ export interface ApiErrorResponse {
   latencyMs: number;
 }
 
+export interface ApiBehaviorEventResponse {
+  ok: true;
+  stored: boolean;
+  storedCount?: number;
+  event: BehaviorEvent;
+  latencyMs: number;
+}
+
 export interface SuggestApiRuntimeOptions {
   embeddingContext?: EmbeddingContext;
   semanticProvider?: {
@@ -38,6 +56,7 @@ export interface SuggestApiRuntimeOptions {
   aliasMemory?: AliasMemoryRecord[];
   agenticProvider?: AgenticRewriteProvider;
   agenticRuntime?: AgenticRuntimeOptions;
+  behaviorRuntime?: BehaviorEventRuntime;
 }
 
 interface ParsedSuggestRequest {
@@ -55,6 +74,48 @@ const JSON_HEADERS = {
   'cache-control': 'no-store',
   'access-control-allow-origin': '*',
 };
+
+export function isBehaviorEventApiPath(pathname: string): boolean {
+  return pathname === '/api/behavior-events' || pathname === '/v1/behavior-events';
+}
+
+export function handleBehaviorEventApiRequest(request: ApiRequest, runtime: SuggestApiRuntimeOptions = {}): ApiResult {
+  const started = performance.now();
+  const url = new URL(request.url, 'http://localhost');
+
+  if (!isBehaviorEventApiPath(url.pathname)) {
+    return errorResult(started, 404, 'not_found', 'Unknown behavior-event route.', [], 'unknown route');
+  }
+  if (request.method.toUpperCase() !== 'POST') {
+    return errorResult(started, 405, 'method_not_allowed', 'Use POST for behavior events.', [], 'unsupported method');
+  }
+
+  const parsed = parseBehaviorEventBody(request.body);
+  if (!parsed.ok) {
+    return errorResult(started, 400, 'invalid_request', 'Invalid behavior event payload.', parsed.errors, 'invalid behavior event');
+  }
+
+  const stored = runtime.behaviorRuntime?.record(parsed.value);
+  const storedCount = typeof stored === 'object' ? stored.storedCount : undefined;
+  return {
+    status: 201,
+    headers: JSON_HEADERS,
+    body: {
+      ok: true,
+      stored: Boolean(runtime.behaviorRuntime),
+      storedCount,
+      event: parsed.value,
+      latencyMs: Math.max(1, Math.round(performance.now() - started)),
+    },
+    log: {
+      action: 'api.behavior_event',
+      query: parsed.value.query,
+      userId: parsed.value.userId,
+      statusCode: 201,
+      message: runtime.behaviorRuntime ? 'behavior event stored' : 'behavior event accepted without store',
+    },
+  };
+}
 
 export function handleSuggestApiRequest(
   dataset: TascoDataset,
@@ -87,6 +148,7 @@ export function handleSuggestApiRequest(
     agentic: parsed.value.agentic,
     aliasMemory: runtime.aliasMemory,
     agenticProvider: runtime.agenticProvider,
+    behaviorEvents: runtime.behaviorRuntime?.eventsForUser(parsed.value.userId),
   };
   const response = suggest(dataset, suggestRequest, runtime.embeddingContext);
 
@@ -135,6 +197,7 @@ export async function handleSuggestApiRequestAsync(
     agentic: parsed.value.agentic,
     aliasMemory: runtime.aliasMemory,
     agenticProvider: runtime.agenticRuntime?.provider ?? runtime.agenticProvider,
+    behaviorEvents: runtime.behaviorRuntime?.eventsForUser(parsed.value.userId),
   };
   const response = await suggestAsync(dataset, suggestRequest, {
     embeddingContext: runtime.embeddingContext,
@@ -244,6 +307,70 @@ function optionalBoolean(value: string | null, name: string, errors: string[]): 
   }
   errors.push(`${name} must be true or false`);
   return undefined;
+}
+
+function parseBehaviorEventBody(body: unknown): { ok: true; value: BehaviorEvent } | { ok: false; errors: string[] } {
+  const errors: string[] = [];
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    return { ok: false, errors: ['body must be a JSON object'] };
+  }
+  const record = body as Record<string, unknown>;
+  const userId = requiredString(record.userId, 'userId', 80, errors);
+  const query = requiredString(record.query, 'query', 160, errors);
+  const selectedText = requiredString(record.selectedText, 'selectedText', 160, errors);
+  const selectedType = requiredIntent(record.selectedType, errors);
+  const brand = optionalBodyString(record.brand, 'brand', 120, errors);
+  const category = optionalBodyString(record.category, 'category', 120, errors);
+  const city = optionalBodyString(record.city, 'city', 80, errors);
+  const occurredAt = optionalBodyString(record.occurredAt, 'occurredAt', 64, errors) ?? new Date().toISOString();
+
+  if (Number.isNaN(Date.parse(occurredAt))) {
+    errors.push('occurredAt must be an ISO date string');
+  }
+  if (errors.length > 0 || !userId || !query || !selectedText || !selectedType) {
+    return { ok: false, errors };
+  }
+  return {
+    ok: true,
+    value: {
+      userId,
+      query,
+      selectedText,
+      selectedType,
+      brand,
+      category,
+      city,
+      occurredAt,
+    },
+  };
+}
+
+function requiredString(value: unknown, name: string, maxLength: number, errors: string[]): string | undefined {
+  if (typeof value !== 'string' || value.trim() === '') {
+    errors.push(`${name} is required`);
+    return undefined;
+  }
+  return optionalBodyString(value, name, maxLength, errors);
+}
+
+function optionalBodyString(value: unknown, name: string, maxLength: number, errors: string[]): string | undefined {
+  if (value == null || value === '') {
+    return undefined;
+  }
+  if (typeof value !== 'string') {
+    errors.push(`${name} must be a string`);
+    return undefined;
+  }
+  const trimmed = value.trim();
+  if (trimmed.length > maxLength) {
+    errors.push(`${name} must be ${maxLength} characters or fewer`);
+  }
+  return trimmed;
+}
+
+function requiredIntent(value: unknown, errors: string[]): IntentType | undefined {
+  const parsed = requiredString(value, 'selectedType', 80, errors);
+  return parsed as IntentType | undefined;
 }
 
 function errorResult(

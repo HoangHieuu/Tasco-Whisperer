@@ -1,11 +1,22 @@
 import { createTascoApiServer } from './apiServer';
 import { loadDatasetFromDisk } from './loadDataset';
-import type { SuggestResponse } from '../src/lib/types';
+import type { BehaviorEvent, SuggestResponse } from '../src/lib/types';
 import type { TascoAutocompleteResponse, TascoPlacesResponse, TascoPoiResponse, TascoRouteResponse, TascoSearchResponse } from '../src/lib/tascoFacade';
 
 const host = '127.0.0.1';
 const dataset = loadDatasetFromDisk();
-const server = createTascoApiServer(dataset);
+const behaviorEvents: BehaviorEvent[] = [];
+const server = createTascoApiServer(dataset, undefined, {
+  behaviorRuntime: {
+    eventsForUser(userId?: string) {
+      return userId ? behaviorEvents.filter((event) => event.userId === userId) : [];
+    },
+    record(event: BehaviorEvent) {
+      behaviorEvents.push(event);
+      return { storedCount: behaviorEvents.length };
+    },
+  },
+});
 
 const address = await new Promise<{ port: number }>((resolve, reject) => {
   server.once('error', reject);
@@ -36,6 +47,32 @@ try {
   const invalidResponse = await fetch(`${baseUrl}/api/suggest?q=atm&limit=99`);
   if (invalidResponse.status !== 400) {
     throw new Error(`Expected 400 for invalid limit, got ${invalidResponse.status}`);
+  }
+  const behaviorResponse = await fetch(`${baseUrl}/api/behavior-events`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      userId: 'smoke-learner',
+      query: 'cafe',
+      selectedText: 'Highlands Coffee Nguyễn Huệ',
+      selectedType: 'POI Search',
+      brand: 'Highlands Coffee',
+      category: 'Quán cà phê',
+      city: 'TP.HCM',
+      occurredAt: new Date().toISOString(),
+    }),
+  });
+  if (behaviorResponse.status !== 201) {
+    throw new Error(`Expected 201 from /api/behavior-events, got ${behaviorResponse.status}`);
+  }
+  const personalizedResponse = await fetch(`${baseUrl}/api/suggest?q=cafe&city=TP.HCM&userId=smoke-learner&limit=5`);
+  if (!personalizedResponse.ok) {
+    throw new Error(`Expected 200 from personalized /api/suggest, got ${personalizedResponse.status}`);
+  }
+  const personalizedBody = (await personalizedResponse.json()) as SuggestResponse;
+  const personalizedHighlands = personalizedBody.suggestions.find((suggestion) => suggestion.text === 'Highlands Coffee Nguyễn Huệ');
+  if (!personalizedHighlands?.metadata.personalizationReason?.includes('prior result selections')) {
+    throw new Error('Expected server-side behavior event to personalize matching suggestions');
   }
   const autocompleteResponse = await fetch(`${baseUrl}/v1/autocomplete?q=caphe&limit=8&sessionId=smoke-1&city=TP.HCM`);
   if (!autocompleteResponse.ok) {
@@ -182,6 +219,8 @@ try {
           rateLimited: rateLimitedResponse.status,
           timeout: timeoutResponse.status,
         },
+        behaviorEventStatus: behaviorResponse.status,
+        behaviorPersonalization: personalizedHighlands.metadata.personalizationReason,
         invalidLimitStatus: invalidResponse.status,
       },
       null,

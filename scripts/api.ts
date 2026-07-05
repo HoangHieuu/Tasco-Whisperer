@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { createTascoApiServer } from './apiServer';
+import { createFileBehaviorStore } from './behaviorStore';
 import { loadDatasetFromDisk } from './loadDataset';
 import { createTascoApiClient } from '../src/lib/tascoApiClient';
 import { parseAliasMemory, serializeAliasMemory, upsertAliasMemory, type AliasMemoryObservation } from '../src/lib/aliasMemory';
@@ -27,6 +28,8 @@ if (!Number.isInteger(port) || port < 1 || port > 65535) {
 const dataset = loadDatasetFromDisk();
 const aliasMemoryPath = args.get('aliasMemoryPath') ?? process.env.TASCO_ALIAS_MEMORY_PATH ?? 'data/alias-memory.local.json';
 const aliasMemory = existsSync(aliasMemoryPath) ? parseAliasMemory(readFileSync(aliasMemoryPath, 'utf8')) : [];
+const behaviorLogPath = args.get('behaviorLogPath') ?? process.env.TASCO_BEHAVIOR_LOG_PATH ?? 'data/behavior-events.local.json';
+const behaviorRuntime = createFileBehaviorStore({ path: behaviorLogPath });
 const persistAcceptedRewrite = (observation: AliasMemoryObservation) => {
   const nextRecords = upsertAliasMemory(aliasMemory, observation);
   aliasMemory.splice(0, aliasMemory.length, ...nextRecords);
@@ -58,12 +61,14 @@ const server = createTascoApiServer(dataset, liveClient, {
   aliasMemory,
   agenticProvider: rewriteProvider,
   agenticRuntime,
+  behaviorRuntime,
 });
 
 server.listen(port, host, () => {
   console.log(`Tasco Whisperer API listening on http://${host}:${port}`);
   console.log(liveClient ? `TASCO live facade enabled: ${tascoBaseUrl}` : 'TASCO live facade disabled; using local fallback data.');
   console.log(`Alias memory loaded: ${aliasMemory.length} records from ${aliasMemoryPath}`);
+  console.log(`Behavior events loaded: ${behaviorRuntime.count()} records from ${behaviorLogPath}`);
   console.log(`Semantic embedding artifact: ${args.get('semanticArtifact') ?? process.env.TASCO_SEMANTIC_ARTIFACT ?? defaultSemanticArtifactPath()}`);
   console.log(rewriteProvider ? `Agentic rewrite provider configured: ${rewriteProvider}` : 'Agentic rewrite provider: local deterministic fallback.');
 });

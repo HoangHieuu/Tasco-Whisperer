@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { fetchFrontendSuggest } from './frontendSuggest';
+import { fetchFrontendSuggest, recordFrontendBehaviorEvent } from './frontendSuggest';
 
 describe('frontend TASCO facade adapter', () => {
   afterEach(() => {
@@ -77,7 +77,51 @@ describe('frontend TASCO facade adapter', () => {
         diversity: 0.28,
       }),
     );
+    expect(response.suggestions[0].metadata.explanation).toEqual(
+      expect.objectContaining({
+        summary: expect.stringContaining('Highlands Coffee Nguyễn Huệ'),
+        evidence: expect.arrayContaining([
+          expect.stringContaining('TASCO facade fallback'),
+          expect.stringContaining('Top score factors:'),
+        ]),
+      }),
+    );
     expect(response.diagnostics.expansions[0]).toBe('TASCO facade source -> local-fallback');
+  });
+
+  it('posts selected suggestions to the server-side behavior log', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ ok: true, stored: true }), {
+        status: 201,
+        headers: { 'content-type': 'application/json' },
+      }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(
+      recordFrontendBehaviorEvent(
+        {
+          userId: 'local-demo',
+          query: 'cafe',
+          selectedText: 'Highlands Coffee Nguyễn Huệ',
+          selectedType: 'POI Search',
+          brand: 'Highlands Coffee',
+          category: 'Quán cà phê',
+          city: 'TP.HCM',
+          occurredAt: '2026-07-05T00:00:00.000Z',
+        },
+        { apiBaseUrl: 'http://127.0.0.1:8787' },
+      ),
+    ).resolves.toBe(true);
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        href: 'http://127.0.0.1:8787/api/behavior-events',
+      }),
+      expect.objectContaining({
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+      }),
+    );
   });
 
   it('labels tasco-api facade rows as live and avoids pretending score factors are available', async () => {
@@ -117,6 +161,7 @@ describe('frontend TASCO facade adapter', () => {
     expect(response.facadeSource).toBe('live');
     expect(response.suggestions[0].metadata.reason).toContain('TASCO live API');
     expect(response.suggestions[0].metadata.reason).toContain('factor details unavailable');
+    expect(response.suggestions[0].metadata.explanation?.evidence.join(' ')).toContain('factor details unavailable');
     expect(response.suggestions[0].metadata.factors).toEqual(
       expect.objectContaining({
         lexical: 0.88,
@@ -247,7 +292,6 @@ describe('frontend TASCO facade adapter', () => {
           selectedText: 'Highlands Coffee Nguyễn Huệ',
           selectedType: 'Brand Search',
           brand: 'Highlands Coffee',
-          category: 'cafe',
           city: 'TP.HCM',
           occurredAt: '2026-07-03T00:00:00.000Z',
         },
@@ -256,6 +300,7 @@ describe('frontend TASCO facade adapter', () => {
 
     expect(response.suggestions[0].text).toBe('Highlands Coffee Nguyễn Huệ');
     expect(response.suggestions[0].metadata.personalizationReason).toContain('prior result');
+    expect(response.suggestions[0].metadata.explanation?.evidence.join(' ')).toContain('prior result');
     expect(response.suggestions[0].metadata.factors.personalization).toBeGreaterThan(0);
   });
 });

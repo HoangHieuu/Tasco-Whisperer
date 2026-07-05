@@ -1,8 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { handleSuggestApiRequest, handleSuggestApiRequestAsync, type ApiErrorResponse } from './suggestApi';
+import {
+  handleBehaviorEventApiRequest,
+  handleSuggestApiRequest,
+  handleSuggestApiRequestAsync,
+  type ApiBehaviorEventResponse,
+  type ApiErrorResponse,
+} from './suggestApi';
 import { testDataset } from './testDataset';
 import type { AliasMemoryObservation } from './aliasMemory';
-import type { SuggestResponse } from './types';
+import type { BehaviorEvent, SuggestResponse } from './types';
 
 describe('handleSuggestApiRequest', () => {
   it('returns schema-compatible suggestions for a valid request', () => {
@@ -19,6 +25,12 @@ describe('handleSuggestApiRequest', () => {
     expect(body.suggestions).toHaveLength(3);
     expect(body.suggestions.map((suggestion) => suggestion.text)).toEqual(
       expect.arrayContaining(['Cafe có Wi-Fi', 'Quán cà phê có Wi-Fi']),
+    );
+    expect(body.suggestions[0].metadata.explanation).toEqual(
+      expect.objectContaining({
+        summary: expect.stringContaining(body.suggestions[0].text),
+        evidence: expect.arrayContaining([expect.stringContaining('Ranking reason:')]),
+      }),
     );
     expect(body.diagnostics.embedding?.neighbors.length).toBeGreaterThan(0);
   });
@@ -111,6 +123,53 @@ describe('handleSuggestApiRequest', () => {
     expect(body.suggestions[0].metadata.factors.personalization).toBeGreaterThan(0);
     expect(body.suggestions[0].metadata.personalizationReason).toContain('Daily commuter');
     expect(result.log.userId).toBe('commuter');
+  });
+
+  it('records server-side behavior events and replays them into suggestions', () => {
+    const events: BehaviorEvent[] = [];
+    const behaviorRuntime = {
+      eventsForUser(userId?: string) {
+        return userId ? events.filter((event) => event.userId === userId) : [];
+      },
+      record(event: BehaviorEvent) {
+        events.push(event);
+        return { storedCount: events.length };
+      },
+    };
+    const stored = handleBehaviorEventApiRequest(
+      {
+        method: 'POST',
+        url: '/api/behavior-events',
+        body: {
+          userId: 'server-demo',
+          query: 'cafe',
+          selectedText: 'Highlands Coffee Nguyễn Huệ',
+          selectedType: 'POI Search',
+          brand: 'Highlands Coffee',
+          category: 'Quán cà phê',
+          city: 'TP.HCM',
+          occurredAt: '2026-07-05T00:00:00.000Z',
+        },
+      },
+      { behaviorRuntime },
+    );
+    const storedBody = stored.body as ApiBehaviorEventResponse;
+    const result = handleSuggestApiRequest(
+      testDataset,
+      {
+        method: 'GET',
+        url: '/api/suggest?q=cafe&city=TP.HCM&userId=server-demo&limit=5',
+      },
+      { behaviorRuntime },
+    );
+    const body = result.body as SuggestResponse;
+    const highlands = body.suggestions.find((suggestion) => suggestion.text === 'Highlands Coffee Nguyễn Huệ');
+
+    expect(stored.status).toBe(201);
+    expect(storedBody.stored).toBe(true);
+    expect(storedBody.storedCount).toBe(1);
+    expect(highlands?.metadata.personalizationReason).toContain('prior result selections');
+    expect(highlands?.metadata.factors.personalization).toBeGreaterThan(0);
   });
 
   it('returns 404 for unknown routes and 405 for non-GET requests', () => {

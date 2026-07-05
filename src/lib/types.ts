@@ -157,13 +157,24 @@ export interface BehaviorEvent {
   occurredAt: string;
 }
 
+export interface BehaviorEventRuntime {
+  eventsForUser(userId?: string): BehaviorEvent[];
+  record(event: BehaviorEvent): { storedCount?: number } | void;
+}
+
+export interface SuggestionExplanation {
+  summary: string;
+  evidence: string[];
+  groundedFields: string[];
+}
+
 export interface Suggestion {
   id: string;
   text: string;
   normalizedText: string;
   type: IntentType;
   score: number;
-  source: 'autocomplete' | 'poi' | 'popular-query' | 'generated' | 'template' | 'semantic' | 'embedding';
+  source: 'autocomplete' | 'poi' | 'popular-query' | 'generated' | 'predicted' | 'template' | 'semantic' | 'embedding';
   matched: string[];
   poiId?: string;
   metadata: {
@@ -174,6 +185,7 @@ export interface Suggestion {
     category?: string;
     personalizationReason?: string;
     enrichedAttributes?: EnrichedAttribute[];
+    explanation?: SuggestionExplanation;
     factors: ScoreFactors;
   };
 }

@@ -8,6 +8,7 @@ import {
   type TascoSearchResponse,
 } from './tascoFacade';
 import { testDataset } from './testDataset';
+import type { BehaviorEvent } from './types';
 
 describe('handleTascoFacadeRequest', () => {
   it('serves TASCO autocomplete from the local engine when no live client is configured', async () => {
@@ -87,6 +88,44 @@ describe('handleTascoFacadeRequest', () => {
     expect(body.meta.source).toBe('local-fallback');
     expect(body.meta.upstreamUsed).toBe(false);
     expect(body.suggestions.map((suggestion) => suggestion.label).join(' ')).not.toContain('Đà Nẵng');
+  });
+
+  it('uses server-side behavior events for TASCO facade autocomplete ranking', async () => {
+    const events: BehaviorEvent[] = [
+      {
+        userId: 'server-demo',
+        query: 'cafe',
+        selectedText: 'Highlands Coffee Nguyễn Huệ',
+        selectedType: 'POI Search',
+        brand: 'Highlands Coffee',
+        category: 'Quán cà phê',
+        city: 'TP.HCM',
+        occurredAt: '2026-07-05T00:00:00.000Z',
+      },
+    ];
+    const result = await handleTascoFacadeRequest(
+      testDataset,
+      {
+        method: 'GET',
+        url: '/v1/autocomplete?q=cafe&city=TP.HCM&userId=server-demo&limit=5',
+      },
+      undefined,
+      {
+        behaviorRuntime: {
+          eventsForUser(userId?: string) {
+            return userId ? events.filter((event) => event.userId === userId) : [];
+          },
+          record() {
+            return { storedCount: events.length };
+          },
+        },
+      },
+    );
+    const body = result.body as TascoAutocompleteResponse;
+    const highlands = body.suggestions.find((suggestion) => suggestion.label === 'Highlands Coffee Nguyễn Huệ');
+
+    expect(result.status).toBe(200);
+    expect(highlands?.scoreFactors?.personalization).toBeGreaterThan(0);
   });
 
   it('serves TASCO search from the local engine with PlaceResult mapping', async () => {

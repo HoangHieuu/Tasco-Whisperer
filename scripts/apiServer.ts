@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { createServer, type IncomingMessage } from 'node:http';
-import { handleSuggestApiRequestAsync } from '../src/lib/suggestApi';
+import { handleBehaviorEventApiRequest, handleSuggestApiRequestAsync, isBehaviorEventApiPath } from '../src/lib/suggestApi';
 import { handleTascoFacadeRequest, isTascoFacadePath, type TascoLiveClient, type TascoRuntimeOptions } from '../src/lib/tascoFacade';
 import type { TascoDataset } from '../src/lib/types';
 
@@ -30,13 +30,18 @@ export function createTascoApiServer(dataset: TascoDataset, liveClient?: TascoLi
       body: await readJsonBody(request),
     };
     const pathname = new URL(apiRequest.url, 'http://localhost').pathname;
-    const result = isTascoFacadePath(pathname)
+    const result = isBehaviorEventApiPath(pathname)
+      ? handleBehaviorEventApiRequest(apiRequest, {
+          behaviorRuntime: runtime.behaviorRuntime,
+        })
+      : isTascoFacadePath(pathname)
       ? await handleTascoFacadeRequest(dataset, apiRequest, liveClient, runtime)
       : await handleSuggestApiRequestAsync(dataset, apiRequest, {
           semanticProvider: runtime.semanticProvider,
           aliasMemory: runtime.aliasMemory,
           agenticProvider: runtime.agenticProvider,
           agenticRuntime: runtime.agenticRuntime,
+          behaviorRuntime: runtime.behaviorRuntime,
         });
     const durationMs = Math.max(1, Math.round(performance.now() - started));
 

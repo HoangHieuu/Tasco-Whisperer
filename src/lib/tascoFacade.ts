@@ -14,6 +14,7 @@ import type { AgenticRuntimeOptions } from './agenticRuntime';
 import type {
   AgenticRewriteProvider,
   AliasMemoryRecord,
+  BehaviorEventRuntime,
   FieldProvenance,
   PlaceEnrichment,
   PoiRecord,
@@ -207,6 +208,7 @@ export interface TascoRuntimeOptions {
   aliasMemory?: AliasMemoryRecord[];
   agenticProvider?: AgenticRewriteProvider;
   agenticRuntime?: AgenticRuntimeOptions;
+  behaviorRuntime?: BehaviorEventRuntime;
 }
 
 export interface TascoLiveQuery {
@@ -368,13 +370,15 @@ export async function handleTascoFacadeRequest(
     return errorResult(400, 'invalid_request', 'Invalid TASCO facade query parameters.', parsed.errors, 'invalid request');
   }
 
+  const localUserId = parsed.value.userId ?? parsed.value.sessionId;
   const local = await suggestAsync(dataset, {
     q: parsed.value.q,
     city: parsed.value.city,
-    userId: parsed.value.userId ?? parsed.value.sessionId,
+    userId: localUserId,
     limit: isAutocomplete ? parsed.value.limit : Math.max(parsed.value.limit, 20),
     aliasMemory: runtime.aliasMemory,
     agenticProvider: runtime.agenticRuntime?.provider ?? runtime.agenticProvider,
+    behaviorEvents: runtime.behaviorRuntime?.eventsForUser(localUserId),
   }, {
     embeddingProvider: runtime.semanticProvider,
     agentic: runtime.agenticRuntime,

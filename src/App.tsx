@@ -15,7 +15,12 @@ import {
 import { browserDataset } from './lib/browserDataset';
 import { evaluateDataset } from './lib/evaluate';
 import { fetchFacadeCoverage, type FacadeEndpointStatus } from './lib/frontendFacadeCoverage';
-import { fetchFrontendSuggest, localFrontendSuggest, type FrontendSuggestResponse } from './lib/frontendSuggest';
+import {
+  fetchFrontendSuggest,
+  localFrontendSuggest,
+  recordFrontendBehaviorEvent,
+  type FrontendSuggestResponse,
+} from './lib/frontendSuggest';
 import type { BehaviorEvent, QueryEntity, Suggestion } from './lib/types';
 
 const demoQueries = [
@@ -114,6 +119,7 @@ function App() {
 
   const evaluation = useMemo(() => evaluateDataset(browserDataset), []);
   const selected = response.suggestions[0];
+  const selectedExplanation = selected?.metadata.explanation;
   const activeBehaviorCount = userId ? behaviorEvents.filter((event) => event.userId === userId).length : 0;
   const healthyApiCount = facadeCoverage.filter((endpoint) => endpoint.ok).length;
   const locationLabel = location ? `${location.lat.toFixed(5)}, ${location.lon.toFixed(5)}` : locationStatusLabel(locationStatus);
@@ -133,6 +139,7 @@ function App() {
     const nextEvents = [...behaviorEvents, event].slice(-80);
     setBehaviorEvents(nextEvents);
     persistBehaviorEvents(nextEvents);
+    void recordFrontendBehaviorEvent(event);
     if (!userId) {
       setUserId(learnerId);
     }
@@ -374,6 +381,22 @@ function App() {
           </section>
 
           {selected ? (
+            <>
+              {selectedExplanation ? (
+                <section className="analysis-section narration-section">
+                  <div className="panel-heading">
+                    <Sparkles size={18} />
+                    <span>Why this result</span>
+                  </div>
+                  <p className="narration-summary">{selectedExplanation.summary}</p>
+                  <ul className="evidence-list">
+                    {selectedExplanation.evidence.slice(0, 5).map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </section>
+              ) : null}
+
             <section className="analysis-section">
               <div className="panel-heading">
                 <BarChart3 size={18} />
@@ -391,6 +414,7 @@ function App() {
                 ))}
               </div>
             </section>
+            </>
           ) : null}
 
           <section className="analysis-section">

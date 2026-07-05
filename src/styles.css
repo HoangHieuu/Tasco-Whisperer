@@ -600,6 +600,44 @@ h1 {
   background: linear-gradient(90deg, var(--green), var(--amber));
 }
 
+.narration-section {
+  gap: 10px;
+}
+
+.narration-summary {
+  margin-top: 12px;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.evidence-list {
+  display: grid;
+  gap: 7px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.evidence-list li {
+  position: relative;
+  padding-left: 14px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.evidence-list li::before {
+  position: absolute;
+  top: 0.55em;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  content: "";
+}
+
 .api-coverage-list {
   display: grid;
   gap: 8px;

@@ -1,8 +1,10 @@
 import { browserDataset } from './browserDataset';
+import { applyBehaviorPersonalizationToSuggestions } from './behavior';
 import { suggest } from './engine';
 import { containsTokenPhrase, normalizeText } from './normalize';
+import { withSuggestionExplanation } from './suggestionNarrator';
 import type { PlaceResult, TascoAutocompleteResponse } from './tascoFacade';
-import type { IntentType, QueryEntity, ScoreFactors, SuggestRequest, SuggestResponse, Suggestion } from './types';
+import type { BehaviorEvent, IntentType, QueryEntity, ScoreFactors, SuggestRequest, SuggestResponse, Suggestion } from './types';
 
 export type FrontendTransport = 'api' | 'local-fallback';
 
@@ -64,9 +66,13 @@ export async function fetchFrontendSuggest(
     const payload = (await response.json()) as TascoAutocompleteResponse;
     const local = suggest(browserDataset, request);
     const scopedPlaces = payload.suggestions.filter((place) => placeCompatibleWithCity(place, request.city));
-    const suggestions = applyBehaviorContext(
+    const suggestions = applyBehaviorPersonalizationToSuggestions(
       scopedPlaces.map((place, index) => placeToSuggestion(place, request.q, index, payload.meta.source, local.suggestions)),
       request,
+      {
+        refreshSuggestion: withSuggestionExplanation,
+        skipWhenAlreadyPersonalized: scopedPlaces.some((place) => (place.scoreFactors?.personalization ?? 0) > 0),
+      },
     );
     return {
       ...local,
@@ -103,6 +109,27 @@ export async function fetchFrontendSuggest(
   }
 }
 
+export async function recordFrontendBehaviorEvent(
+  event: BehaviorEvent,
+  options: FetchFrontendSuggestOptions = {},
+): Promise<boolean> {
+  const apiBaseUrl = options.apiBaseUrl ?? resolveApiBaseUrl();
+  const url = new URL('/api/behavior-events', apiBaseUrl);
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      signal: options.signal,
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(event),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
 function resolveApiBaseUrl(): string {
   const configured = import.meta.env.VITE_TASCO_API_BASE_URL?.trim();
   return configured || DEFAULT_API_BASE_URL;
@@ -122,7 +149,7 @@ function placeToSuggestion(
   const factorReason = place.scoreFactors || matchedLocal
     ? 'engine ranking factors'
     : 'live API score only; factor details unavailable';
-  return {
+  return withSuggestionExplanation({
     id: `tasco:${place.id}:${index}`,
     text: place.label || place.name,
     normalizedText: normalizeText(place.label || place.name),
@@ -138,7 +165,7 @@ function placeToSuggestion(
       category: place.category,
       factors,
     },
-  };
+  });
 }
 
 function inferIntentType(place: PlaceResult): IntentType {
@@ -185,73 +212,6 @@ function findLocalSuggestion(place: PlaceResult, suggestions: Suggestion[]): Sug
 
 function isLivePlace(place: PlaceResult, facadeSource: FrontendSuggestResponse['facadeSource']): boolean {
   return facadeSource === 'live' || ['live', 'tasco api'].includes(normalizeText(place.source));
-}
-
-function applyBehaviorContext(suggestions: Suggestion[], request: SuggestRequest): Suggestion[] {
-  if (!request.userId || !request.behaviorEvents?.length) {
-    return suggestions;
-  }
-  const normalizedUser = normalizeText(request.userId);
-  const events = request.behaviorEvents
-    .filter((event) => normalizeText(event.userId) === normalizedUser)
-    .filter((event) => !request.city || !event.city || sameCity(event.city, request.city))
-    .slice(-30)
-    .reverse();
-  if (!events.length) {
-    return suggestions;
-  }
-
-  return suggestions
-    .map((suggestion) => {
-      const matchedTerms = new Set<string>();
-      const haystack = normalizeText(
-        `${suggestion.text} ${suggestion.type} ${suggestion.metadata.reason} ${suggestion.metadata.category ?? ''} ${
-          suggestion.metadata.brand ?? ''
-        } ${suggestion.metadata.city ?? ''} ${suggestion.metadata.address ?? ''}`,
-      );
-      for (const event of events) {
-        for (const term of behaviorTerms(event)) {
-          const normalizedTerm = normalizeText(term);
-          if (normalizedTerm.length >= 3 && haystack.includes(normalizedTerm)) {
-            matchedTerms.add(term);
-          }
-        }
-      }
-      if (!matchedTerms.size) {
-        return suggestion;
-      }
-      const boost = Math.min(0.2, 0.08 + matchedTerms.size * 0.04);
-      const factors = {
-        ...suggestion.metadata.factors,
-        personalization: Math.min(1, suggestion.metadata.factors.personalization + boost),
-      };
-      return {
-        ...suggestion,
-        score: clampScore(suggestion.score + boost),
-        metadata: {
-          ...suggestion.metadata,
-          factors,
-          personalizationReason: `Local learner: prior result matched ${[...matchedTerms].slice(0, 2).join(', ')}`,
-        },
-      };
-    })
-    .sort(
-      (a, b) =>
-        b.score - a.score ||
-        b.metadata.factors.personalization - a.metadata.factors.personalization ||
-        a.text.localeCompare(b.text),
-    );
-}
-
-function behaviorTerms(event: NonNullable<SuggestRequest['behaviorEvents']>[number]): string[] {
-  return [
-    event.query,
-    event.selectedText,
-    event.selectedType,
-    event.brand ?? '',
-    event.category ?? '',
-    event.city ?? '',
-  ].filter(Boolean);
 }
 
 const KNOWN_CITY_VALUES = ['TP.HCM', 'Hà Nội', 'Đà Nẵng', 'Đà Lạt', 'Nha Trang', 'Hải Phòng'];

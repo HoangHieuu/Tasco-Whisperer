@@ -163,6 +163,17 @@ describe('suggest', () => {
     expect(response.intent.type).toBe('Nearby Search');
     expect(response.suggestions[0].metadata.factors).toHaveProperty('lexical');
     expect(response.suggestions[0].metadata.factors.personalization).toBeGreaterThan(0);
+    expect(response.suggestions[0].metadata.explanation).toEqual(
+      expect.objectContaining({
+        summary: expect.stringContaining(response.suggestions[0].text),
+        evidence: expect.arrayContaining([
+          expect.stringContaining('Source:'),
+          expect.stringContaining('Ranking reason:'),
+          expect.stringContaining('Top score factors:'),
+        ]),
+        groundedFields: expect.arrayContaining(['source', 'metadata.reason', 'metadata.factors']),
+      }),
+    );
   });
 
   it('keeps non-personalized ranking free of profile boosts', () => {
@@ -259,10 +270,11 @@ describe('suggest', () => {
         },
       ],
     });
-    const baselineHighlands = baseline.suggestions.find((suggestion) => suggestion.text === 'Highlands Coffee Nguyễn Huệ');
-    const weightedHighlands = weighted.suggestions.find((suggestion) => suggestion.text === 'Highlands Coffee Nguyễn Huệ');
+    const baselineHighlandsIndex = baseline.suggestions.findIndex((suggestion) => suggestion.text === 'Highlands Coffee Nguyễn Huệ');
+    const weightedHighlandsIndex = weighted.suggestions.findIndex((suggestion) => suggestion.text === 'Highlands Coffee Nguyễn Huệ');
 
-    expect(weightedHighlands?.score ?? 0).toBeGreaterThan(baselineHighlands?.score ?? 0);
+    expect(weightedHighlandsIndex).toBeGreaterThanOrEqual(0);
+    expect(weightedHighlandsIndex).toBeLessThan(baselineHighlandsIndex);
   });
 
   it('extracts entities for category, brand, city, and attribute queries', () => {
@@ -301,6 +313,21 @@ describe('suggest', () => {
         }),
       }),
     );
+  });
+
+  it('adds deterministic prefix-completion predictions as a candidate source', () => {
+    const response = suggest(testDataset, { q: 'phong gym m c 2', agentic: false, limit: 5 });
+
+    expect(response.diagnostics.agentic.provider).toBe('disabled');
+    expect(response.suggestions[0]).toEqual(
+      expect.objectContaining({
+        text: 'Phòng gym mở cửa 24/7',
+        source: 'predicted',
+        type: 'Discovery Search',
+      }),
+    );
+    expect(response.suggestions[0].metadata.reason).toContain('prefix-completion language model');
+    expect(response.suggestions[0].metadata.explanation?.summary).toContain('prefix-completion language model');
   });
 
   it('uses enriched POI attributes in ranking explanations', () => {
