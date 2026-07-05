@@ -21,6 +21,16 @@ describe('frontend TASCO facade adapter', () => {
               category: 'cafe',
               score: 0.93,
               source: 'local-fallback',
+              scoreFactors: {
+                lexical: 0.91,
+                intent: 0.82,
+                source: 0.73,
+                popularity: 0.64,
+                poiQuality: 0.55,
+                locality: 0.46,
+                personalization: 0.37,
+                diversity: 0.28,
+              },
             },
           ],
           meta: {
@@ -59,7 +69,61 @@ describe('frontend TASCO facade adapter', () => {
         score: 0.93,
       }),
     );
+    expect(response.suggestions[0].metadata.reason).toContain('engine ranking factors');
+    expect(response.suggestions[0].metadata.factors).toEqual(
+      expect.objectContaining({
+        lexical: 0.91,
+        intent: 0.82,
+        diversity: 0.28,
+      }),
+    );
     expect(response.diagnostics.expansions[0]).toBe('TASCO facade source -> local-fallback');
+  });
+
+  it('labels tasco-api facade rows as live and avoids pretending score factors are available', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            query: 'vin',
+            suggestions: [
+              {
+                id: 'poi:live-vin',
+                type: 'poi',
+                name: 'Live Vincom',
+                label: 'Live Vincom',
+                category: 'shopping mall',
+                score: 0.88,
+                source: 'tasco-api',
+              },
+            ],
+            meta: {
+              limit: 8,
+              lang: 'vi',
+              source: 'live',
+              normalizedQuery: 'vin',
+              expandedQuery: 'vin',
+              upstreamUsed: true,
+            },
+          }),
+          { status: 200, headers: { 'content-type': 'application/json' } },
+        ),
+      ),
+    );
+
+    const response = await fetchFrontendSuggest({ q: 'vin', limit: 8 });
+
+    expect(response.facadeSource).toBe('live');
+    expect(response.suggestions[0].metadata.reason).toContain('TASCO live API');
+    expect(response.suggestions[0].metadata.reason).toContain('factor details unavailable');
+    expect(response.suggestions[0].metadata.factors).toEqual(
+      expect.objectContaining({
+        lexical: 0.88,
+        source: 0,
+        intent: 0,
+      }),
+    );
   });
 
   it('passes city scope to the facade and drops stale out-of-city API rows', async () => {

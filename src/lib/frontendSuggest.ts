@@ -65,7 +65,7 @@ export async function fetchFrontendSuggest(
     const local = suggest(browserDataset, request);
     const scopedPlaces = payload.suggestions.filter((place) => placeCompatibleWithCity(place, request.city));
     const suggestions = applyBehaviorContext(
-      scopedPlaces.map((place, index) => placeToSuggestion(place, request.q, index)),
+      scopedPlaces.map((place, index) => placeToSuggestion(place, request.q, index, payload.meta.source, local.suggestions)),
       request,
     );
     return {
@@ -108,9 +108,20 @@ function resolveApiBaseUrl(): string {
   return configured || DEFAULT_API_BASE_URL;
 }
 
-function placeToSuggestion(place: PlaceResult, query: string, index: number): Suggestion {
+function placeToSuggestion(
+  place: PlaceResult,
+  query: string,
+  index: number,
+  facadeSource: FrontendSuggestResponse['facadeSource'],
+  localSuggestions: Suggestion[],
+): Suggestion {
   const score = clampScore(place.score ?? 0.7);
   const type = inferIntentType(place);
+  const matchedLocal = findLocalSuggestion(place, localSuggestions);
+  const factors = place.scoreFactors ?? matchedLocal?.metadata.factors ?? fallbackFactors(score);
+  const factorReason = place.scoreFactors || matchedLocal
+    ? 'engine ranking factors'
+    : 'live API score only; factor details unavailable';
   return {
     id: `tasco:${place.id}:${index}`,
     text: place.label || place.name,
@@ -121,11 +132,11 @@ function placeToSuggestion(place: PlaceResult, query: string, index: number): Su
     matched: [query],
     poiId: place.id.startsWith('poi:') ? place.id.replace(/^poi:/, '') : place.id,
     metadata: {
-      reason: `${place.source === 'live' ? 'TASCO live API' : 'TASCO facade fallback'} matched ${place.name}`,
+      reason: `${isLivePlace(place, facadeSource) ? 'TASCO live API' : 'TASCO facade fallback'} matched ${place.name}; ${factorReason}`,
       city: inferCity(place),
       address: place.address,
       category: place.category,
-      factors: scoreFactors(score, place),
+      factors,
     },
   };
 }
@@ -147,17 +158,33 @@ function inferIntentType(place: PlaceResult): IntentType {
   return 'POI Search';
 }
 
-function scoreFactors(score: number, place: PlaceResult): ScoreFactors {
+function fallbackFactors(score: number): ScoreFactors {
   return {
     lexical: score,
-    intent: place.category ? 0.86 : 0.72,
-    source: place.source === 'live' ? 1 : 0.84,
-    popularity: score,
-    poiQuality: place.type === 'poi' ? Math.max(0.7, score) : 0.64,
-    locality: place.distanceMeters == null ? 0.7 : 0.86,
+    intent: 0,
+    source: 0,
+    popularity: 0,
+    poiQuality: 0,
+    locality: 0,
     personalization: 0,
-    diversity: 0.66,
+    diversity: 0,
   };
+}
+
+function findLocalSuggestion(place: PlaceResult, suggestions: Suggestion[]): Suggestion | undefined {
+  const normalizedPlaceId = normalizeText(place.id.replace(/^poi:/i, ''));
+  const normalizedText = normalizeText(place.label || place.name);
+  return suggestions.find((suggestion) => {
+    const suggestionPoiId = normalizeText(suggestion.poiId ?? '');
+    return (
+      (normalizedPlaceId && suggestionPoiId && normalizedPlaceId === suggestionPoiId) ||
+      normalizeText(suggestion.text) === normalizedText
+    );
+  });
+}
+
+function isLivePlace(place: PlaceResult, facadeSource: FrontendSuggestResponse['facadeSource']): boolean {
+  return facadeSource === 'live' || ['live', 'tasco api'].includes(normalizeText(place.source));
 }
 
 function applyBehaviorContext(suggestions: Suggestion[], request: SuggestRequest): Suggestion[] {

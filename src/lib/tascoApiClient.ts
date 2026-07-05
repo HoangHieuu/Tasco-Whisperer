@@ -205,6 +205,7 @@ function toPlaceResult(value: unknown): PlaceResult | undefined {
     reviewCount: numberField(row.reviewCount),
     popularityScore: numberField(row.popularityScore),
     enrichment: enrichmentField(row.enrichment),
+    scoreFactors: scoreFactorsField(row.scoreFactors),
   };
 }
 
@@ -231,13 +232,14 @@ function toRouteResponse(value: unknown, request: TascoRouteRequest): TascoRoute
   const row = value as Record<string, unknown>;
   const rawRoutes = Array.isArray(row.routes) ? row.routes : [];
   const meta = objectField(row.meta);
+  const routes = rawRoutes.map((route, index) => toRoute(route, index)).filter((route): route is TascoRouteResponse['routes'][number] => route != null);
   return {
-    routes: rawRoutes.map((route, index) => toRoute(route, index)).filter((route): route is TascoRouteResponse['routes'][number] => route != null),
+    routes,
     meta: {
       mode: stringField(meta.mode) ?? request.mode ?? 'auto',
       alternates: numberField(meta.alternates) ?? request.alternates ?? 2,
-      source: 'live',
-      upstreamUsed: true,
+      source: routes.length ? 'live' : 'local-fallback',
+      upstreamUsed: routes.length > 0,
     },
   };
 }
@@ -338,6 +340,31 @@ function enrichmentField(value: unknown): PlaceResult['enrichment'] {
     return undefined;
   }
   return row as unknown as PlaceResult['enrichment'];
+}
+
+function scoreFactorsField(value: unknown): PlaceResult['scoreFactors'] {
+  const row = objectField(value);
+  const lexical = numberField(row.lexical);
+  const intent = numberField(row.intent);
+  const source = numberField(row.source);
+  const popularity = numberField(row.popularity);
+  const poiQuality = numberField(row.poiQuality);
+  const locality = numberField(row.locality);
+  const personalization = numberField(row.personalization);
+  const diversity = numberField(row.diversity);
+  if (
+    lexical == null ||
+    intent == null ||
+    source == null ||
+    popularity == null ||
+    poiQuality == null ||
+    locality == null ||
+    personalization == null ||
+    diversity == null
+  ) {
+    return undefined;
+  }
+  return { lexical, intent, source, popularity, poiQuality, locality, personalization, diversity };
 }
 
 function reviewList(value: unknown): TascoPoiResponse['poi']['reviews'] {

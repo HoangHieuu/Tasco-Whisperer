@@ -1,4 +1,4 @@
-import { suggest } from './engine';
+import { suggestAsync } from './engine';
 import {
   buildPlaceEnrichment,
   deriveOpeningHours,
@@ -9,7 +9,18 @@ import {
   type EnrichmentPlaceInput,
 } from './enrichment';
 import { containsTokenPhrase, normalizeText } from './normalize';
-import type { FieldProvenance, PlaceEnrichment, PoiRecord, Suggestion, TascoDataset } from './types';
+import type { EmbeddingContext } from './semantic';
+import type { AgenticRuntimeOptions } from './agenticRuntime';
+import type {
+  AgenticRewriteProvider,
+  AliasMemoryRecord,
+  FieldProvenance,
+  PlaceEnrichment,
+  PoiRecord,
+  ScoreFactors,
+  Suggestion,
+  TascoDataset,
+} from './types';
 
 export interface PlaceResult {
   id: string;
@@ -31,6 +42,7 @@ export interface PlaceResult {
   reviewCount?: number;
   popularityScore?: number;
   enrichment?: PlaceEnrichment;
+  scoreFactors?: ScoreFactors;
 }
 
 export interface TascoReview {
@@ -67,6 +79,8 @@ export interface TascoAutocompleteResponse {
     normalizedQuery: string;
     expandedQuery: string;
     upstreamUsed: boolean;
+    degraded?: boolean;
+    degradationReason?: string;
   };
 }
 
@@ -84,6 +98,8 @@ export interface TascoSearchResponse {
     normalizedQuery: string;
     expandedQuery: string;
     upstreamUsed: boolean;
+    degraded?: boolean;
+    degradationReason?: string;
   };
 }
 
@@ -142,6 +158,8 @@ interface TascoSourceMeta {
   lang?: string;
   source: 'live' | 'local-fallback';
   upstreamUsed: boolean;
+  degraded?: boolean;
+  degradationReason?: string;
 }
 
 export interface TascoErrorResponse {
@@ -180,6 +198,15 @@ export interface TascoLiveClient {
   nearbySearch?(params: TascoNearbyQuery): Promise<PlaceResult[]>;
   geocoding?(params: TascoGeocodingQuery): Promise<PlaceResult[]>;
   route?(body: TascoRouteRequest): Promise<TascoRouteResponse | undefined>;
+}
+
+export interface TascoRuntimeOptions {
+  semanticProvider?: {
+    contextForQuery(query: string): Promise<EmbeddingContext | undefined>;
+  };
+  aliasMemory?: AliasMemoryRecord[];
+  agenticProvider?: AgenticRewriteProvider;
+  agenticRuntime?: AgenticRuntimeOptions;
 }
 
 export interface TascoLiveQuery {
@@ -290,6 +317,7 @@ export async function handleTascoFacadeRequest(
   dataset: TascoDataset,
   request: FacadeRequest,
   liveClient?: TascoLiveClient,
+  runtime: TascoRuntimeOptions = {},
 ): Promise<TascoFacadeResult> {
   const url = new URL(request.url, 'http://localhost');
   const method = request.method.toUpperCase();
@@ -340,15 +368,19 @@ export async function handleTascoFacadeRequest(
     return errorResult(400, 'invalid_request', 'Invalid TASCO facade query parameters.', parsed.errors, 'invalid request');
   }
 
-  const local = suggest(dataset, {
+  const local = await suggestAsync(dataset, {
     q: parsed.value.q,
     city: parsed.value.city,
     userId: parsed.value.userId ?? parsed.value.sessionId,
     limit: isAutocomplete ? parsed.value.limit : Math.max(parsed.value.limit, 20),
-    agentic: false,
+    aliasMemory: runtime.aliasMemory,
+    agenticProvider: runtime.agenticRuntime?.provider ?? runtime.agenticProvider,
+  }, {
+    embeddingProvider: runtime.semanticProvider,
+    agentic: runtime.agenticRuntime,
   });
   const upstreamQuery = local.expandedQuery || local.normalizedQuery || parsed.value.q;
-  const liveResults = await safeLivePlaces(liveClient, isAutocomplete ? 'autocomplete' : 'search', {
+  const live = await safeLivePlaces(liveClient, isAutocomplete ? 'autocomplete' : 'search', {
     q: upstreamQuery,
     lat: parsed.value.lat,
     lon: parsed.value.lon,
@@ -374,12 +406,13 @@ export async function handleTascoFacadeRequest(
           category: parsed.value.category,
         },
   );
-  const scopedLiveResults = applyCityScopeToPlaces(liveResults, parsed.value.city);
+  const scopedLiveResults = applyCityScopeToPlaces(live.results, parsed.value.city);
   const scopedLocalResults = applyCityScopeToPlaces(
     isAutocomplete ? localResults : rankSearchPlaces(localResults, parsed.value.q),
     parsed.value.city,
   );
   const upstreamUsed = scopedLiveResults.length > 0;
+  const degraded = live.degraded || (live.results.length > 0 && scopedLiveResults.length === 0);
   const places = upstreamUsed ? scopedLiveResults : scopedLocalResults;
   const limitedPlaces = places.slice(0, parsed.value.limit);
   const meta = {
@@ -397,6 +430,10 @@ export async function handleTascoFacadeRequest(
     normalizedQuery: local.normalizedQuery,
     expandedQuery: local.expandedQuery,
     upstreamUsed,
+    degraded: degraded || undefined,
+    degradationReason: degraded
+      ? live.reason ?? 'live upstream returned no city-compatible results; local fallback used'
+      : undefined,
   };
 
   if (isAutocomplete) {
@@ -625,15 +662,17 @@ async function handleReverse(dataset: TascoDataset, url: URL, liveClient?: Tasco
   }
   const queryLat = lat as number;
   const queryLon = lon as number;
-  const liveResults = await safeLivePlaces(liveClient, 'reverseGeocoding', { lat: queryLat, lon: queryLon, radiusMeters, lang });
+  const live = await safeLivePlaces(liveClient, 'reverseGeocoding', { lat: queryLat, lon: queryLon, radiusMeters, lang });
   const localResults = nearestPois(dataset, queryLat, queryLon, 5, radiusMeters)
     .map(({ poi, distanceMeters }) => poiToPlaceResult(poi, { distanceMeters }))
     .filter((place): place is PlaceResult => place != null);
-  const results = liveResults.length ? liveResults : localResults;
+  const results = live.results.length ? live.results : localResults;
   return placesResult('tasco.reverse', '', results, {
     lang,
-    source: liveResults.length ? 'live' : 'local-fallback',
-    upstreamUsed: liveResults.length > 0,
+    source: live.results.length ? 'live' : 'local-fallback',
+    upstreamUsed: live.results.length > 0,
+    degraded: live.degraded || undefined,
+    degradationReason: live.reason,
   });
 }
 
@@ -653,7 +692,7 @@ async function handleNearby(dataset: TascoDataset, url: URL, liveClient?: TascoL
   }
   const queryLat = lat as number;
   const queryLon = lon as number;
-  const liveResults = await safeLivePlaces(liveClient, 'nearbySearch', {
+  const live = await safeLivePlaces(liveClient, 'nearbySearch', {
     lat: queryLat,
     lon: queryLon,
     radiusMeters,
@@ -665,7 +704,7 @@ async function handleNearby(dataset: TascoDataset, url: URL, liveClient?: TascoL
   const localResults = nearestPois(dataset, queryLat, queryLon, limit, radiusMeters, category)
     .map(({ poi, distanceMeters }) => poiToPlaceResult(poi, { distanceMeters }))
     .filter((place): place is PlaceResult => place != null);
-  const results = liveResults.length ? liveResults : localResults;
+  const results = live.results.length ? live.results : localResults;
   return {
     status: 200,
     headers: JSON_HEADERS,
@@ -676,15 +715,17 @@ async function handleNearby(dataset: TascoDataset, url: URL, liveClient?: TascoL
         radiusMeters,
         limit,
         lang,
-        source: liveResults.length ? 'live' : 'local-fallback',
-        upstreamUsed: liveResults.length > 0,
+        source: live.results.length ? 'live' : 'local-fallback',
+        upstreamUsed: live.results.length > 0,
+        degraded: live.degraded || undefined,
+        degradationReason: live.reason,
       },
     },
     log: {
       action: 'tasco.nearby',
       query: category ?? '',
       statusCode: 200,
-      message: liveResults.length ? 'live nearby returned' : 'local nearby fallback returned',
+      message: live.results.length ? 'live nearby returned' : 'local nearby fallback returned',
     },
   };
 }
@@ -703,9 +744,9 @@ async function handleGeocoding(dataset: TascoDataset, url: URL, liveClient?: Tas
   if (errors.length) {
     return errorResult(400, 'invalid_request', 'Invalid geocoding parameters.', errors, 'invalid request');
   }
-  const liveResults = await safeLivePlaces(liveClient, 'geocoding', { address, city, district, lat, lon, limit, lang });
+  const live = await safeLivePlaces(liveClient, 'geocoding', { address, city, district, lat, lon, limit, lang });
   const localResults = localGeocoding(dataset, { address, city, district, lat, lon, limit });
-  const results = liveResults.length ? liveResults : localResults;
+  const results = live.results.length ? live.results : localResults;
   return {
     status: 200,
     headers: JSON_HEADERS,
@@ -715,15 +756,17 @@ async function handleGeocoding(dataset: TascoDataset, url: URL, liveClient?: Tas
       meta: {
         limit,
         lang,
-        source: liveResults.length ? 'live' : 'local-fallback',
-        upstreamUsed: liveResults.length > 0,
+        source: live.results.length ? 'live' : 'local-fallback',
+        upstreamUsed: live.results.length > 0,
+        degraded: live.degraded || undefined,
+        degradationReason: live.reason,
       },
     },
     log: {
       action: 'tasco.geocoding',
       query: address,
       statusCode: 200,
-      message: liveResults.length ? 'live geocoding returned' : 'local geocoding fallback returned',
+      message: live.results.length ? 'live geocoding returned' : 'local geocoding fallback returned',
     },
   };
 }
@@ -733,8 +776,8 @@ async function handleRoute(body: unknown, liveClient?: TascoLiveClient): Promise
   if (!parsed.ok) {
     return errorResult(400, 'invalid_request', 'Invalid route request body.', parsed.errors, 'invalid request');
   }
-  const liveRoute = await safeLiveRoute(liveClient, parsed.value);
-  const route = liveRoute ?? localRoute(parsed.value);
+  const live = await safeLiveRoute(liveClient, parsed.value);
+  const route = live.route ?? localRoute(parsed.value);
   return {
     status: 200,
     headers: JSON_HEADERS,
@@ -742,15 +785,17 @@ async function handleRoute(body: unknown, liveClient?: TascoLiveClient): Promise
       ...route,
       meta: {
         ...route.meta,
-        source: liveRoute ? 'live' : 'local-fallback',
-        upstreamUsed: Boolean(liveRoute),
+        source: live.route ? 'live' : 'local-fallback',
+        upstreamUsed: Boolean(live.route),
+        degraded: live.degraded || undefined,
+        degradationReason: live.reason,
       },
     },
     log: {
       action: 'tasco.route',
       query: `${parsed.value.locations.length} locations`,
       statusCode: 200,
-      message: liveRoute ? 'live route returned' : 'local route fallback returned',
+      message: live.route ? 'live route returned' : 'local route fallback returned',
     },
   };
 }
@@ -776,16 +821,25 @@ async function safeLivePlaces(
   liveClient: TascoLiveClient | undefined,
   method: 'autocomplete' | 'search' | 'reverseGeocoding' | 'nearbySearch' | 'geocoding',
   params: TascoLiveQuery | TascoCoordinateQuery | TascoNearbyQuery | TascoGeocodingQuery,
-): Promise<PlaceResult[]> {
+): Promise<{ results: PlaceResult[]; degraded: boolean; reason?: string }> {
   if (!liveClient || !liveClient[method]) {
-    return [];
+    return { results: [], degraded: false };
   }
   try {
     const places = await liveClient[method](params as never);
     const limit = 'limit' in params ? params.limit : 10;
-    return places.slice(0, limit);
-  } catch {
-    return [];
+    const results = places.slice(0, limit);
+    return {
+      results,
+      degraded: results.length === 0,
+      reason: results.length === 0 ? `live ${method} returned no results; local fallback used` : undefined,
+    };
+  } catch (error) {
+    return {
+      results: [],
+      degraded: true,
+      reason: `live ${method} failed: ${error instanceof Error ? error.message : 'unknown error'}; local fallback used`,
+    };
   }
 }
 
@@ -802,12 +856,22 @@ async function safeLivePoi(
   }
 }
 
-async function safeLiveRoute(liveClient: TascoLiveClient | undefined, body: TascoRouteRequest): Promise<TascoRouteResponse | undefined> {
-  if (!liveClient?.route) return undefined;
+async function safeLiveRoute(
+  liveClient: TascoLiveClient | undefined,
+  body: TascoRouteRequest,
+): Promise<{ route?: TascoRouteResponse; degraded: boolean; reason?: string }> {
+  if (!liveClient?.route) return { degraded: false };
   try {
-    return await liveClient.route(body);
-  } catch {
-    return undefined;
+    const route = await liveClient.route(body);
+    if (!route || route.routes.length === 0) {
+      return { degraded: true, reason: 'live route returned no routes; local fallback used' };
+    }
+    return { route, degraded: false };
+  } catch (error) {
+    return {
+      degraded: true,
+      reason: `live route failed: ${error instanceof Error ? error.message : 'unknown error'}; local fallback used`,
+    };
   }
 }
 
@@ -825,6 +889,7 @@ function suggestionToPlaceResult(dataset: TascoDataset, suggestion: Suggestion):
     coordinates: poi ? { lat: poi.latitude, lon: poi.longitude } : undefined,
     score: suggestion.score,
     source: suggestion.source,
+    scoreFactors: suggestion.metadata.factors,
     tags: poi?.tags,
     rating: poi?.rating,
     reviewCount: poi?.reviewCount,

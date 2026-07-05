@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { createServer, type IncomingMessage } from 'node:http';
-import { handleSuggestApiRequest } from '../src/lib/suggestApi';
-import { handleTascoFacadeRequest, isTascoFacadePath, type TascoLiveClient } from '../src/lib/tascoFacade';
+import { handleSuggestApiRequestAsync } from '../src/lib/suggestApi';
+import { handleTascoFacadeRequest, isTascoFacadePath, type TascoLiveClient, type TascoRuntimeOptions } from '../src/lib/tascoFacade';
 import type { TascoDataset } from '../src/lib/types';
 
 const CORS_HEADERS = {
@@ -11,7 +11,7 @@ const CORS_HEADERS = {
   'access-control-max-age': '86400',
 };
 
-export function createTascoApiServer(dataset: TascoDataset, liveClient?: TascoLiveClient) {
+export function createTascoApiServer(dataset: TascoDataset, liveClient?: TascoLiveClient, runtime: TascoRuntimeOptions = {}) {
   return createServer(async (request, response) => {
     const started = performance.now();
     const requestId = randomUUID();
@@ -31,8 +31,13 @@ export function createTascoApiServer(dataset: TascoDataset, liveClient?: TascoLi
     };
     const pathname = new URL(apiRequest.url, 'http://localhost').pathname;
     const result = isTascoFacadePath(pathname)
-      ? await handleTascoFacadeRequest(dataset, apiRequest, liveClient)
-      : handleSuggestApiRequest(dataset, apiRequest);
+      ? await handleTascoFacadeRequest(dataset, apiRequest, liveClient, runtime)
+      : await handleSuggestApiRequestAsync(dataset, apiRequest, {
+          semanticProvider: runtime.semanticProvider,
+          aliasMemory: runtime.aliasMemory,
+          agenticProvider: runtime.agenticProvider,
+          agenticRuntime: runtime.agenticRuntime,
+        });
     const durationMs = Math.max(1, Math.round(performance.now() - started));
 
     response.writeHead(result.status, {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { handleSuggestApiRequest, type ApiErrorResponse } from './suggestApi';
+import { handleSuggestApiRequest, handleSuggestApiRequestAsync, type ApiErrorResponse } from './suggestApi';
 import { testDataset } from './testDataset';
+import type { AliasMemoryObservation } from './aliasMemory';
 import type { SuggestResponse } from './types';
 
 describe('handleSuggestApiRequest', () => {
@@ -115,5 +116,68 @@ describe('handleSuggestApiRequest', () => {
   it('returns 404 for unknown routes and 405 for non-GET requests', () => {
     expect(handleSuggestApiRequest(testDataset, { method: 'GET', url: '/api/unknown' }).status).toBe(404);
     expect(handleSuggestApiRequest(testDataset, { method: 'POST', url: '/api/suggest?q=cafe' }).status).toBe(405);
+  });
+
+  it('can use runtime MiniLM semantic context in the async API path', async () => {
+    const result = await handleSuggestApiRequestAsync(
+      testDataset,
+      { method: 'GET', url: '/api/suggest?q=cafe&limit=3' },
+      {
+        embeddingContext: {
+          provider: 'minilm',
+          model: 'unit-minilm',
+          neighbors: [],
+        },
+      },
+    );
+    const body = result.body as SuggestResponse;
+
+    expect(result.status).toBe(200);
+    expect(body.diagnostics.embedding?.provider).toBe('minilm');
+    expect(body.diagnostics.embedding?.model).toBe('unit-minilm');
+  });
+
+  it('can apply a validated hosted rewrite provider in the async API path', async () => {
+    const observations: AliasMemoryObservation[] = [];
+    const result = await handleSuggestApiRequestAsync(
+      testDataset,
+      { method: 'GET', url: '/api/suggest?q=bundau&limit=3' },
+      {
+        agenticRuntime: {
+          provider: 'hosted-mini',
+          endpoint: 'https://provider.test/rewrite',
+          fetchImpl: async () =>
+            new Response(
+              JSON.stringify({
+                output_text: JSON.stringify({
+                  rewrites: ['bún đậu'],
+                  intent: 'Category Search',
+                  entities: [{ kind: 'category', value: 'bún đậu', confidence: 0.87 }],
+                  confidence: 0.86,
+                  evidence: ['Vietnamese food query normalization'],
+                }),
+              }),
+              { status: 200, headers: { 'content-type': 'application/json' } },
+            ),
+          onAcceptedRewrite: (observation) => {
+            observations.push(observation);
+          },
+        },
+      },
+    );
+    const body = result.body as SuggestResponse;
+
+    expect(result.status).toBe(200);
+    expect(body.diagnostics.agentic.provider).toBe('hosted-mini');
+    expect(body.diagnostics.agentic.appliedRewrite).toBe('bún đậu');
+    expect(body.diagnostics.agentic.reason).toContain('validated rewrite');
+    expect(observations).toEqual([
+      expect.objectContaining({
+        rawQuery: 'bundau',
+        rewrite: 'bún đậu',
+        accepted: true,
+        intent: 'Category Search',
+      }),
+    ]);
   });
 });

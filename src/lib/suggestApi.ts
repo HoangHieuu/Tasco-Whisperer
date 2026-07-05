@@ -1,5 +1,7 @@
-import { suggest } from './engine';
-import type { SuggestRequest, SuggestResponse, TascoDataset } from './types';
+import { suggest, suggestAsync } from './engine';
+import type { EmbeddingContext } from './semantic';
+import type { AgenticRuntimeOptions } from './agenticRuntime';
+import type { AgenticRewriteProvider, AliasMemoryRecord, SuggestRequest, SuggestResponse, TascoDataset } from './types';
 
 export interface ApiRequest {
   method: string;
@@ -28,6 +30,16 @@ export interface ApiErrorResponse {
   latencyMs: number;
 }
 
+export interface SuggestApiRuntimeOptions {
+  embeddingContext?: EmbeddingContext;
+  semanticProvider?: {
+    contextForQuery(query: string): Promise<EmbeddingContext | undefined>;
+  };
+  aliasMemory?: AliasMemoryRecord[];
+  agenticProvider?: AgenticRewriteProvider;
+  agenticRuntime?: AgenticRuntimeOptions;
+}
+
 interface ParsedSuggestRequest {
   q: string;
   city?: string;
@@ -44,7 +56,11 @@ const JSON_HEADERS = {
   'access-control-allow-origin': '*',
 };
 
-export function handleSuggestApiRequest(dataset: TascoDataset, request: ApiRequest): ApiResult {
+export function handleSuggestApiRequest(
+  dataset: TascoDataset,
+  request: ApiRequest,
+  runtime: SuggestApiRuntimeOptions = {},
+): ApiResult {
   const started = performance.now();
   const url = new URL(request.url, 'http://localhost');
 
@@ -66,9 +82,65 @@ export function handleSuggestApiRequest(dataset: TascoDataset, request: ApiReque
     city: parsed.value.city,
     userId: parsed.value.userId,
     limit: parsed.value.limit,
+    lat: parsed.value.lat,
+    lon: parsed.value.lng,
     agentic: parsed.value.agentic,
+    aliasMemory: runtime.aliasMemory,
+    agenticProvider: runtime.agenticProvider,
   };
-  const response = suggest(dataset, suggestRequest);
+  const response = suggest(dataset, suggestRequest, runtime.embeddingContext);
+
+  return {
+    status: 200,
+    headers: JSON_HEADERS,
+    body: response,
+    log: {
+      action: 'api.suggest',
+      query: parsed.value.q,
+      userId: parsed.value.userId,
+      statusCode: 200,
+      message: parsed.value.lat == null ? 'suggestions returned' : 'suggestions returned with coordinate context',
+    },
+  };
+}
+
+export async function handleSuggestApiRequestAsync(
+  dataset: TascoDataset,
+  request: ApiRequest,
+  runtime: SuggestApiRuntimeOptions = {},
+): Promise<ApiResult> {
+  const started = performance.now();
+  const url = new URL(request.url, 'http://localhost');
+
+  if (url.pathname !== '/api/suggest') {
+    return errorResult(started, 404, 'not_found', 'Unknown API route.', [], 'unknown route');
+  }
+
+  if (request.method.toUpperCase() !== 'GET') {
+    return errorResult(started, 405, 'method_not_allowed', 'Use GET for /api/suggest.', [], 'unsupported method');
+  }
+
+  const parsed = parseSuggestParams(url.searchParams);
+  if (!parsed.ok) {
+    return errorResult(started, 400, 'invalid_request', 'Invalid /api/suggest query parameters.', parsed.errors, 'invalid request');
+  }
+
+  const suggestRequest: SuggestRequest = {
+    q: parsed.value.q,
+    city: parsed.value.city,
+    userId: parsed.value.userId,
+    limit: parsed.value.limit,
+    lat: parsed.value.lat,
+    lon: parsed.value.lng,
+    agentic: parsed.value.agentic,
+    aliasMemory: runtime.aliasMemory,
+    agenticProvider: runtime.agenticRuntime?.provider ?? runtime.agenticProvider,
+  };
+  const response = await suggestAsync(dataset, suggestRequest, {
+    embeddingContext: runtime.embeddingContext,
+    embeddingProvider: runtime.semanticProvider,
+    agentic: runtime.agenticRuntime,
+  });
 
   return {
     status: 200,

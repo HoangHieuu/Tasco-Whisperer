@@ -242,6 +242,8 @@ describe('handleTascoFacadeRequest', () => {
 
     expect(result.status).toBe(200);
     expect(body.meta.source).toBe('local-fallback');
+    expect(body.meta.degraded).toBe(true);
+    expect(body.meta.degradationReason).toContain('upstream unavailable');
     expect(body.results.map((place) => place.label)).toEqual(expect.arrayContaining(['Quán cà phê gần đây']));
   });
 
@@ -513,7 +515,21 @@ describe('handleTascoFacadeRequest', () => {
       {
         async route() {
           return {
-            routes: [],
+            routes: [
+              {
+                routeId: 'route:live-1',
+                sourceIndex: 0,
+                summary: { distanceMeters: 1000, durationSeconds: 600 },
+                geometry: {
+                  type: 'LineString',
+                  coordinates: [
+                    [2, 1],
+                    [4, 3],
+                  ],
+                },
+                maneuvers: [],
+              },
+            ],
             meta: { mode: 'auto', alternates: 2, source: 'live', upstreamUsed: true },
           };
         },
@@ -522,5 +538,67 @@ describe('handleTascoFacadeRequest', () => {
 
     expect((poiResult.body as TascoPoiResponse).meta.source).toBe('live');
     expect((routeResult.body as TascoRouteResponse).meta.source).toBe('live');
+  });
+
+  it('does not report live route success when upstream returns no routes', async () => {
+    const routeResult = await handleTascoFacadeRequest(
+      testDataset,
+      {
+        method: 'POST',
+        url: '/route',
+        body: {
+          locations: [
+            { lat: 10.7759, lon: 106.7031 },
+            { lat: 10.772, lon: 106.698 },
+          ],
+        },
+      },
+      {
+        async route() {
+          return {
+            routes: [],
+            meta: { mode: 'auto', alternates: 2, source: 'live', upstreamUsed: true },
+          };
+        },
+      },
+    );
+    const body = routeResult.body as TascoRouteResponse;
+
+    expect(body.routes.length).toBeGreaterThan(0);
+    expect(body.meta.source).toBe('local-fallback');
+    expect(body.meta.upstreamUsed).toBe(false);
+    expect(body.meta.degraded).toBe(true);
+    expect(body.meta.degradationReason).toContain('no routes');
+  });
+
+  it('lets the facade path use the configured agentic rewrite provider', async () => {
+    const result = await handleTascoFacadeRequest(
+      testDataset,
+      { method: 'GET', url: '/v1/autocomplete?q=bundau&limit=3' },
+      undefined,
+      {
+        agenticRuntime: {
+          provider: 'hosted-mini',
+          endpoint: 'https://provider.test/rewrite',
+          fetchImpl: async () =>
+            new Response(
+              JSON.stringify({
+                output_text: JSON.stringify({
+                  rewrites: ['bún đậu'],
+                  intent: 'Category Search',
+                  entities: [{ kind: 'category', value: 'bún đậu', confidence: 0.87 }],
+                  confidence: 0.86,
+                  evidence: ['Vietnamese food query normalization'],
+                }),
+              }),
+              { status: 200, headers: { 'content-type': 'application/json' } },
+            ),
+        },
+      },
+    );
+    const body = result.body as TascoAutocompleteResponse;
+
+    expect(result.status).toBe(200);
+    expect(body.meta.expandedQuery).toBe('bun dau');
   });
 });
