@@ -1,0 +1,4681 @@
+{
+  "version": 1,
+  "phraseCount": 301,
+  "phrases": [
+    {
+      "id": "autocomplete-SUG001",
+      "text": "Vincom Center",
+      "normalized": "vincom center",
+      "tokens": [
+        "vincom",
+        "center"
+      ],
+      "type": "Brand Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.22366666666666668,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "autocomplete-SUG002",
+      "text": "Vinmec",
+      "normalized": "vinmec",
+      "tokens": [
+        "vinmec"
+      ],
+      "type": "Brand Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.03766666666666667,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "autocomplete-SUG003",
+      "text": "Vinpearl",
+      "normalized": "vinpearl",
+      "tokens": [
+        "vinpearl"
+      ],
+      "type": "Brand Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.6064666666666667,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "popular-PQ001",
+      "text": "quán cà phê gần đây",
+      "normalized": "quan ca phe gan day",
+      "tokens": [
+        "quan",
+        "ca",
+        "phe",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "popular-query",
+      "frequencyScore": 0.8,
+      "corpusWeight": 0.9
+    },
+    {
+      "id": "autocomplete-SUG005",
+      "text": "Highlands Coffee",
+      "normalized": "highlands coffee",
+      "tokens": [
+        "highlands",
+        "coffee"
+      ],
+      "type": "Brand Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.0888,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "autocomplete-SUG006",
+      "text": "Cà phê mở cửa 24/7",
+      "normalized": "ca phe mo cua 24 7",
+      "tokens": [
+        "ca",
+        "phe",
+        "mo",
+        "cua",
+        "24",
+        "7"
+      ],
+      "type": "Discovery Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.5588666666666666,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "autocomplete-SUG007",
+      "text": "ATM Vietcombank gần nhất",
+      "normalized": "atm vietcombank gan nhat",
+      "tokens": [
+        "atm",
+        "vietcombank",
+        "gan",
+        "nhat"
+      ],
+      "type": "Nearby Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.41213333333333335,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "autocomplete-SUG008",
+      "text": "ATM BIDV gần đây",
+      "normalized": "atm bidv gan day",
+      "tokens": [
+        "atm",
+        "bidv",
+        "gan",
+        "day"
+      ],
+      "type": "Nearby Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.3242,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "autocomplete-SUG009",
+      "text": "ATM gần sân bay",
+      "normalized": "atm gan san bay",
+      "tokens": [
+        "atm",
+        "gan",
+        "san",
+        "bay"
+      ],
+      "type": "Nearby Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.18706666666666666,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "autocomplete-SUG010",
+      "text": "Nguyễn Huệ, Quận 1, TP.HCM",
+      "normalized": "nguyen hue quan 1 tp.hcm",
+      "tokens": [
+        "nguyen",
+        "hue",
+        "quan",
+        "1",
+        "tp.hcm"
+      ],
+      "type": "Address Suggestion",
+      "source": "autocomplete",
+      "frequencyScore": 0.5450666666666667,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "poi-POI001",
+      "text": "Highlands Coffee Nguyễn Huệ",
+      "normalized": "highlands coffee nguyen hue",
+      "tokens": [
+        "highlands",
+        "coffee",
+        "nguyen",
+        "hue"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.88,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "autocomplete-SUG012",
+      "text": "Phố đi bộ Nguyễn Huệ",
+      "normalized": "pho di bo nguyen hue",
+      "tokens": [
+        "pho",
+        "di",
+        "bo",
+        "nguyen",
+        "hue"
+      ],
+      "type": "POI Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.6134666666666667,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "popular-PQ003",
+      "text": "chợ bến thành",
+      "normalized": "cho ben thanh",
+      "tokens": [
+        "cho",
+        "ben",
+        "thanh"
+      ],
+      "type": "POI Search",
+      "source": "popular-query",
+      "frequencyScore": 1,
+      "corpusWeight": 0.9
+    },
+    {
+      "id": "autocomplete-SUG014",
+      "text": "Khách sạn gần Chợ Bến Thành",
+      "normalized": "khach san gan cho ben thanh",
+      "tokens": [
+        "khach",
+        "san",
+        "gan",
+        "cho",
+        "ben",
+        "thanh"
+      ],
+      "type": "Discovery Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.24766666666666667,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "autocomplete-SUG015",
+      "text": "Khách sạn gần đây",
+      "normalized": "khach san gan day",
+      "tokens": [
+        "khach",
+        "san",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.6084,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "autocomplete-SUG016",
+      "text": "Khách sạn Đà Nẵng gần biển",
+      "normalized": "khach san da nang gan bien",
+      "tokens": [
+        "khach",
+        "san",
+        "da",
+        "nang",
+        "gan",
+        "bien"
+      ],
+      "type": "Discovery Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.6529333333333334,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "generated-49",
+      "text": "Bệnh viện gần đây",
+      "normalized": "benh vien gan day",
+      "tokens": [
+        "benh",
+        "vien",
+        "gan",
+        "day"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "poi-POI005",
+      "text": "Bệnh viện Bạch Mai",
+      "normalized": "benh vien bach mai",
+      "tokens": [
+        "benh",
+        "vien",
+        "bach",
+        "mai"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.92,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "popular-PQ005",
+      "text": "cây xăng gần đây",
+      "normalized": "cay xang gan day",
+      "tokens": [
+        "cay",
+        "xang",
+        "gan",
+        "day"
+      ],
+      "type": "Nearby Search",
+      "source": "popular-query",
+      "frequencyScore": 0.6533333333333333,
+      "corpusWeight": 0.9
+    },
+    {
+      "id": "autocomplete-SUG020",
+      "text": "Trạm xăng gần đây",
+      "normalized": "tram xang gan day",
+      "tokens": [
+        "tram",
+        "xang",
+        "gan",
+        "day"
+      ],
+      "type": "Nearby Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.5051333333333333,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "autocomplete-SUG021",
+      "text": "Phở gần đây",
+      "normalized": "pho gan day",
+      "tokens": [
+        "pho",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.19733333333333333,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "poi-POI012",
+      "text": "Phở Thìn Lò Đúc",
+      "normalized": "pho thin lo duc",
+      "tokens": [
+        "pho",
+        "thin",
+        "lo",
+        "duc"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.9,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "autocomplete-SUG023",
+      "text": "Khách sạn Đà Nẵng",
+      "normalized": "khach san da nang",
+      "tokens": [
+        "khach",
+        "san",
+        "da",
+        "nang"
+      ],
+      "type": "Location Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.6057333333333333,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "autocomplete-SUG024",
+      "text": "Bãi biển Mỹ Khê Đà Nẵng",
+      "normalized": "bai bien my khe da nang",
+      "tokens": [
+        "bai",
+        "bien",
+        "my",
+        "khe",
+        "da",
+        "nang"
+      ],
+      "type": "POI Search",
+      "source": "autocomplete",
+      "frequencyScore": 0.14086666666666667,
+      "corpusWeight": 0.96
+    },
+    {
+      "id": "popular-PQ002",
+      "text": "atm vcb gần nhất",
+      "normalized": "atm vcb gan nhat",
+      "tokens": [
+        "atm",
+        "vcb",
+        "gan",
+        "nhat"
+      ],
+      "type": "Nearby Search",
+      "source": "popular-query",
+      "frequencyScore": 0.5933333333333334,
+      "corpusWeight": 0.9
+    },
+    {
+      "id": "popular-PQ006",
+      "text": "bệnh viện gần nhất",
+      "normalized": "benh vien gan nhat",
+      "tokens": [
+        "benh",
+        "vien",
+        "gan",
+        "nhat"
+      ],
+      "type": "Nearby Search",
+      "source": "popular-query",
+      "frequencyScore": 0.36,
+      "corpusWeight": 0.9
+    },
+    {
+      "id": "popular-PQ007",
+      "text": "vincom đồng khởi",
+      "normalized": "vincom dong khoi",
+      "tokens": [
+        "vincom",
+        "dong",
+        "khoi"
+      ],
+      "type": "POI Search",
+      "source": "popular-query",
+      "frequencyScore": 0.41333333333333333,
+      "corpusWeight": 0.9
+    },
+    {
+      "id": "popular-PQ008",
+      "text": "ăn đêm gần đây",
+      "normalized": "an dem gan day",
+      "tokens": [
+        "an",
+        "dem",
+        "gan",
+        "day"
+      ],
+      "type": "Discovery Search",
+      "source": "popular-query",
+      "frequencyScore": 0.31333333333333335,
+      "corpusWeight": 0.9
+    },
+    {
+      "id": "popular-PQ009",
+      "text": "quán cafe học bài",
+      "normalized": "quan cafe hoc bai",
+      "tokens": [
+        "quan",
+        "cafe",
+        "hoc",
+        "bai"
+      ],
+      "type": "Discovery Search",
+      "source": "popular-query",
+      "frequencyScore": 0.3466666666666667,
+      "corpusWeight": 0.9
+    },
+    {
+      "id": "poi-POI006",
+      "text": "Sân bay Nội Bài",
+      "normalized": "san bay noi bai",
+      "tokens": [
+        "san",
+        "bay",
+        "noi",
+        "bai"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.99,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI003",
+      "text": "Vincom Center Đồng Khởi",
+      "normalized": "vincom center dong khoi",
+      "tokens": [
+        "vincom",
+        "center",
+        "dong",
+        "khoi"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.96,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI004",
+      "text": "ATM Vietcombank Nguyễn Huệ",
+      "normalized": "atm vietcombank nguyen hue",
+      "tokens": [
+        "atm",
+        "vietcombank",
+        "nguyen",
+        "hue"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.75,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI007",
+      "text": "The Coffee House Trần Duy Hưng",
+      "normalized": "the coffee house tran duy hung",
+      "tokens": [
+        "the",
+        "coffee",
+        "house",
+        "tran",
+        "duy",
+        "hung"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.82,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI008",
+      "text": "Vinmec Times City",
+      "normalized": "vinmec times city",
+      "tokens": [
+        "vinmec",
+        "times",
+        "city"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.91,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI009",
+      "text": "Galaxy Cinema Nguyễn Du",
+      "normalized": "galaxy cinema nguyen du",
+      "tokens": [
+        "galaxy",
+        "cinema",
+        "nguyen",
+        "du"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.86,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI010",
+      "text": "Khách sạn Mường Thanh Đà Nẵng",
+      "normalized": "khach san muong thanh da nang",
+      "tokens": [
+        "khach",
+        "san",
+        "muong",
+        "thanh",
+        "da",
+        "nang"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.84,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI011",
+      "text": "Cây xăng Petrolimex Nguyễn Trãi",
+      "normalized": "cay xang petrolimex nguyen trai",
+      "tokens": [
+        "cay",
+        "xang",
+        "petrolimex",
+        "nguyen",
+        "trai"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.72,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI013",
+      "text": "Cộng Cà Phê Hồ Gươm",
+      "normalized": "cong ca phe ho guom",
+      "tokens": [
+        "cong",
+        "ca",
+        "phe",
+        "ho",
+        "guom"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.89,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI014",
+      "text": "Nhà hàng Pizza 4P's Bến Nghé",
+      "normalized": "nha hang pizza 4p s ben nghe",
+      "tokens": [
+        "nha",
+        "hang",
+        "pizza",
+        "4p",
+        "s",
+        "ben",
+        "nghe"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.94,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI015",
+      "text": "Bến xe Miền Đông mới",
+      "normalized": "ben xe mien dong moi",
+      "tokens": [
+        "ben",
+        "xe",
+        "mien",
+        "dong",
+        "moi"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.8,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI016",
+      "text": "Trường Đại học Bách Khoa Hà Nội",
+      "normalized": "truong dai hoc bach khoa ha noi",
+      "tokens": [
+        "truong",
+        "dai",
+        "hoc",
+        "bach",
+        "khoa",
+        "ha",
+        "noi"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.93,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI017",
+      "text": "Lotteria Nguyễn Văn Linh",
+      "normalized": "lotteria nguyen van linh",
+      "tokens": [
+        "lotteria",
+        "nguyen",
+        "van",
+        "linh"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI018",
+      "text": "AEON Mall Long Biên",
+      "normalized": "aeon mall long bien",
+      "tokens": [
+        "aeon",
+        "mall",
+        "long",
+        "bien"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.95,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI019",
+      "text": "Bãi biển Mỹ Khê",
+      "normalized": "bai bien my khe",
+      "tokens": [
+        "bai",
+        "bien",
+        "my",
+        "khe"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.99,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI020",
+      "text": "Rooftop Chill Skybar",
+      "normalized": "rooftop chill skybar",
+      "tokens": [
+        "rooftop",
+        "chill",
+        "skybar"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.87,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI021",
+      "text": "Lotte Mart Quán cà phê Lê Lợi Hà Nội",
+      "normalized": "lotte mart quan ca phe le loi ha noi",
+      "tokens": [
+        "lotte",
+        "mart",
+        "quan",
+        "ca",
+        "phe",
+        "le",
+        "loi",
+        "ha",
+        "noi"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.54,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI022",
+      "text": "Nhà hàng Lý Thường Kiệt Hà Nội",
+      "normalized": "nha hang ly thuong kiet ha noi",
+      "tokens": [
+        "nha",
+        "hang",
+        "ly",
+        "thuong",
+        "kiet",
+        "ha",
+        "noi"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.94,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI023",
+      "text": "Khách sạn Lý Thường Kiệt Hà Nội",
+      "normalized": "khach san ly thuong kiet ha noi",
+      "tokens": [
+        "khach",
+        "san",
+        "ly",
+        "thuong",
+        "kiet",
+        "ha",
+        "noi"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.57,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI024",
+      "text": "Vietcombank ATM Trần Duy Hưng Hà Nội",
+      "normalized": "vietcombank atm tran duy hung ha noi",
+      "tokens": [
+        "vietcombank",
+        "atm",
+        "tran",
+        "duy",
+        "hung",
+        "ha",
+        "noi"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.59,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI025",
+      "text": "Bệnh viện Lý Thường Kiệt Hà Nội",
+      "normalized": "benh vien ly thuong kiet ha noi",
+      "tokens": [
+        "benh",
+        "vien",
+        "ly",
+        "thuong",
+        "kiet",
+        "ha",
+        "noi"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.59,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI026",
+      "text": "Vietcombank Trung tâm thương mại Điện Biên Phủ Hà Nội",
+      "normalized": "vietcombank trung tam thuong mai dien bien phu ha noi",
+      "tokens": [
+        "vietcombank",
+        "trung",
+        "tam",
+        "thuong",
+        "mai",
+        "dien",
+        "bien",
+        "phu",
+        "ha",
+        "noi"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.5,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI027",
+      "text": "CGV Cây xăng Pasteur Hà Nội",
+      "normalized": "cgv cay xang pasteur ha noi",
+      "tokens": [
+        "cgv",
+        "cay",
+        "xang",
+        "pasteur",
+        "ha",
+        "noi"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.64,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI028",
+      "text": "Vincom Quán cà phê Phan Chu Trinh TP.HCM",
+      "normalized": "vincom quan ca phe phan chu trinh tp.hcm",
+      "tokens": [
+        "vincom",
+        "quan",
+        "ca",
+        "phe",
+        "phan",
+        "chu",
+        "trinh",
+        "tp.hcm"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.99,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI029",
+      "text": "Nhà hàng Điện Biên Phủ TP.HCM",
+      "normalized": "nha hang dien bien phu tp.hcm",
+      "tokens": [
+        "nha",
+        "hang",
+        "dien",
+        "bien",
+        "phu",
+        "tp.hcm"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.82,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI030",
+      "text": "Khách sạn Nguyễn Huệ TP.HCM",
+      "normalized": "khach san nguyen hue tp.hcm",
+      "tokens": [
+        "khach",
+        "san",
+        "nguyen",
+        "hue",
+        "tp.hcm"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.94,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI031",
+      "text": "Vincom ATM Võ Nguyên Giáp TP.HCM",
+      "normalized": "vincom atm vo nguyen giap tp.hcm",
+      "tokens": [
+        "vincom",
+        "atm",
+        "vo",
+        "nguyen",
+        "giap",
+        "tp.hcm"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.57,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI032",
+      "text": "Bệnh viện Trần Duy Hưng TP.HCM",
+      "normalized": "benh vien tran duy hung tp.hcm",
+      "tokens": [
+        "benh",
+        "vien",
+        "tran",
+        "duy",
+        "hung",
+        "tp.hcm"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.94,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI033",
+      "text": "Phúc Long Trung tâm thương mại Nguyễn Trãi TP.HCM",
+      "normalized": "phuc long trung tam thuong mai nguyen trai tp.hcm",
+      "tokens": [
+        "phuc",
+        "long",
+        "trung",
+        "tam",
+        "thuong",
+        "mai",
+        "nguyen",
+        "trai",
+        "tp.hcm"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.93,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI034",
+      "text": "BIDV Cây xăng Trần Duy Hưng TP.HCM",
+      "normalized": "bidv cay xang tran duy hung tp.hcm",
+      "tokens": [
+        "bidv",
+        "cay",
+        "xang",
+        "tran",
+        "duy",
+        "hung",
+        "tp.hcm"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.76,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI035",
+      "text": "Highlands Coffee Quán cà phê Võ Nguyên Giáp Đà Nẵng",
+      "normalized": "highlands coffee quan ca phe vo nguyen giap da nang",
+      "tokens": [
+        "highlands",
+        "coffee",
+        "quan",
+        "ca",
+        "phe",
+        "vo",
+        "nguyen",
+        "giap",
+        "da",
+        "nang"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.89,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI036",
+      "text": "Nhà hàng Nguyễn Huệ Đà Nẵng",
+      "normalized": "nha hang nguyen hue da nang",
+      "tokens": [
+        "nha",
+        "hang",
+        "nguyen",
+        "hue",
+        "da",
+        "nang"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.8,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI037",
+      "text": "Khách sạn Pasteur Đà Nẵng",
+      "normalized": "khach san pasteur da nang",
+      "tokens": [
+        "khach",
+        "san",
+        "pasteur",
+        "da",
+        "nang"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.64,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI038",
+      "text": "CGV ATM Hai Bà Trưng Đà Nẵng",
+      "normalized": "cgv atm hai ba trung da nang",
+      "tokens": [
+        "cgv",
+        "atm",
+        "hai",
+        "ba",
+        "trung",
+        "da",
+        "nang"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.51,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI039",
+      "text": "Bệnh viện Trần Duy Hưng Đà Nẵng",
+      "normalized": "benh vien tran duy hung da nang",
+      "tokens": [
+        "benh",
+        "vien",
+        "tran",
+        "duy",
+        "hung",
+        "da",
+        "nang"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.99,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI040",
+      "text": "Vincom Trung tâm thương mại Trần Duy Hưng Đà Nẵng",
+      "normalized": "vincom trung tam thuong mai tran duy hung da nang",
+      "tokens": [
+        "vincom",
+        "trung",
+        "tam",
+        "thuong",
+        "mai",
+        "tran",
+        "duy",
+        "hung",
+        "da",
+        "nang"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.85,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI041",
+      "text": "The Coffee House Cây xăng Lý Thường Kiệt Đà Nẵng",
+      "normalized": "the coffee house cay xang ly thuong kiet da nang",
+      "tokens": [
+        "the",
+        "coffee",
+        "house",
+        "cay",
+        "xang",
+        "ly",
+        "thuong",
+        "kiet",
+        "da",
+        "nang"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.66,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI042",
+      "text": "Lotte Mart Quán cà phê Phan Chu Trinh Hải Phòng",
+      "normalized": "lotte mart quan ca phe phan chu trinh hai phong",
+      "tokens": [
+        "lotte",
+        "mart",
+        "quan",
+        "ca",
+        "phe",
+        "phan",
+        "chu",
+        "trinh",
+        "hai",
+        "phong"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.64,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI043",
+      "text": "Nhà hàng Nguyễn Huệ Hải Phòng",
+      "normalized": "nha hang nguyen hue hai phong",
+      "tokens": [
+        "nha",
+        "hang",
+        "nguyen",
+        "hue",
+        "hai",
+        "phong"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.85,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI044",
+      "text": "Khách sạn Lý Thường Kiệt Hải Phòng",
+      "normalized": "khach san ly thuong kiet hai phong",
+      "tokens": [
+        "khach",
+        "san",
+        "ly",
+        "thuong",
+        "kiet",
+        "hai",
+        "phong"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.67,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI045",
+      "text": "WinMart ATM Pasteur Hải Phòng",
+      "normalized": "winmart atm pasteur hai phong",
+      "tokens": [
+        "winmart",
+        "atm",
+        "pasteur",
+        "hai",
+        "phong"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI046",
+      "text": "Bệnh viện Trần Duy Hưng Hải Phòng",
+      "normalized": "benh vien tran duy hung hai phong",
+      "tokens": [
+        "benh",
+        "vien",
+        "tran",
+        "duy",
+        "hung",
+        "hai",
+        "phong"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.94,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI047",
+      "text": "BIDV Trung tâm thương mại Võ Nguyên Giáp Hải Phòng",
+      "normalized": "bidv trung tam thuong mai vo nguyen giap hai phong",
+      "tokens": [
+        "bidv",
+        "trung",
+        "tam",
+        "thuong",
+        "mai",
+        "vo",
+        "nguyen",
+        "giap",
+        "hai",
+        "phong"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.64,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI048",
+      "text": "Lotte Mart Cây xăng Hai Bà Trưng Hải Phòng",
+      "normalized": "lotte mart cay xang hai ba trung hai phong",
+      "tokens": [
+        "lotte",
+        "mart",
+        "cay",
+        "xang",
+        "hai",
+        "ba",
+        "trung",
+        "hai",
+        "phong"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.99,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI049",
+      "text": "Highlands Coffee Quán cà phê Lê Lợi Nha Trang",
+      "normalized": "highlands coffee quan ca phe le loi nha trang",
+      "tokens": [
+        "highlands",
+        "coffee",
+        "quan",
+        "ca",
+        "phe",
+        "le",
+        "loi",
+        "nha",
+        "trang"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.56,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI050",
+      "text": "Nhà hàng Nguyễn Huệ Nha Trang",
+      "normalized": "nha hang nguyen hue nha trang",
+      "tokens": [
+        "nha",
+        "hang",
+        "nguyen",
+        "hue",
+        "nha",
+        "trang"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.79,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI051",
+      "text": "Khách sạn Nguyễn Trãi Nha Trang",
+      "normalized": "khach san nguyen trai nha trang",
+      "tokens": [
+        "khach",
+        "san",
+        "nguyen",
+        "trai",
+        "nha",
+        "trang"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.53,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI052",
+      "text": "Highlands Coffee ATM Pasteur Nha Trang",
+      "normalized": "highlands coffee atm pasteur nha trang",
+      "tokens": [
+        "highlands",
+        "coffee",
+        "atm",
+        "pasteur",
+        "nha",
+        "trang"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.76,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI053",
+      "text": "Bệnh viện Điện Biên Phủ Nha Trang",
+      "normalized": "benh vien dien bien phu nha trang",
+      "tokens": [
+        "benh",
+        "vien",
+        "dien",
+        "bien",
+        "phu",
+        "nha",
+        "trang"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.69,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI054",
+      "text": "The Coffee House Trung tâm thương mại Điện Biên Phủ Nha Trang",
+      "normalized": "the coffee house trung tam thuong mai dien bien phu nha trang",
+      "tokens": [
+        "the",
+        "coffee",
+        "house",
+        "trung",
+        "tam",
+        "thuong",
+        "mai",
+        "dien",
+        "bien",
+        "phu",
+        "nha",
+        "trang"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.89,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI055",
+      "text": "Vincom Cây xăng Điện Biên Phủ Nha Trang",
+      "normalized": "vincom cay xang dien bien phu nha trang",
+      "tokens": [
+        "vincom",
+        "cay",
+        "xang",
+        "dien",
+        "bien",
+        "phu",
+        "nha",
+        "trang"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.6,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI056",
+      "text": "Petrolimex Quán cà phê Phan Chu Trinh Đà Lạt",
+      "normalized": "petrolimex quan ca phe phan chu trinh da lat",
+      "tokens": [
+        "petrolimex",
+        "quan",
+        "ca",
+        "phe",
+        "phan",
+        "chu",
+        "trinh",
+        "da",
+        "lat"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.93,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI057",
+      "text": "Nhà hàng Phan Chu Trinh Đà Lạt",
+      "normalized": "nha hang phan chu trinh da lat",
+      "tokens": [
+        "nha",
+        "hang",
+        "phan",
+        "chu",
+        "trinh",
+        "da",
+        "lat"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.51,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI058",
+      "text": "Khách sạn Võ Nguyên Giáp Đà Lạt",
+      "normalized": "khach san vo nguyen giap da lat",
+      "tokens": [
+        "khach",
+        "san",
+        "vo",
+        "nguyen",
+        "giap",
+        "da",
+        "lat"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.6,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI059",
+      "text": "Vietcombank ATM Nguyễn Huệ Đà Lạt",
+      "normalized": "vietcombank atm nguyen hue da lat",
+      "tokens": [
+        "vietcombank",
+        "atm",
+        "nguyen",
+        "hue",
+        "da",
+        "lat"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.66,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI060",
+      "text": "Bệnh viện Lê Lợi Đà Lạt",
+      "normalized": "benh vien le loi da lat",
+      "tokens": [
+        "benh",
+        "vien",
+        "le",
+        "loi",
+        "da",
+        "lat"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.58,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI061",
+      "text": "CGV Trung tâm thương mại Nguyễn Huệ Đà Lạt",
+      "normalized": "cgv trung tam thuong mai nguyen hue da lat",
+      "tokens": [
+        "cgv",
+        "trung",
+        "tam",
+        "thuong",
+        "mai",
+        "nguyen",
+        "hue",
+        "da",
+        "lat"
+      ],
+      "type": "POI Search",
+      "source": "poi",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "poi-POI062",
+      "text": "BIDV Cây xăng Pasteur Đà Lạt",
+      "normalized": "bidv cay xang pasteur da lat",
+      "tokens": [
+        "bidv",
+        "cay",
+        "xang",
+        "pasteur",
+        "da",
+        "lat"
+      ],
+      "type": "Nearby Search",
+      "source": "poi",
+      "frequencyScore": 0.5,
+      "corpusWeight": 0.82
+    },
+    {
+      "id": "generated-0",
+      "text": "Quán cà phê",
+      "normalized": "quan ca phe",
+      "tokens": [
+        "quan",
+        "ca",
+        "phe"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-1",
+      "text": "Quán cà phê TP.HCM",
+      "normalized": "quan ca phe tp.hcm",
+      "tokens": [
+        "quan",
+        "ca",
+        "phe",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-2",
+      "text": "Quán cà phê Hà Nội",
+      "normalized": "quan ca phe ha noi",
+      "tokens": [
+        "quan",
+        "ca",
+        "phe",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-3",
+      "text": "Quán cà phê Đà Nẵng",
+      "normalized": "quan ca phe da nang",
+      "tokens": [
+        "quan",
+        "ca",
+        "phe",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-4",
+      "text": "Quán cà phê Hải Phòng",
+      "normalized": "quan ca phe hai phong",
+      "tokens": [
+        "quan",
+        "ca",
+        "phe",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-5",
+      "text": "Quán cà phê Nha Trang",
+      "normalized": "quan ca phe nha trang",
+      "tokens": [
+        "quan",
+        "ca",
+        "phe",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-6",
+      "text": "Quán cà phê Đà Lạt",
+      "normalized": "quan ca phe da lat",
+      "tokens": [
+        "quan",
+        "ca",
+        "phe",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-8",
+      "text": "Quán cà phê mở cửa 24/7",
+      "normalized": "quan ca phe mo cua 24 7",
+      "tokens": [
+        "quan",
+        "ca",
+        "phe",
+        "mo",
+        "cua",
+        "24",
+        "7"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-9",
+      "text": "Quán cà phê có Wi-Fi",
+      "normalized": "quan ca phe co wi fi",
+      "tokens": [
+        "quan",
+        "ca",
+        "phe",
+        "co",
+        "wi",
+        "fi"
+      ],
+      "type": "Attribute Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-10",
+      "text": "Quán cà phê yên tĩnh",
+      "normalized": "quan ca phe yen tinh",
+      "tokens": [
+        "quan",
+        "ca",
+        "phe",
+        "yen",
+        "tinh"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-11",
+      "text": "Cà phê làm việc",
+      "normalized": "ca phe lam viec",
+      "tokens": [
+        "ca",
+        "phe",
+        "lam",
+        "viec"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-12",
+      "text": "Quán cà phê phù hợp học tập",
+      "normalized": "quan ca phe phu hop hoc tap",
+      "tokens": [
+        "quan",
+        "ca",
+        "phe",
+        "phu",
+        "hop",
+        "hoc",
+        "tap"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-13",
+      "text": "Quán cà phê đẹp để check-in",
+      "normalized": "quan ca phe dep de check in",
+      "tokens": [
+        "quan",
+        "ca",
+        "phe",
+        "dep",
+        "de",
+        "check",
+        "in"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-14",
+      "text": "Quán cà phê rooftop",
+      "normalized": "quan ca phe rooftop",
+      "tokens": [
+        "quan",
+        "ca",
+        "phe",
+        "rooftop"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-15",
+      "text": "Khách sạn",
+      "normalized": "khach san",
+      "tokens": [
+        "khach",
+        "san"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-16",
+      "text": "Khách sạn TP.HCM",
+      "normalized": "khach san tp.hcm",
+      "tokens": [
+        "khach",
+        "san",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-17",
+      "text": "Khách sạn Hà Nội",
+      "normalized": "khach san ha noi",
+      "tokens": [
+        "khach",
+        "san",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-19",
+      "text": "Khách sạn Hải Phòng",
+      "normalized": "khach san hai phong",
+      "tokens": [
+        "khach",
+        "san",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-20",
+      "text": "Khách sạn Nha Trang",
+      "normalized": "khach san nha trang",
+      "tokens": [
+        "khach",
+        "san",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-21",
+      "text": "Khách sạn Đà Lạt",
+      "normalized": "khach san da lat",
+      "tokens": [
+        "khach",
+        "san",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-23",
+      "text": "Khách sạn gần biển Đà Nẵng",
+      "normalized": "khach san gan bien da nang",
+      "tokens": [
+        "khach",
+        "san",
+        "gan",
+        "bien",
+        "da",
+        "nang"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-25",
+      "text": "Khách sạn gần biển Nha Trang",
+      "normalized": "khach san gan bien nha trang",
+      "tokens": [
+        "khach",
+        "san",
+        "gan",
+        "bien",
+        "nha",
+        "trang"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-26",
+      "text": "Khách sạn Nha Trang gần biển",
+      "normalized": "khach san nha trang gan bien",
+      "tokens": [
+        "khach",
+        "san",
+        "nha",
+        "trang",
+        "gan",
+        "bien"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-27",
+      "text": "Khách sạn gần sân bay TP.HCM",
+      "normalized": "khach san gan san bay tp.hcm",
+      "tokens": [
+        "khach",
+        "san",
+        "gan",
+        "san",
+        "bay",
+        "tp.hcm"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-28",
+      "text": "Khách sạn gần sân bay Hà Nội",
+      "normalized": "khach san gan san bay ha noi",
+      "tokens": [
+        "khach",
+        "san",
+        "gan",
+        "san",
+        "bay",
+        "ha",
+        "noi"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-29",
+      "text": "Khách sạn gần sân bay Đà Nẵng",
+      "normalized": "khach san gan san bay da nang",
+      "tokens": [
+        "khach",
+        "san",
+        "gan",
+        "san",
+        "bay",
+        "da",
+        "nang"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-30",
+      "text": "Khách sạn phù hợp cho trẻ em",
+      "normalized": "khach san phu hop cho tre em",
+      "tokens": [
+        "khach",
+        "san",
+        "phu",
+        "hop",
+        "cho",
+        "tre",
+        "em"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-31",
+      "text": "ATM",
+      "normalized": "atm",
+      "tokens": [
+        "atm"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-32",
+      "text": "ATM TP.HCM",
+      "normalized": "atm tp.hcm",
+      "tokens": [
+        "atm",
+        "tp.hcm"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-33",
+      "text": "ATM Hà Nội",
+      "normalized": "atm ha noi",
+      "tokens": [
+        "atm",
+        "ha",
+        "noi"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-34",
+      "text": "ATM Đà Nẵng",
+      "normalized": "atm da nang",
+      "tokens": [
+        "atm",
+        "da",
+        "nang"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-35",
+      "text": "ATM Hải Phòng",
+      "normalized": "atm hai phong",
+      "tokens": [
+        "atm",
+        "hai",
+        "phong"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-36",
+      "text": "ATM Nha Trang",
+      "normalized": "atm nha trang",
+      "tokens": [
+        "atm",
+        "nha",
+        "trang"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-37",
+      "text": "ATM Đà Lạt",
+      "normalized": "atm da lat",
+      "tokens": [
+        "atm",
+        "da",
+        "lat"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-38",
+      "text": "ATM gần đây",
+      "normalized": "atm gan day",
+      "tokens": [
+        "atm",
+        "gan",
+        "day"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-39",
+      "text": "ATM gần sân bay TP.HCM",
+      "normalized": "atm gan san bay tp.hcm",
+      "tokens": [
+        "atm",
+        "gan",
+        "san",
+        "bay",
+        "tp.hcm"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-40",
+      "text": "ATM gần sân bay Hà Nội",
+      "normalized": "atm gan san bay ha noi",
+      "tokens": [
+        "atm",
+        "gan",
+        "san",
+        "bay",
+        "ha",
+        "noi"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-41",
+      "text": "ATM gần sân bay Đà Nẵng",
+      "normalized": "atm gan san bay da nang",
+      "tokens": [
+        "atm",
+        "gan",
+        "san",
+        "bay",
+        "da",
+        "nang"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-42",
+      "text": "Bệnh viện",
+      "normalized": "benh vien",
+      "tokens": [
+        "benh",
+        "vien"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-43",
+      "text": "Bệnh viện TP.HCM",
+      "normalized": "benh vien tp.hcm",
+      "tokens": [
+        "benh",
+        "vien",
+        "tp.hcm"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-44",
+      "text": "Bệnh viện Hà Nội",
+      "normalized": "benh vien ha noi",
+      "tokens": [
+        "benh",
+        "vien",
+        "ha",
+        "noi"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-45",
+      "text": "Bệnh viện Đà Nẵng",
+      "normalized": "benh vien da nang",
+      "tokens": [
+        "benh",
+        "vien",
+        "da",
+        "nang"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-46",
+      "text": "Bệnh viện Hải Phòng",
+      "normalized": "benh vien hai phong",
+      "tokens": [
+        "benh",
+        "vien",
+        "hai",
+        "phong"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-47",
+      "text": "Bệnh viện Nha Trang",
+      "normalized": "benh vien nha trang",
+      "tokens": [
+        "benh",
+        "vien",
+        "nha",
+        "trang"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-48",
+      "text": "Bệnh viện Đà Lạt",
+      "normalized": "benh vien da lat",
+      "tokens": [
+        "benh",
+        "vien",
+        "da",
+        "lat"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-50",
+      "text": "Bệnh viện gần sân bay TP.HCM",
+      "normalized": "benh vien gan san bay tp.hcm",
+      "tokens": [
+        "benh",
+        "vien",
+        "gan",
+        "san",
+        "bay",
+        "tp.hcm"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-51",
+      "text": "Bệnh viện gần sân bay Hà Nội",
+      "normalized": "benh vien gan san bay ha noi",
+      "tokens": [
+        "benh",
+        "vien",
+        "gan",
+        "san",
+        "bay",
+        "ha",
+        "noi"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-52",
+      "text": "Bệnh viện gần sân bay Đà Nẵng",
+      "normalized": "benh vien gan san bay da nang",
+      "tokens": [
+        "benh",
+        "vien",
+        "gan",
+        "san",
+        "bay",
+        "da",
+        "nang"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-53",
+      "text": "Cây xăng",
+      "normalized": "cay xang",
+      "tokens": [
+        "cay",
+        "xang"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-54",
+      "text": "Cây xăng TP.HCM",
+      "normalized": "cay xang tp.hcm",
+      "tokens": [
+        "cay",
+        "xang",
+        "tp.hcm"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-55",
+      "text": "Cây xăng Hà Nội",
+      "normalized": "cay xang ha noi",
+      "tokens": [
+        "cay",
+        "xang",
+        "ha",
+        "noi"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-56",
+      "text": "Cây xăng Đà Nẵng",
+      "normalized": "cay xang da nang",
+      "tokens": [
+        "cay",
+        "xang",
+        "da",
+        "nang"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-57",
+      "text": "Cây xăng Hải Phòng",
+      "normalized": "cay xang hai phong",
+      "tokens": [
+        "cay",
+        "xang",
+        "hai",
+        "phong"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-58",
+      "text": "Cây xăng Nha Trang",
+      "normalized": "cay xang nha trang",
+      "tokens": [
+        "cay",
+        "xang",
+        "nha",
+        "trang"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-59",
+      "text": "Cây xăng Đà Lạt",
+      "normalized": "cay xang da lat",
+      "tokens": [
+        "cay",
+        "xang",
+        "da",
+        "lat"
+      ],
+      "type": "Nearby Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-61",
+      "text": "Cây xăng trên đường đi",
+      "normalized": "cay xang tren duong di",
+      "tokens": [
+        "cay",
+        "xang",
+        "tren",
+        "duong",
+        "di"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-62",
+      "text": "Nhà hàng",
+      "normalized": "nha hang",
+      "tokens": [
+        "nha",
+        "hang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-63",
+      "text": "Nhà hàng TP.HCM",
+      "normalized": "nha hang tp.hcm",
+      "tokens": [
+        "nha",
+        "hang",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-64",
+      "text": "Nhà hàng Hà Nội",
+      "normalized": "nha hang ha noi",
+      "tokens": [
+        "nha",
+        "hang",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-65",
+      "text": "Nhà hàng Đà Nẵng",
+      "normalized": "nha hang da nang",
+      "tokens": [
+        "nha",
+        "hang",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-66",
+      "text": "Nhà hàng Hải Phòng",
+      "normalized": "nha hang hai phong",
+      "tokens": [
+        "nha",
+        "hang",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-67",
+      "text": "Nhà hàng Nha Trang",
+      "normalized": "nha hang nha trang",
+      "tokens": [
+        "nha",
+        "hang",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-68",
+      "text": "Nhà hàng Đà Lạt",
+      "normalized": "nha hang da lat",
+      "tokens": [
+        "nha",
+        "hang",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-69",
+      "text": "Nhà hàng gần đây",
+      "normalized": "nha hang gan day",
+      "tokens": [
+        "nha",
+        "hang",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-70",
+      "text": "Nhà hàng mở cửa 24/7",
+      "normalized": "nha hang mo cua 24 7",
+      "tokens": [
+        "nha",
+        "hang",
+        "mo",
+        "cua",
+        "24",
+        "7"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-71",
+      "text": "Nhà hàng mở cửa khuya",
+      "normalized": "nha hang mo cua khuya",
+      "tokens": [
+        "nha",
+        "hang",
+        "mo",
+        "cua",
+        "khuya"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-72",
+      "text": "Nhà hàng phù hợp cho trẻ em",
+      "normalized": "nha hang phu hop cho tre em",
+      "tokens": [
+        "nha",
+        "hang",
+        "phu",
+        "hop",
+        "cho",
+        "tre",
+        "em"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-73",
+      "text": "Nhà hàng chay",
+      "normalized": "nha hang chay",
+      "tokens": [
+        "nha",
+        "hang",
+        "chay"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-74",
+      "text": "Nhà hàng halal",
+      "normalized": "nha hang halal",
+      "tokens": [
+        "nha",
+        "hang",
+        "halal"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-75",
+      "text": "Nhà hàng rooftop",
+      "normalized": "nha hang rooftop",
+      "tokens": [
+        "nha",
+        "hang",
+        "rooftop"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-76",
+      "text": "Quán ăn",
+      "normalized": "quan an",
+      "tokens": [
+        "quan",
+        "an"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-77",
+      "text": "Quán ăn TP.HCM",
+      "normalized": "quan an tp.hcm",
+      "tokens": [
+        "quan",
+        "an",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-78",
+      "text": "Quán ăn Hà Nội",
+      "normalized": "quan an ha noi",
+      "tokens": [
+        "quan",
+        "an",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-79",
+      "text": "Quán ăn Đà Nẵng",
+      "normalized": "quan an da nang",
+      "tokens": [
+        "quan",
+        "an",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-80",
+      "text": "Quán ăn Hải Phòng",
+      "normalized": "quan an hai phong",
+      "tokens": [
+        "quan",
+        "an",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-81",
+      "text": "Quán ăn Nha Trang",
+      "normalized": "quan an nha trang",
+      "tokens": [
+        "quan",
+        "an",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-82",
+      "text": "Quán ăn Đà Lạt",
+      "normalized": "quan an da lat",
+      "tokens": [
+        "quan",
+        "an",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-83",
+      "text": "Quán ăn gần đây",
+      "normalized": "quan an gan day",
+      "tokens": [
+        "quan",
+        "an",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-84",
+      "text": "Quán ăn mở cửa 24/7",
+      "normalized": "quan an mo cua 24 7",
+      "tokens": [
+        "quan",
+        "an",
+        "mo",
+        "cua",
+        "24",
+        "7"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-85",
+      "text": "Quán ăn mở cửa khuya",
+      "normalized": "quan an mo cua khuya",
+      "tokens": [
+        "quan",
+        "an",
+        "mo",
+        "cua",
+        "khuya"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-86",
+      "text": "Quán ăn phù hợp cho trẻ em",
+      "normalized": "quan an phu hop cho tre em",
+      "tokens": [
+        "quan",
+        "an",
+        "phu",
+        "hop",
+        "cho",
+        "tre",
+        "em"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-87",
+      "text": "Quán ăn chay",
+      "normalized": "quan an chay",
+      "tokens": [
+        "quan",
+        "an",
+        "chay"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-88",
+      "text": "Quán ăn halal",
+      "normalized": "quan an halal",
+      "tokens": [
+        "quan",
+        "an",
+        "halal"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-89",
+      "text": "Quán ăn rooftop",
+      "normalized": "quan an rooftop",
+      "tokens": [
+        "quan",
+        "an",
+        "rooftop"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-90",
+      "text": "Chợ",
+      "normalized": "cho",
+      "tokens": [
+        "cho"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-91",
+      "text": "Chợ TP.HCM",
+      "normalized": "cho tp.hcm",
+      "tokens": [
+        "cho",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-92",
+      "text": "Chợ Hà Nội",
+      "normalized": "cho ha noi",
+      "tokens": [
+        "cho",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-93",
+      "text": "Chợ Đà Nẵng",
+      "normalized": "cho da nang",
+      "tokens": [
+        "cho",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-94",
+      "text": "Chợ Hải Phòng",
+      "normalized": "cho hai phong",
+      "tokens": [
+        "cho",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-95",
+      "text": "Chợ Nha Trang",
+      "normalized": "cho nha trang",
+      "tokens": [
+        "cho",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-96",
+      "text": "Chợ Đà Lạt",
+      "normalized": "cho da lat",
+      "tokens": [
+        "cho",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-97",
+      "text": "Chợ gần đây",
+      "normalized": "cho gan day",
+      "tokens": [
+        "cho",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-98",
+      "text": "Siêu thị",
+      "normalized": "sieu thi",
+      "tokens": [
+        "sieu",
+        "thi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-99",
+      "text": "Siêu thị TP.HCM",
+      "normalized": "sieu thi tp.hcm",
+      "tokens": [
+        "sieu",
+        "thi",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-100",
+      "text": "Siêu thị Hà Nội",
+      "normalized": "sieu thi ha noi",
+      "tokens": [
+        "sieu",
+        "thi",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-101",
+      "text": "Siêu thị Đà Nẵng",
+      "normalized": "sieu thi da nang",
+      "tokens": [
+        "sieu",
+        "thi",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-102",
+      "text": "Siêu thị Hải Phòng",
+      "normalized": "sieu thi hai phong",
+      "tokens": [
+        "sieu",
+        "thi",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-103",
+      "text": "Siêu thị Nha Trang",
+      "normalized": "sieu thi nha trang",
+      "tokens": [
+        "sieu",
+        "thi",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-104",
+      "text": "Siêu thị Đà Lạt",
+      "normalized": "sieu thi da lat",
+      "tokens": [
+        "sieu",
+        "thi",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-105",
+      "text": "Siêu thị gần đây",
+      "normalized": "sieu thi gan day",
+      "tokens": [
+        "sieu",
+        "thi",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-106",
+      "text": "Rạp chiếu phim",
+      "normalized": "rap chieu phim",
+      "tokens": [
+        "rap",
+        "chieu",
+        "phim"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-107",
+      "text": "Rạp chiếu phim TP.HCM",
+      "normalized": "rap chieu phim tp.hcm",
+      "tokens": [
+        "rap",
+        "chieu",
+        "phim",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-108",
+      "text": "Rạp chiếu phim Hà Nội",
+      "normalized": "rap chieu phim ha noi",
+      "tokens": [
+        "rap",
+        "chieu",
+        "phim",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-109",
+      "text": "Rạp chiếu phim Đà Nẵng",
+      "normalized": "rap chieu phim da nang",
+      "tokens": [
+        "rap",
+        "chieu",
+        "phim",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-110",
+      "text": "Rạp chiếu phim Hải Phòng",
+      "normalized": "rap chieu phim hai phong",
+      "tokens": [
+        "rap",
+        "chieu",
+        "phim",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-111",
+      "text": "Rạp chiếu phim Nha Trang",
+      "normalized": "rap chieu phim nha trang",
+      "tokens": [
+        "rap",
+        "chieu",
+        "phim",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-112",
+      "text": "Rạp chiếu phim Đà Lạt",
+      "normalized": "rap chieu phim da lat",
+      "tokens": [
+        "rap",
+        "chieu",
+        "phim",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-113",
+      "text": "Rạp chiếu phim gần đây",
+      "normalized": "rap chieu phim gan day",
+      "tokens": [
+        "rap",
+        "chieu",
+        "phim",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-114",
+      "text": "Sân bay",
+      "normalized": "san bay",
+      "tokens": [
+        "san",
+        "bay"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-115",
+      "text": "Sân bay TP.HCM",
+      "normalized": "san bay tp.hcm",
+      "tokens": [
+        "san",
+        "bay",
+        "tp.hcm"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-116",
+      "text": "Sân bay Hà Nội",
+      "normalized": "san bay ha noi",
+      "tokens": [
+        "san",
+        "bay",
+        "ha",
+        "noi"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-117",
+      "text": "Sân bay Đà Nẵng",
+      "normalized": "san bay da nang",
+      "tokens": [
+        "san",
+        "bay",
+        "da",
+        "nang"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-118",
+      "text": "Sân bay Hải Phòng",
+      "normalized": "san bay hai phong",
+      "tokens": [
+        "san",
+        "bay",
+        "hai",
+        "phong"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-119",
+      "text": "Sân bay Nha Trang",
+      "normalized": "san bay nha trang",
+      "tokens": [
+        "san",
+        "bay",
+        "nha",
+        "trang"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-120",
+      "text": "Sân bay Đà Lạt",
+      "normalized": "san bay da lat",
+      "tokens": [
+        "san",
+        "bay",
+        "da",
+        "lat"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-121",
+      "text": "Sân bay gần đây",
+      "normalized": "san bay gan day",
+      "tokens": [
+        "san",
+        "bay",
+        "gan",
+        "day"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-122",
+      "text": "Bến xe",
+      "normalized": "ben xe",
+      "tokens": [
+        "ben",
+        "xe"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-123",
+      "text": "Bến xe TP.HCM",
+      "normalized": "ben xe tp.hcm",
+      "tokens": [
+        "ben",
+        "xe",
+        "tp.hcm"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-124",
+      "text": "Bến xe Hà Nội",
+      "normalized": "ben xe ha noi",
+      "tokens": [
+        "ben",
+        "xe",
+        "ha",
+        "noi"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-125",
+      "text": "Bến xe Đà Nẵng",
+      "normalized": "ben xe da nang",
+      "tokens": [
+        "ben",
+        "xe",
+        "da",
+        "nang"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-126",
+      "text": "Bến xe Hải Phòng",
+      "normalized": "ben xe hai phong",
+      "tokens": [
+        "ben",
+        "xe",
+        "hai",
+        "phong"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-127",
+      "text": "Bến xe Nha Trang",
+      "normalized": "ben xe nha trang",
+      "tokens": [
+        "ben",
+        "xe",
+        "nha",
+        "trang"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-128",
+      "text": "Bến xe Đà Lạt",
+      "normalized": "ben xe da lat",
+      "tokens": [
+        "ben",
+        "xe",
+        "da",
+        "lat"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-129",
+      "text": "Bến xe gần đây",
+      "normalized": "ben xe gan day",
+      "tokens": [
+        "ben",
+        "xe",
+        "gan",
+        "day"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-130",
+      "text": "Đại học",
+      "normalized": "dai hoc",
+      "tokens": [
+        "dai",
+        "hoc"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-131",
+      "text": "Đại học TP.HCM",
+      "normalized": "dai hoc tp.hcm",
+      "tokens": [
+        "dai",
+        "hoc",
+        "tp.hcm"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-132",
+      "text": "Đại học Hà Nội",
+      "normalized": "dai hoc ha noi",
+      "tokens": [
+        "dai",
+        "hoc",
+        "ha",
+        "noi"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-133",
+      "text": "Đại học Đà Nẵng",
+      "normalized": "dai hoc da nang",
+      "tokens": [
+        "dai",
+        "hoc",
+        "da",
+        "nang"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-134",
+      "text": "Đại học Hải Phòng",
+      "normalized": "dai hoc hai phong",
+      "tokens": [
+        "dai",
+        "hoc",
+        "hai",
+        "phong"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-135",
+      "text": "Đại học Nha Trang",
+      "normalized": "dai hoc nha trang",
+      "tokens": [
+        "dai",
+        "hoc",
+        "nha",
+        "trang"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-136",
+      "text": "Đại học Đà Lạt",
+      "normalized": "dai hoc da lat",
+      "tokens": [
+        "dai",
+        "hoc",
+        "da",
+        "lat"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-137",
+      "text": "Đại học gần đây",
+      "normalized": "dai hoc gan day",
+      "tokens": [
+        "dai",
+        "hoc",
+        "gan",
+        "day"
+      ],
+      "type": "POI Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-138",
+      "text": "Học viện",
+      "normalized": "hoc vien",
+      "tokens": [
+        "hoc",
+        "vien"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-139",
+      "text": "Học viện TP.HCM",
+      "normalized": "hoc vien tp.hcm",
+      "tokens": [
+        "hoc",
+        "vien",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-140",
+      "text": "Học viện Hà Nội",
+      "normalized": "hoc vien ha noi",
+      "tokens": [
+        "hoc",
+        "vien",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-141",
+      "text": "Học viện Đà Nẵng",
+      "normalized": "hoc vien da nang",
+      "tokens": [
+        "hoc",
+        "vien",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-142",
+      "text": "Học viện Hải Phòng",
+      "normalized": "hoc vien hai phong",
+      "tokens": [
+        "hoc",
+        "vien",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-143",
+      "text": "Học viện Nha Trang",
+      "normalized": "hoc vien nha trang",
+      "tokens": [
+        "hoc",
+        "vien",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-144",
+      "text": "Học viện Đà Lạt",
+      "normalized": "hoc vien da lat",
+      "tokens": [
+        "hoc",
+        "vien",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-145",
+      "text": "Học viện gần đây",
+      "normalized": "hoc vien gan day",
+      "tokens": [
+        "hoc",
+        "vien",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-146",
+      "text": "Nhà thuốc",
+      "normalized": "nha thuoc",
+      "tokens": [
+        "nha",
+        "thuoc"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-147",
+      "text": "Nhà thuốc TP.HCM",
+      "normalized": "nha thuoc tp.hcm",
+      "tokens": [
+        "nha",
+        "thuoc",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-148",
+      "text": "Nhà thuốc Hà Nội",
+      "normalized": "nha thuoc ha noi",
+      "tokens": [
+        "nha",
+        "thuoc",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-149",
+      "text": "Nhà thuốc Đà Nẵng",
+      "normalized": "nha thuoc da nang",
+      "tokens": [
+        "nha",
+        "thuoc",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-150",
+      "text": "Nhà thuốc Hải Phòng",
+      "normalized": "nha thuoc hai phong",
+      "tokens": [
+        "nha",
+        "thuoc",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-151",
+      "text": "Nhà thuốc Nha Trang",
+      "normalized": "nha thuoc nha trang",
+      "tokens": [
+        "nha",
+        "thuoc",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-152",
+      "text": "Nhà thuốc Đà Lạt",
+      "normalized": "nha thuoc da lat",
+      "tokens": [
+        "nha",
+        "thuoc",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-153",
+      "text": "Nhà thuốc gần đây",
+      "normalized": "nha thuoc gan day",
+      "tokens": [
+        "nha",
+        "thuoc",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-154",
+      "text": "Tiệm sửa xe",
+      "normalized": "tiem sua xe",
+      "tokens": [
+        "tiem",
+        "sua",
+        "xe"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-155",
+      "text": "Tiệm sửa xe TP.HCM",
+      "normalized": "tiem sua xe tp.hcm",
+      "tokens": [
+        "tiem",
+        "sua",
+        "xe",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-156",
+      "text": "Tiệm sửa xe Hà Nội",
+      "normalized": "tiem sua xe ha noi",
+      "tokens": [
+        "tiem",
+        "sua",
+        "xe",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-157",
+      "text": "Tiệm sửa xe Đà Nẵng",
+      "normalized": "tiem sua xe da nang",
+      "tokens": [
+        "tiem",
+        "sua",
+        "xe",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-158",
+      "text": "Tiệm sửa xe Hải Phòng",
+      "normalized": "tiem sua xe hai phong",
+      "tokens": [
+        "tiem",
+        "sua",
+        "xe",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-159",
+      "text": "Tiệm sửa xe Nha Trang",
+      "normalized": "tiem sua xe nha trang",
+      "tokens": [
+        "tiem",
+        "sua",
+        "xe",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-160",
+      "text": "Tiệm sửa xe Đà Lạt",
+      "normalized": "tiem sua xe da lat",
+      "tokens": [
+        "tiem",
+        "sua",
+        "xe",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-161",
+      "text": "Tiệm sửa xe gần đây",
+      "normalized": "tiem sua xe gan day",
+      "tokens": [
+        "tiem",
+        "sua",
+        "xe",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-162",
+      "text": "Garage ô tô",
+      "normalized": "garage o to",
+      "tokens": [
+        "garage",
+        "o",
+        "to"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-163",
+      "text": "Garage ô tô TP.HCM",
+      "normalized": "garage o to tp.hcm",
+      "tokens": [
+        "garage",
+        "o",
+        "to",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-164",
+      "text": "Garage ô tô Hà Nội",
+      "normalized": "garage o to ha noi",
+      "tokens": [
+        "garage",
+        "o",
+        "to",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-165",
+      "text": "Garage ô tô Đà Nẵng",
+      "normalized": "garage o to da nang",
+      "tokens": [
+        "garage",
+        "o",
+        "to",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-166",
+      "text": "Garage ô tô Hải Phòng",
+      "normalized": "garage o to hai phong",
+      "tokens": [
+        "garage",
+        "o",
+        "to",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-167",
+      "text": "Garage ô tô Nha Trang",
+      "normalized": "garage o to nha trang",
+      "tokens": [
+        "garage",
+        "o",
+        "to",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-168",
+      "text": "Garage ô tô Đà Lạt",
+      "normalized": "garage o to da lat",
+      "tokens": [
+        "garage",
+        "o",
+        "to",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-169",
+      "text": "Garage ô tô gần đây",
+      "normalized": "garage o to gan day",
+      "tokens": [
+        "garage",
+        "o",
+        "to",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-170",
+      "text": "Spa",
+      "normalized": "spa",
+      "tokens": [
+        "spa"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-171",
+      "text": "Spa TP.HCM",
+      "normalized": "spa tp.hcm",
+      "tokens": [
+        "spa",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-172",
+      "text": "Spa Hà Nội",
+      "normalized": "spa ha noi",
+      "tokens": [
+        "spa",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-173",
+      "text": "Spa Đà Nẵng",
+      "normalized": "spa da nang",
+      "tokens": [
+        "spa",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-174",
+      "text": "Spa Hải Phòng",
+      "normalized": "spa hai phong",
+      "tokens": [
+        "spa",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-175",
+      "text": "Spa Nha Trang",
+      "normalized": "spa nha trang",
+      "tokens": [
+        "spa",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-176",
+      "text": "Spa Đà Lạt",
+      "normalized": "spa da lat",
+      "tokens": [
+        "spa",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-177",
+      "text": "Spa gần đây",
+      "normalized": "spa gan day",
+      "tokens": [
+        "spa",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-178",
+      "text": "Phòng gym",
+      "normalized": "phong gym",
+      "tokens": [
+        "phong",
+        "gym"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-179",
+      "text": "Phòng gym TP.HCM",
+      "normalized": "phong gym tp.hcm",
+      "tokens": [
+        "phong",
+        "gym",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-180",
+      "text": "Phòng gym Hà Nội",
+      "normalized": "phong gym ha noi",
+      "tokens": [
+        "phong",
+        "gym",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-181",
+      "text": "Phòng gym Đà Nẵng",
+      "normalized": "phong gym da nang",
+      "tokens": [
+        "phong",
+        "gym",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-182",
+      "text": "Phòng gym Hải Phòng",
+      "normalized": "phong gym hai phong",
+      "tokens": [
+        "phong",
+        "gym",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-183",
+      "text": "Phòng gym Nha Trang",
+      "normalized": "phong gym nha trang",
+      "tokens": [
+        "phong",
+        "gym",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-184",
+      "text": "Phòng gym Đà Lạt",
+      "normalized": "phong gym da lat",
+      "tokens": [
+        "phong",
+        "gym",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-185",
+      "text": "Phòng gym gần đây",
+      "normalized": "phong gym gan day",
+      "tokens": [
+        "phong",
+        "gym",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-186",
+      "text": "Phòng gym mở cửa 24/7",
+      "normalized": "phong gym mo cua 24 7",
+      "tokens": [
+        "phong",
+        "gym",
+        "mo",
+        "cua",
+        "24",
+        "7"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-187",
+      "text": "Trà sữa",
+      "normalized": "tra sua",
+      "tokens": [
+        "tra",
+        "sua"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-188",
+      "text": "Trà sữa TP.HCM",
+      "normalized": "tra sua tp.hcm",
+      "tokens": [
+        "tra",
+        "sua",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-189",
+      "text": "Trà sữa Hà Nội",
+      "normalized": "tra sua ha noi",
+      "tokens": [
+        "tra",
+        "sua",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-190",
+      "text": "Trà sữa Đà Nẵng",
+      "normalized": "tra sua da nang",
+      "tokens": [
+        "tra",
+        "sua",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-191",
+      "text": "Trà sữa Hải Phòng",
+      "normalized": "tra sua hai phong",
+      "tokens": [
+        "tra",
+        "sua",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-192",
+      "text": "Trà sữa Nha Trang",
+      "normalized": "tra sua nha trang",
+      "tokens": [
+        "tra",
+        "sua",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-193",
+      "text": "Trà sữa Đà Lạt",
+      "normalized": "tra sua da lat",
+      "tokens": [
+        "tra",
+        "sua",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-194",
+      "text": "Trà sữa gần đây",
+      "normalized": "tra sua gan day",
+      "tokens": [
+        "tra",
+        "sua",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-195",
+      "text": "Quán cà phê làm việc",
+      "normalized": "quan ca phe lam viec",
+      "tokens": [
+        "quan",
+        "ca",
+        "phe",
+        "lam",
+        "viec"
+      ],
+      "type": "Discovery Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-196",
+      "text": "Trung tâm thương mại",
+      "normalized": "trung tam thuong mai",
+      "tokens": [
+        "trung",
+        "tam",
+        "thuong",
+        "mai"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-197",
+      "text": "Trung tâm thương mại TP.HCM",
+      "normalized": "trung tam thuong mai tp.hcm",
+      "tokens": [
+        "trung",
+        "tam",
+        "thuong",
+        "mai",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-198",
+      "text": "Trung tâm thương mại Hà Nội",
+      "normalized": "trung tam thuong mai ha noi",
+      "tokens": [
+        "trung",
+        "tam",
+        "thuong",
+        "mai",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-199",
+      "text": "Trung tâm thương mại Đà Nẵng",
+      "normalized": "trung tam thuong mai da nang",
+      "tokens": [
+        "trung",
+        "tam",
+        "thuong",
+        "mai",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-200",
+      "text": "Trung tâm thương mại Hải Phòng",
+      "normalized": "trung tam thuong mai hai phong",
+      "tokens": [
+        "trung",
+        "tam",
+        "thuong",
+        "mai",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-201",
+      "text": "Trung tâm thương mại Nha Trang",
+      "normalized": "trung tam thuong mai nha trang",
+      "tokens": [
+        "trung",
+        "tam",
+        "thuong",
+        "mai",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-202",
+      "text": "Trung tâm thương mại Đà Lạt",
+      "normalized": "trung tam thuong mai da lat",
+      "tokens": [
+        "trung",
+        "tam",
+        "thuong",
+        "mai",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-203",
+      "text": "Trung tâm thương mại gần đây",
+      "normalized": "trung tam thuong mai gan day",
+      "tokens": [
+        "trung",
+        "tam",
+        "thuong",
+        "mai",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-204",
+      "text": "Bãi biển",
+      "normalized": "bai bien",
+      "tokens": [
+        "bai",
+        "bien"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-205",
+      "text": "Bãi biển TP.HCM",
+      "normalized": "bai bien tp.hcm",
+      "tokens": [
+        "bai",
+        "bien",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-206",
+      "text": "Bãi biển Hà Nội",
+      "normalized": "bai bien ha noi",
+      "tokens": [
+        "bai",
+        "bien",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-207",
+      "text": "Bãi biển Đà Nẵng",
+      "normalized": "bai bien da nang",
+      "tokens": [
+        "bai",
+        "bien",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-208",
+      "text": "Bãi biển Hải Phòng",
+      "normalized": "bai bien hai phong",
+      "tokens": [
+        "bai",
+        "bien",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-209",
+      "text": "Bãi biển Nha Trang",
+      "normalized": "bai bien nha trang",
+      "tokens": [
+        "bai",
+        "bien",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-210",
+      "text": "Bãi biển Đà Lạt",
+      "normalized": "bai bien da lat",
+      "tokens": [
+        "bai",
+        "bien",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-211",
+      "text": "Bãi biển gần đây",
+      "normalized": "bai bien gan day",
+      "tokens": [
+        "bai",
+        "bien",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-212",
+      "text": "Quán bar",
+      "normalized": "quan bar",
+      "tokens": [
+        "quan",
+        "bar"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.62,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-213",
+      "text": "Quán bar TP.HCM",
+      "normalized": "quan bar tp.hcm",
+      "tokens": [
+        "quan",
+        "bar",
+        "tp.hcm"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-214",
+      "text": "Quán bar Hà Nội",
+      "normalized": "quan bar ha noi",
+      "tokens": [
+        "quan",
+        "bar",
+        "ha",
+        "noi"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-215",
+      "text": "Quán bar Đà Nẵng",
+      "normalized": "quan bar da nang",
+      "tokens": [
+        "quan",
+        "bar",
+        "da",
+        "nang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-216",
+      "text": "Quán bar Hải Phòng",
+      "normalized": "quan bar hai phong",
+      "tokens": [
+        "quan",
+        "bar",
+        "hai",
+        "phong"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-217",
+      "text": "Quán bar Nha Trang",
+      "normalized": "quan bar nha trang",
+      "tokens": [
+        "quan",
+        "bar",
+        "nha",
+        "trang"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-218",
+      "text": "Quán bar Đà Lạt",
+      "normalized": "quan bar da lat",
+      "tokens": [
+        "quan",
+        "bar",
+        "da",
+        "lat"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.68,
+      "corpusWeight": 0.78
+    },
+    {
+      "id": "generated-219",
+      "text": "Quán bar gần đây",
+      "normalized": "quan bar gan day",
+      "tokens": [
+        "quan",
+        "bar",
+        "gan",
+        "day"
+      ],
+      "type": "Category Search",
+      "source": "generated-pattern",
+      "frequencyScore": 0.7,
+      "corpusWeight": 0.78
+    }
+  ]
+}
