@@ -276,6 +276,7 @@ interface ParsedFacadeParams {
   lang: string;
   sessionId?: string;
   userId?: string;
+  now?: string;
 }
 
 const MOCK_ERROR_RESPONSES: Record<string, { status: number; message: string }> = {
@@ -375,6 +376,9 @@ export async function handleTascoFacadeRequest(
     q: parsed.value.q,
     city: parsed.value.city,
     userId: localUserId,
+    lat: parsed.value.lat,
+    lon: parsed.value.lon,
+    now: parsed.value.now,
     limit: isAutocomplete ? parsed.value.limit : Math.max(parsed.value.limit, 20),
     aliasMemory: runtime.aliasMemory,
     agenticProvider: runtime.agenticRuntime?.provider ?? runtime.agenticProvider,
@@ -494,6 +498,7 @@ function parseParams(
   const limit = optionalInteger(params.get('limit'), 'limit', 1, maxLimit, errors) ?? (maxLimit === 10 ? 5 : 10);
   const lang = params.get('lang')?.trim() || 'vi';
   const sessionId = params.get('sessionId')?.trim() || undefined;
+  const now = optionalDateTime(params.get('now'), 'now', errors);
 
   if (!q) {
     errors.push('q is required');
@@ -525,7 +530,7 @@ function parseParams(
   if (errors.length) {
     return { ok: false, errors };
   }
-  return { ok: true, value: { q, lat, lon, radiusMeters, bbox, category, city, userId, limit, lang, sessionId } };
+  return { ok: true, value: { q, lat, lon, radiusMeters, bbox, category, city, userId, limit, lang, sessionId, now } };
 }
 
 async function handlePoi(dataset: TascoDataset, url: URL, liveClient?: TascoLiveClient): Promise<TascoFacadeResult> {
@@ -1380,6 +1385,20 @@ function optionalNumber(
     errors.push(`${name} must be between ${min} and ${max}`);
   }
   return parsed;
+}
+
+function optionalDateTime(value: string | null, name: string, errors: string[]): string | undefined {
+  if (value == null || value.trim() === '') {
+    return undefined;
+  }
+  const trimmed = value.trim();
+  if (trimmed.length > 64) {
+    errors.push(`${name} must be 64 characters or fewer`);
+  }
+  if (!Number.isFinite(new Date(trimmed).getTime())) {
+    errors.push(`${name} must be a valid date-time string`);
+  }
+  return trimmed;
 }
 
 function optionalBoolean(value: string | null, name: string, errors: string[]): boolean | undefined {

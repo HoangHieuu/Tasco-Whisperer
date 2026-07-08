@@ -77,6 +77,7 @@ function App() {
         userId: userId || undefined,
         lat: location?.lat,
         lon: location?.lon,
+        now: localDateTimeWithOffset(),
         behaviorEvents,
         limit: 8,
       },
@@ -95,6 +96,7 @@ function App() {
               userId: userId || undefined,
               lat: location?.lat,
               lon: location?.lon,
+              now: localDateTimeWithOffset(),
               behaviorEvents,
               limit: 8,
             },
@@ -450,6 +452,16 @@ function readBehaviorEvents(): BehaviorEvent[] {
   } catch {
     return [];
   }
+}
+
+function localDateTimeWithOffset(date = new Date()): string {
+  const offsetMinutes = -date.getTimezoneOffset();
+  const sign = offsetMinutes >= 0 ? '+' : '-';
+  const absoluteOffset = Math.abs(offsetMinutes);
+  const offsetHour = Math.floor(absoluteOffset / 60);
+  const offsetMinute = absoluteOffset % 60;
+  const pad = (value: number) => String(value).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}${sign}${pad(offsetHour)}:${pad(offsetMinute)}`;
 }
 
 function persistBehaviorEvents(events: BehaviorEvent[]) {

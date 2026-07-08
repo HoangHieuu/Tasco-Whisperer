@@ -56,6 +56,9 @@ export async function fetchFrontendSuggest(
     url.searchParams.set('lat', String(request.lat));
     url.searchParams.set('lon', String(request.lon));
   }
+  if (request.now) {
+    url.searchParams.set('now', request.now);
+  }
 
   try {
     const started = performance.now();

@@ -66,6 +66,7 @@ interface ParsedSuggestRequest {
   limit?: number;
   lat?: number;
   lng?: number;
+  now?: string;
   agentic?: boolean;
 }
 
@@ -145,6 +146,7 @@ export function handleSuggestApiRequest(
     limit: parsed.value.limit,
     lat: parsed.value.lat,
     lon: parsed.value.lng,
+    now: parsed.value.now,
     agentic: parsed.value.agentic,
     aliasMemory: runtime.aliasMemory,
     agenticProvider: runtime.agenticProvider,
@@ -194,6 +196,7 @@ export async function handleSuggestApiRequestAsync(
     limit: parsed.value.limit,
     lat: parsed.value.lat,
     lon: parsed.value.lng,
+    now: parsed.value.now,
     agentic: parsed.value.agentic,
     aliasMemory: runtime.aliasMemory,
     agenticProvider: runtime.agenticRuntime?.provider ?? runtime.agenticProvider,
@@ -226,7 +229,8 @@ function parseSuggestParams(params: URLSearchParams): { ok: true; value: ParsedS
   const userId = optionalString(params.get('userId'), 'userId', 80, errors);
   const limit = optionalInteger(params.get('limit'), 'limit', 1, 12, errors);
   const lat = optionalNumber(params.get('lat'), 'lat', -90, 90, errors);
-  const lng = optionalNumber(params.get('lng'), 'lng', -180, 180, errors);
+  const lng = optionalNumber(params.get('lng') ?? params.get('lon'), 'lng', -180, 180, errors);
+  const now = optionalDateTime(params.get('now'), 'now', errors);
   const agentic = optionalBoolean(params.get('agentic'), 'agentic', errors);
 
   if (q.length > 160) {
@@ -238,7 +242,7 @@ function parseSuggestParams(params: URLSearchParams): { ok: true; value: ParsedS
   if (errors.length > 0) {
     return { ok: false, errors };
   }
-  return { ok: true, value: { q, city, userId, limit, lat, lng, agentic } };
+  return { ok: true, value: { q, city, userId, limit, lat, lng, now, agentic } };
 }
 
 function optionalString(value: string | null, name: string, maxLength: number, errors: string[]): string | undefined {
@@ -290,6 +294,17 @@ function optionalNumber(
   }
   if (parsed < min || parsed > max) {
     errors.push(`${name} must be between ${min} and ${max}`);
+  }
+  return parsed;
+}
+
+function optionalDateTime(value: string | null, name: string, errors: string[]): string | undefined {
+  const parsed = optionalString(value, name, 64, errors);
+  if (!parsed) {
+    return undefined;
+  }
+  if (!Number.isFinite(new Date(parsed).getTime())) {
+    errors.push(`${name} must be a valid date-time string`);
   }
   return parsed;
 }

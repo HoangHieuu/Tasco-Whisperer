@@ -111,6 +111,25 @@ describe('handleSuggestApiRequest', () => {
     expect(body.error.details).toEqual(expect.arrayContaining(['lat and lng must be provided together']));
   });
 
+  it('accepts deterministic time context and rejects invalid now values', () => {
+    const valid = handleSuggestApiRequest(testDataset, {
+      method: 'GET',
+      url: '/api/suggest?q=cafe&now=2026-07-05T23%3A30%3A00%2B07%3A00&limit=8',
+    });
+    const validBody = valid.body as SuggestResponse;
+    const invalid = handleSuggestApiRequest(testDataset, {
+      method: 'GET',
+      url: '/api/suggest?q=cafe&now=not-a-date',
+    });
+    const invalidBody = invalid.body as ApiErrorResponse;
+    const open24 = validBody.suggestions.find((suggestion) => suggestion.text === 'Cà phê mở cửa 24/7');
+
+    expect(valid.status).toBe(200);
+    expect(open24?.metadata.reason).toContain('night context favors 24/7/open-late result');
+    expect(invalid.status).toBe(400);
+    expect(invalidBody.error.details).toEqual(expect.arrayContaining(['now must be a valid date-time string']));
+  });
+
   it('accepts city and simulated profile context', () => {
     const result = handleSuggestApiRequest(testDataset, {
       method: 'GET',

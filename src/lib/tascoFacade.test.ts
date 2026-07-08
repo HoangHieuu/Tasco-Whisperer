@@ -299,6 +299,10 @@ describe('handleTascoFacadeRequest', () => {
       method: 'GET',
       url: '/v1/search?q=cafe&bbox=bad',
     });
+    const invalidNow = await handleTascoFacadeRequest(testDataset, {
+      method: 'GET',
+      url: '/v1/autocomplete?q=cafe&now=not-a-date',
+    });
 
     expect(missingQuery.status).toBe(400);
     expect(missingQuery.body).toEqual(
@@ -310,6 +314,7 @@ describe('handleTascoFacadeRequest', () => {
     );
     expect(invalidLimit.status).toBe(400);
     expect(invalidBbox.status).toBe(400);
+    expect(invalidNow.status).toBe(400);
   });
 
   it('supports health checks expected by the hackathon mock server contract', async () => {

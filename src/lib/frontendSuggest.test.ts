@@ -49,13 +49,20 @@ describe('frontend TASCO facade adapter', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const response = await fetchFrontendSuggest(
-      { q: 'cap', userId: 'coffee-loyal', lat: 10.7769, lon: 106.7009, limit: 8 },
+      {
+        q: 'cap',
+        userId: 'coffee-loyal',
+        lat: 10.7769,
+        lon: 106.7009,
+        now: '2026-07-05T23:30:00+07:00',
+        limit: 8,
+      },
       { apiBaseUrl: 'http://127.0.0.1:8787' },
     );
 
     expect(fetchMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        href: 'http://127.0.0.1:8787/v1/autocomplete?q=cap&limit=8&lang=vi&sessionId=coffee-loyal&userId=coffee-loyal&lat=10.7769&lon=106.7009',
+        href: 'http://127.0.0.1:8787/v1/autocomplete?q=cap&limit=8&lang=vi&sessionId=coffee-loyal&userId=coffee-loyal&lat=10.7769&lon=106.7009&now=2026-07-05T23%3A30%3A00%2B07%3A00',
       }),
       { signal: undefined },
     );
