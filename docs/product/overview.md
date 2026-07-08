@@ -72,7 +72,9 @@ demo, public evaluation runner, local autocomplete API and TASCO facade, server-
 behavior-feedback personalization with recency decay, persistent
 runtime-writable alias memory, MiniLM artifact-backed kNN intent voting with
 lexical fallback, and validated local/hosted rewrite-agent provider runtime
-wiring. The README, generated example gallery, one-command local launcher, and
+wiring. It also ranks with current-location haversine locality, coordinate-based
+city inference, and enrichment-hours time context for 24/7, open-late, and
+breakfast phở use cases. The README, generated example gallery, one-command local launcher, and
 browser/API smoke proof now package the project for submission.
 
 ## Agentic Learning Direction

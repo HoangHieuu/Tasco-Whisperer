@@ -25,7 +25,7 @@ todos:
     status: completed
   - id: phase6-context
     content: Use lat/lon haversine distance in locality factor and time-of-day boosts from enrichment hours
-    status: pending
+    status: completed
   - id: phase7-agentic-llm
     content: Wire real LLM provider into agentic rewrite path, load persistent alias memory at server startup, remove facade agentic:false hardcode
     status: completed
@@ -135,7 +135,9 @@ Implementation note, 2026-07-05: Phase 5 is complete. Behavior personalization n
 
 Implementation note, 2026-07-05: Phase 4 is complete. `src/lib/learningToRank.ts` now trains a dependency-free pairwise logistic linear ranker on 1,626 robustness perturbation rows plus optional server behavior selections, while the 60 public evaluation rows are held out for validation. `npm run rank:train` writes `config/ranking-weights.json` and the engine loads those learned weights as the runtime default unless `TASCO_DISABLE_LEARNED_RANKER=true` or `VITE_TASCO_DISABLE_LEARNED_RANKER=true` is set. Current learned config reports train top-3 100%, validation top-3 100%, validation NDCG@5 0.955, and behavior rows 0 because the local behavior log is empty. `npm run test -- --run src/lib/learningToRank.test.ts src/lib/engine.test.ts src/lib/suggestApi.test.ts src/lib/tascoFacade.test.ts` passes with 4 files and 59 tests.
 
-Final verification note, 2026-07-05: `npm run check` passes with 20 test files, 117 tests, public eval top-1 93.3%, top-3/top-5 100%, intent 98.3%, MRR 0.967, p95 36 ms, API smoke including behavior-event replay, and production build. `npm run eval:robust` passes with 192 cases, top-3/top-5 100%, compact 53/53, and p95 28 ms. `npm run eval:minilm` passes with top-1 93.3%, top-3/top-5 100%, intent 98.3%, MRR 0.967, p95 31 ms, MiniLM provider on 60/60 cases, and 0 degraded cases. The learned runtime ranker trades top-1 from the prior 96.7% default to 93.3%, still above the plan's >=90% gate.
+Implementation note, 2026-07-05: Phase 6 is complete. The engine now infers city scope from `lat`/`lon` when `city` is absent, computes haversine distance to POIs into the transparent `locality` factor, reserves locality weight for active coordinate/time context, accepts optional `now` through `/api/suggest`, the TASCO facade, and the frontend adapter, and uses enrichment-derived opening-hours plus 24/7/open-late/breakfast phở evidence for time-of-day boosts. `npm run test -- --run src/lib/engine.test.ts src/lib/suggestApi.test.ts src/lib/tascoFacade.test.ts src/lib/frontendSuggest.test.ts` passes with 4 files and 67 tests.
+
+Final verification note, 2026-07-05: `npm run check` passes with 20 test files, 121 tests, public eval top-1 93.3%, top-3/top-5 100%, intent 98.3%, MRR 0.967, p95 30 ms, API smoke including behavior-event replay, and production build. `npm run eval:robust` passes with 192 cases, top-3/top-5 100%, compact 53/53, and p95 33 ms. `npm run eval:minilm` passes with top-1 93.3%, top-3/top-5 100%, intent 98.3%, MRR 0.967, p95 31 ms, MiniLM provider on 60/60 cases, and 0 degraded cases. The learned runtime ranker trades top-1 from the prior 96.7% default to 93.3%, still above the plan's >=90% gate.
 
 Engineering cleanup:
 - `suggest()` and `suggestAsync()` duplicate most of the pipeline and should be unified before more ranking/rewrite work.
@@ -155,7 +157,7 @@ To-do Lists:
 
 [x] Server-side behavior event log with recency decay; accept events through API and facade; unify duplicate boost logic
 
-[ ] Use lat/lon haversine distance in locality factor and time-of-day boosts from enrichment hours
+[x] Use lat/lon haversine distance in locality factor and time-of-day boosts from enrichment hours
 
 [x] Wire real LLM provider into agentic rewrite path, load persistent alias memory at server startup, remove facade agentic:false hardcode
 

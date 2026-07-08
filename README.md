@@ -193,8 +193,8 @@ Example request:
 curl "http://127.0.0.1:8787/api/suggest?q=cafe%20wifi&city=TP.HCM&userId=coffee-loyal&limit=3"
 ```
 
-The endpoint accepts `q`, `city`, `userId`, `lat`, `lng`, `limit`, and
-`agentic`. Set `agentic=false` to prove deterministic-only fallback behavior.
+The endpoint accepts `q`, `city`, `userId`, `lat`, `lng`/`lon`, `now`, `limit`,
+and `agentic`. Set `agentic=false` to prove deterministic-only fallback behavior.
 Invalid parameters return a `4xx` JSON error. Empty `q` returns deterministic
 popular query fallback suggestions.
 
@@ -335,7 +335,7 @@ Current public evaluation baseline:
 - Top-5 recall: 100%.
 - Intent accuracy: 98.3%.
 - MRR: 0.967.
-- P95 latency: 36 ms.
+- P95 latency: 30 ms.
 
 MiniLM async server-path evaluation:
 
@@ -355,7 +355,7 @@ Supplemental robustness baseline:
 - Top-3 recall: 100%.
 - Top-5 recall: 100%.
 - Compact transform top-3 recall: 100%.
-- P95 latency: 28 ms.
+- P95 latency: 33 ms.
 
 Learning-to-rank baseline:
 
@@ -376,9 +376,11 @@ Telex/VNI cleanup, a generated MiniLM embedding artifact with lexical fallback,
 kNN/direct-evidence intent voting, entity extraction, semantic templates,
 transparent score factors, simulated profile boosts, server-side behavior
 feedback from selected suggestions, configurable and learned ranking weights, a
-local `/api/suggest` HTTP service, runtime-writable alias memory, and a
-validated agentic rewrite contract for low-confidence variants that remain hard
-after the deterministic tiers. Simulated profiles include
+current-location haversine locality factor, coordinate-based city inference,
+time-of-day boosts from enrichment opening-hours evidence, a local `/api/suggest`
+HTTP service, runtime-writable alias memory, and a validated agentic rewrite
+contract for low-confidence variants that remain hard after the deterministic
+tiers. Simulated profiles include
 `coffee-loyal`, `danang-traveler`, and `commuter`; the demo also has a
 `local-demo` learner profile backed by browser local storage and the local API
 behavior log. Boosted suggestions expose the reason in metadata. The
@@ -420,7 +422,7 @@ calls configured by `TASCO_API_BASE_URL`.
 The engine follows the suggested problem architecture:
 
 1. User input layer: the API/UI accepts incomplete Vietnamese prefixes plus
-   optional `city`, `lat`, `lng`, `userId`, and `limit`.
+   optional `city`, `lat`, `lng`/`lon`, `now`, `userId`, and `limit`.
 2. Query understanding layer: the prefix is normalized, accents are stripped for
    matching, abbreviations are expanded, compact syllables are split when
    dataset evidence supports the split, and entities are extracted.
@@ -428,8 +430,8 @@ The engine follows the suggested problem architecture:
    popular queries, generated patterns, semantic evidence, embedding neighbors,
    and validated low-confidence rewrites.
 4. Ranking layer: transparent score factors combine lexical match, intent fit,
-   source reliability, popularity, POI quality, locality, personalization, and
-   diversity.
+   source reliability, popularity, POI quality, haversine/time-aware locality,
+   personalization, and diversity.
 5. Personalization layer: simulated profiles and local browser behavior events
    add bounded boosts while preserving deterministic fallback behavior.
 6. Explanation layer: selected suggestions expose grounded source, matched
