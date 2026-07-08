@@ -228,6 +228,7 @@ export interface SuggestRequest {
   userId?: string;
   lat?: number;
   lon?: number;
+  now?: string;
   limit?: number;
   rankingWeights?: Partial<RankingWeights>;
   behaviorEvents?: BehaviorEvent[];

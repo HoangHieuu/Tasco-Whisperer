@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { buildDatasetFromCsvs, DATA_FILES } from './dataset';
 import { suggest, topSuggestionTexts } from './engine';
-import { testDataset } from './testDataset';
+import { testCsvs, testDataset } from './testDataset';
 
 describe('suggest', () => {
   it('returns Vin brand suggestions for vin', () => {
@@ -352,5 +353,70 @@ describe('suggest', () => {
     const response = suggest(testDataset, { q: '10.77', limit: 3 });
     expect(response.intent.type).toBe('Coordinate Search');
     expect(response.suggestions[0].text).toBe('10.7769,106.7009');
+  });
+
+  it('uses current coordinates for POI locality and infers city scope when city is absent', () => {
+    const response = suggest(testDataset, {
+      q: 'atm',
+      lat: 10.7751,
+      lon: 106.7035,
+      limit: 5,
+      agentic: false,
+    });
+    const nearbyAtm = response.suggestions.find((suggestion) => suggestion.text === 'ATM Vietcombank Nguyễn Huệ');
+
+    expect(response.diagnostics.expansions).toContain('coordinate-city-inference -> TP.HCM');
+    expect(nearbyAtm?.metadata.factors.locality).toBe(1);
+    expect(nearbyAtm?.metadata.reason).toContain('current-location distance 0 m');
+    expect(
+      response.suggestions
+        .filter((suggestion) => suggestion.metadata.city)
+        .every((suggestion) => suggestion.metadata.city === 'TP.HCM'),
+    ).toBe(true);
+  });
+
+  it('uses time-of-day context for 24/7 and open-late candidates at night', () => {
+    const baseline = suggest(testDataset, { q: 'cafe', limit: 8, agentic: false });
+    const nighttime = suggest(testDataset, {
+      q: 'cafe',
+      now: '2026-07-05T23:30:00+07:00',
+      limit: 8,
+      agentic: false,
+    });
+    const baselineOpen24 = baseline.suggestions.find((suggestion) => suggestion.text === 'Cà phê mở cửa 24/7');
+    const nightOpen24 = nighttime.suggestions.find((suggestion) => suggestion.text === 'Cà phê mở cửa 24/7');
+
+    expect(nightOpen24?.metadata.factors.locality).toBe(1);
+    expect(nightOpen24?.metadata.reason).toContain('night context favors 24/7/open-late result');
+    expect(nightOpen24?.score ?? 0).toBeGreaterThan(baselineOpen24?.score ?? 0);
+  });
+
+  it('uses morning context for breakfast phở without mislabeling generic cafe results', () => {
+    const breakfastDataset = buildDatasetFromCsvs({
+      ...testCsvs,
+      [DATA_FILES.autocomplete]: `${testCsvs[DATA_FILES.autocomplete].trim()}
+SUG011,pho,Phở ăn sáng,Category Search,0.92,5100`,
+      [DATA_FILES.pois]: `${testCsvs[DATA_FILES.pois].trim()}
+POI011,Phở Sáng Nguyễn Trãi,Phở,,"12 Nguyễn Trãi, Quận 1, TP.HCM",TP.HCM,10.77,106.697,4.5,900,82,phở;bữa sáng;ăn uống`,
+    });
+    const breakfast = suggest(breakfastDataset, {
+      q: 'pho',
+      now: '2026-07-05T07:30:00+07:00',
+      limit: 8,
+      agentic: false,
+    });
+    const breakfastPho = breakfast.suggestions.find((suggestion) => suggestion.text === 'Phở ăn sáng');
+    const cafe = suggest(testDataset, {
+      q: 'cafe',
+      now: '2026-07-05T07:30:00+07:00',
+      limit: 8,
+      agentic: false,
+    });
+
+    expect(breakfastPho?.metadata.factors.locality).toBe(0.96);
+    expect(breakfastPho?.metadata.reason).toContain('morning context favors breakfast/phở result');
+    expect(cafe.suggestions.find((suggestion) => suggestion.text === 'Highlands Coffee Nguyễn Huệ')?.metadata.reason).not.toContain(
+      'breakfast/phở',
+    );
   });
 });

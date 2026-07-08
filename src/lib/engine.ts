@@ -2,7 +2,7 @@ import { resolveAgenticCorrection } from './agentic';
 import { resolveAgenticCorrectionWithProvider, type AgenticRuntimeOptions } from './agenticRuntime';
 import { observationFromProposal } from './aliasMemory';
 import { behaviorBoostForHaystack } from './behavior';
-import { rankingEvidenceForPoi } from './enrichment';
+import { deriveOpeningHours, placeInputFromPoi, rankingEvidenceForPoi } from './enrichment';
 import { containsTokenPhrase, expandQuery, fuzzyIncludes, normalizeText } from './normalize';
 import { generatedPatternCandidates } from './generatedPatterns';
 import { predictQueryCompletions } from './predictionLm';
@@ -45,6 +45,11 @@ interface CandidateDraft {
   entityBoost?: number;
 }
 
+interface RankingContext {
+  locality: number;
+  reasons: string[];
+}
+
 export interface SuggestRuntimeOptions {
   embeddingContext?: EmbeddingContext;
   embeddingProvider?: {
@@ -66,6 +71,10 @@ interface SimulatedProfile {
 
 const MAX_QUERY_FREQUENCY = 15000;
 const MAX_REVIEWS = 10000;
+const CITY_INFERENCE_RADIUS_METERS = 60000;
+const LOCALITY_DISTANCE_RADIUS_METERS = 15000;
+const COORDINATE_LOCALITY_WEIGHT_FLOOR = 0.16;
+const TEMPORAL_LOCALITY_WEIGHT_FLOOR = 0.1;
 
 export const DEFAULT_RANKING_WEIGHTS: RankingWeights = {
   lexical: 0.3,
@@ -201,20 +210,21 @@ const SEMANTIC_TEMPLATES: SemanticTemplate[] = [
 
 export function suggest(dataset: TascoDataset, request: SuggestRequest, runtimeEmbedding?: EmbeddingContext): SuggestResponse {
   const start = performance.now();
-  const limit = clampLimit(request.limit);
-  const understanding = understandQuery(dataset, request.q);
+  const contextualRequest = requestWithInferredCity(dataset, request);
+  const limit = clampLimit(contextualRequest.limit);
+  const understanding = understandQuery(dataset, contextualRequest.q);
   const entities = extractEntities(dataset, understanding);
   const embedding = runtimeEmbedding ?? embeddingContext(dataset, understanding);
-  const drafts = collectCandidates(dataset, understanding, request, embedding.neighbors, entities, embedding.provider);
+  const drafts = collectCandidates(dataset, understanding, contextualRequest, embedding.neighbors, entities, embedding.provider);
   const intent = predictIntent(drafts, understanding, entities, embedding.intentVote, embedding.provider);
   const agentic = resolveAgenticCorrection({
     understanding,
     entities,
     intent,
     candidateCount: drafts.length,
-    aliasMemory: request.aliasMemory,
-    provider: request.agenticProvider,
-    enabled: request.agentic,
+    aliasMemory: contextualRequest.aliasMemory,
+    provider: contextualRequest.agenticProvider,
+    enabled: contextualRequest.agentic,
   });
 
   const finalUnderstanding = agentic.appliedRewrite
@@ -225,14 +235,14 @@ export function suggest(dataset: TascoDataset, request: SuggestRequest, runtimeE
     : entities;
   const rewrittenEmbedding = agentic.appliedRewrite ? embeddingContext(dataset, finalUnderstanding) : embedding;
   const rewrittenDrafts = agentic.appliedRewrite
-    ? collectCandidates(dataset, finalUnderstanding, request, rewrittenEmbedding.neighbors, finalEntities, rewrittenEmbedding.provider)
+    ? collectCandidates(dataset, finalUnderstanding, contextualRequest, rewrittenEmbedding.neighbors, finalEntities, rewrittenEmbedding.provider)
     : [];
   const finalDrafts = agentic.appliedRewrite ? [...drafts, ...rewrittenDrafts] : drafts;
   const rerunIntent = agentic.appliedRewrite
     ? predictIntent(finalDrafts, finalUnderstanding, finalEntities, rewrittenEmbedding.intentVote, rewrittenEmbedding.provider)
     : intent;
   const finalIntent = applyValidatedAgenticIntent(rerunIntent, agentic.proposal);
-  const suggestions = rankAndMerge(finalDrafts, finalIntent.type, request, limit);
+  const suggestions = rankAndMerge(finalDrafts, finalIntent.type, contextualRequest, limit);
 
   return {
     query: request.q,
@@ -242,7 +252,7 @@ export function suggest(dataset: TascoDataset, request: SuggestRequest, runtimeE
     suggestions,
     latencyMs: Math.max(1, Math.round(performance.now() - start)),
     diagnostics: {
-      expansions: finalUnderstanding.expansions,
+      expansions: [...finalUnderstanding.expansions, ...contextExpansions(request, contextualRequest)],
       entities: finalEntities,
       candidateCount: finalDrafts.length,
       agentic,
@@ -281,14 +291,15 @@ export async function suggestAsync(
   runtime: SuggestRuntimeOptions = {},
 ): Promise<SuggestResponse> {
   const start = performance.now();
-  const limit = clampLimit(request.limit);
-  const understanding = understandQuery(dataset, request.q);
+  const contextualRequest = requestWithInferredCity(dataset, request);
+  const limit = clampLimit(contextualRequest.limit);
+  const understanding = understandQuery(dataset, contextualRequest.q);
   const entities = extractEntities(dataset, understanding);
   const embedding =
     runtime.embeddingContext ??
     (await runtime.embeddingProvider?.contextForQuery(understanding.expanded || understanding.normalized)) ??
     embeddingContext(dataset, understanding);
-  const drafts = collectCandidates(dataset, understanding, request, embedding.neighbors, entities, embedding.provider);
+  const drafts = collectCandidates(dataset, understanding, contextualRequest, embedding.neighbors, entities, embedding.provider);
   const intent = predictIntent(drafts, understanding, entities, embedding.intentVote, embedding.provider);
   let agentic = await resolveAgenticCorrectionWithProvider(
     {
@@ -296,13 +307,13 @@ export async function suggestAsync(
       entities,
       intent,
       candidateCount: drafts.length,
-      aliasMemory: request.aliasMemory,
-      provider: runtime.agentic?.provider ?? request.agenticProvider,
-      enabled: request.agentic,
+      aliasMemory: contextualRequest.aliasMemory,
+      provider: runtime.agentic?.provider ?? contextualRequest.agenticProvider,
+      enabled: contextualRequest.agentic,
     },
     runtime.agentic,
   );
-  agentic = await persistAcceptedAgenticRewrite(request.q, agentic, runtime.agentic);
+  agentic = await persistAcceptedAgenticRewrite(contextualRequest.q, agentic, runtime.agentic);
 
   const finalUnderstanding = agentic.appliedRewrite
     ? expandQuery(agentic.appliedRewrite, dataset.abbreviations)
@@ -312,14 +323,14 @@ export async function suggestAsync(
     : entities;
   const rewrittenEmbedding = agentic.appliedRewrite ? embeddingContext(dataset, finalUnderstanding) : embedding;
   const rewrittenDrafts = agentic.appliedRewrite
-    ? collectCandidates(dataset, finalUnderstanding, request, rewrittenEmbedding.neighbors, finalEntities, rewrittenEmbedding.provider)
+    ? collectCandidates(dataset, finalUnderstanding, contextualRequest, rewrittenEmbedding.neighbors, finalEntities, rewrittenEmbedding.provider)
     : [];
   const finalDrafts = agentic.appliedRewrite ? [...drafts, ...rewrittenDrafts] : drafts;
   const rerunIntent = agentic.appliedRewrite
     ? predictIntent(finalDrafts, finalUnderstanding, finalEntities, rewrittenEmbedding.intentVote, rewrittenEmbedding.provider)
     : intent;
   const finalIntent = applyValidatedAgenticIntent(rerunIntent, agentic.proposal);
-  const suggestions = rankAndMerge(finalDrafts, finalIntent.type, request, limit);
+  const suggestions = rankAndMerge(finalDrafts, finalIntent.type, contextualRequest, limit);
   const diagnosticEmbedding = agentic.appliedRewrite ? rewrittenEmbedding : embedding;
 
   return {
@@ -330,7 +341,7 @@ export async function suggestAsync(
     suggestions,
     latencyMs: Math.max(1, Math.round(performance.now() - start)),
     diagnostics: {
-      expansions: finalUnderstanding.expansions,
+      expansions: [...finalUnderstanding.expansions, ...contextExpansions(request, contextualRequest)],
       entities: finalEntities,
       candidateCount: finalDrafts.length,
       agentic,
@@ -1063,10 +1074,12 @@ function rankAndMerge(
 
   for (const draft of drafts) {
     const personalization = personalizationBoost(request.userId, draft, request.behaviorEvents, request.city);
-    const factors = scoreFactors(draft, predictedIntent, request, personalization.boost);
-    const score = weightedScore(factors, request.rankingWeights);
+    const context = rankingContext(draft, request);
+    const factors = scoreFactors(draft, predictedIntent, personalization.boost, context);
+    const score = weightedScore(factors, request);
     const normalizedText = normalizeText(draft.text);
     const existing = merged.get(normalizedText);
+    const reason = context.reasons.length ? `${draft.reason}; ${context.reasons.join('; ')}` : draft.reason;
     const suggestion = withSuggestionExplanation({
       id: draft.id,
       text: draft.text,
@@ -1077,7 +1090,7 @@ function rankAndMerge(
       matched: [...new Set(draft.matched.map(normalizeText))],
       poiId: draft.poi?.poiId,
       metadata: {
-        reason: draft.reason,
+        reason,
         city: draft.poi?.city,
         address: draft.poi?.address,
         brand: draft.poi?.brand,
@@ -1105,11 +1118,10 @@ function rankAndMerge(
 function scoreFactors(
   draft: CandidateDraft,
   predictedIntent: IntentType,
-  request: SuggestRequest,
   personalizationBoostValue: number,
+  context: RankingContext,
 ): ScoreFactors {
   const poi = draft.poi;
-  const cityMatch = request.city && poi ? sameCity(poi.city, request.city) : false;
   const factors: ScoreFactors = {
     lexical: draft.baseScore,
     intent: draft.type === predictedIntent ? 1 : 0.55,
@@ -1131,7 +1143,7 @@ function scoreFactors(
               : 0.8,
     popularity: clamp01(draft.frequencyScore),
     poiQuality: poi ? clamp01((poi.rating / 5) * 0.45 + (poi.reviewCount / MAX_REVIEWS) * 0.25 + (poi.popularityScore / 100) * 0.3) : 0.68,
-    locality: cityMatch ? 1 : request.city ? 0.45 : 0.7,
+    locality: context.locality,
     personalization: clamp01(personalizationBoostValue),
     diversity: ['generated', 'predicted', 'template'].includes(draft.source) ? 0.92 : ['semantic', 'embedding'].includes(draft.source) ? 0.6 : 0.66,
   };
@@ -1141,8 +1153,8 @@ function scoreFactors(
   return factors;
 }
 
-function weightedScore(factors: ScoreFactors, requestedWeights?: Partial<RankingWeights>): number {
-  const weights = resolveRankingWeights(requestedWeights);
+function weightedScore(factors: ScoreFactors, request: SuggestRequest): number {
+  const weights = resolveRankingWeights(request.rankingWeights, request);
   return roundScore(
     factors.lexical * weights.lexical +
       factors.intent * weights.intent +
@@ -1155,7 +1167,7 @@ function weightedScore(factors: ScoreFactors, requestedWeights?: Partial<Ranking
   );
 }
 
-function resolveRankingWeights(requestedWeights?: Partial<RankingWeights>): RankingWeights {
+function resolveRankingWeights(requestedWeights?: Partial<RankingWeights>, request?: SuggestRequest): RankingWeights {
   const defaultWeights = activeDefaultRankingWeights();
   const merged: RankingWeights = {
     ...defaultWeights,
@@ -1164,11 +1176,222 @@ function resolveRankingWeights(requestedWeights?: Partial<RankingWeights>): Rank
   const sanitized = Object.fromEntries(
     Object.entries(merged).map(([key, value]) => [key, Number.isFinite(value) ? Math.max(0, value) : 0]),
   ) as RankingWeights;
+  if (!requestedWeights && request) {
+    const localityFloor = contextualLocalityWeightFloor(request);
+    if (localityFloor > 0) {
+      sanitized.locality = Math.max(sanitized.locality, localityFloor);
+    }
+  }
   const total = Object.values(sanitized).reduce((sum, value) => sum + value, 0);
   if (total <= 0) {
     return defaultWeights;
   }
   return Object.fromEntries(Object.entries(sanitized).map(([key, value]) => [key, value / total])) as RankingWeights;
+}
+
+function requestWithInferredCity(dataset: TascoDataset, request: SuggestRequest): SuggestRequest {
+  if (request.city || request.lat == null || request.lon == null || !validCoordinates(request.lat, request.lon)) {
+    return request;
+  }
+  const understanding = expandQuery(request.q, dataset.abbreviations);
+  if (queryMentionsKnownCity(dataset, understanding)) {
+    return request;
+  }
+  const inferredCity = inferCityFromCoordinates(dataset, request.lat, request.lon);
+  return inferredCity ? { ...request, city: inferredCity } : request;
+}
+
+function contextExpansions(original: SuggestRequest, contextual: SuggestRequest): string[] {
+  if (!original.city && contextual.city) {
+    return [`coordinate-city-inference -> ${contextual.city}`];
+  }
+  return [];
+}
+
+function queryMentionsKnownCity(dataset: TascoDataset, understanding: QueryUnderstanding): boolean {
+  const query = `${understanding.original} ${understanding.normalized} ${understanding.expanded}`;
+  return knownCities(dataset).some((city) => cityMentioned(query, city));
+}
+
+function inferCityFromCoordinates(dataset: TascoDataset, lat: number, lon: number): string | undefined {
+  const nearest = dataset.pois
+    .filter((poi) => poi.city && validCoordinates(poi.latitude, poi.longitude))
+    .map((poi) => ({
+      city: poi.city,
+      distanceMeters: distanceMeters(lat, lon, poi.latitude, poi.longitude),
+    }))
+    .sort((a, b) => a.distanceMeters - b.distanceMeters)[0];
+  return nearest && nearest.distanceMeters <= CITY_INFERENCE_RADIUS_METERS ? nearest.city : undefined;
+}
+
+function rankingContext(draft: CandidateDraft, request: SuggestRequest): RankingContext {
+  const reasons: string[] = [];
+  let locality = baseLocalityFactor(draft, request);
+  if (request.lat != null && request.lon != null && draft.poi && validCoordinates(request.lat, request.lon)) {
+    const distance = distanceMeters(request.lat, request.lon, draft.poi.latitude, draft.poi.longitude);
+    locality = distanceLocalityFactor(distance);
+    reasons.push(`current-location distance ${formatDistance(distance)}`);
+  }
+
+  const temporal = temporalContext(draft, request);
+  if (temporal && temporal.score > locality) {
+    locality = temporal.score;
+    reasons.push(temporal.reason);
+  } else if (temporal) {
+    reasons.push(temporal.reason);
+  }
+
+  return {
+    locality: roundScore(clamp01(locality)),
+    reasons,
+  };
+}
+
+function baseLocalityFactor(draft: CandidateDraft, request: SuggestRequest): number {
+  const hasCoordinates = request.lat != null && request.lon != null && validCoordinates(request.lat, request.lon);
+  if (hasCoordinates && draft.poi) {
+    return distanceLocalityFactor(distanceMeters(request.lat!, request.lon!, draft.poi.latitude, draft.poi.longitude));
+  }
+  if (request.city && draft.poi && sameCity(draft.poi.city, request.city)) {
+    return 1;
+  }
+  if (hasCoordinates) {
+    return 0.72;
+  }
+  return request.city ? 0.45 : 0.7;
+}
+
+function distanceLocalityFactor(distance: number): number {
+  const bounded = Math.min(Math.max(distance, 0), LOCALITY_DISTANCE_RADIUS_METERS);
+  return roundScore(0.25 + (1 - bounded / LOCALITY_DISTANCE_RADIUS_METERS) * 0.75);
+}
+
+function temporalContext(draft: CandidateDraft, request: SuggestRequest): { score: number; reason: string; priority: number } | undefined {
+  const minutes = requestTimeMinutes(request.now);
+  if (minutes == null) {
+    return undefined;
+  }
+  const haystack = normalizeText(
+    `${draft.text} ${draft.type} ${draft.poi?.category ?? ''} ${draft.poi?.brand ?? ''} ${(draft.poi?.tags ?? []).join(' ')}`,
+  );
+  let best: { score: number; reason: string; priority: number } | undefined;
+  const accept = (candidate: { score: number; reason: string; priority: number }) => {
+    if (!best || candidate.score > best.score || (candidate.score === best.score && candidate.priority > best.priority)) {
+      best = candidate;
+    }
+  };
+
+  if (draft.poi) {
+    const openingHours = deriveOpeningHours(placeInputFromPoi(draft.poi));
+    if (timeWithinOpeningHours(openingHours.value, minutes)) {
+      accept({
+        score: openingHours.value === '00:00-24:00' ? 1 : 0.88,
+        reason: `open at request time from enrichment hours (${openingHours.value})`,
+        priority: 1,
+      });
+    }
+  }
+
+  if (isNight(minutes) && containsAny(haystack, ['24/7', '24h', 'mo cua khuya', 'an dem', 'khuya'])) {
+    accept({
+      score: containsAny(haystack, ['24/7', '24h']) ? 1 : 0.96,
+      reason: 'night context favors 24/7/open-late result',
+      priority: 3,
+    });
+  }
+  if (isMorning(minutes) && hasBreakfastPhoEvidence(haystack)) {
+    accept({
+      score: 0.96,
+      reason: 'morning context favors breakfast/phở result',
+      priority: 3,
+    });
+  }
+  return best;
+}
+
+function hasBreakfastPhoEvidence(haystack: string): boolean {
+  const tokens = new Set(haystack.split(/\s+/).filter(Boolean));
+  return tokens.has('pho') || containsAny(haystack, ['bua sang', 'an sang', 'breakfast']);
+}
+
+function timeWithinOpeningHours(hours: string, minutes: number): boolean {
+  const match = /^(\d{2}):(\d{2})-(\d{2}):(\d{2})$/.exec(hours);
+  if (!match) {
+    return false;
+  }
+  const [, startHour, startMinute, endHour, endMinute] = match;
+  const start = Number(startHour) * 60 + Number(startMinute);
+  const end = Number(endHour) * 60 + Number(endMinute);
+  if (!Number.isFinite(start) || !Number.isFinite(end)) {
+    return false;
+  }
+  if (end >= 24 * 60) {
+    return minutes >= start;
+  }
+  if (start <= end) {
+    return minutes >= start && minutes < end;
+  }
+  return minutes >= start || minutes < end;
+}
+
+function isNight(minutes: number): boolean {
+  return minutes >= 21 * 60 || minutes < 5 * 60;
+}
+
+function isMorning(minutes: number): boolean {
+  return minutes >= 5 * 60 && minutes < 10 * 60;
+}
+
+function contextualLocalityWeightFloor(request: SuggestRequest): number {
+  if (request.lat != null && request.lon != null && validCoordinates(request.lat, request.lon)) {
+    return COORDINATE_LOCALITY_WEIGHT_FLOOR;
+  }
+  return requestTimeMinutes(request.now) == null ? 0 : TEMPORAL_LOCALITY_WEIGHT_FLOOR;
+}
+
+function requestTimeMinutes(now?: string): number | undefined {
+  if (!now) {
+    return undefined;
+  }
+  const trimmed = now.trim();
+  const localTime = /T(\d{2}):(\d{2})(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:?\d{2})?$/.exec(trimmed);
+  if (localTime) {
+    const [, hour, minute] = localTime;
+    const minutes = Number(hour) * 60 + Number(minute);
+    return Number.isFinite(minutes) && minutes >= 0 && minutes < 24 * 60 ? minutes : undefined;
+  }
+  const date = new Date(trimmed);
+  return Number.isFinite(date.getTime()) ? date.getHours() * 60 + date.getMinutes() : undefined;
+}
+
+function validCoordinates(lat: number, lon: number): boolean {
+  return Number.isFinite(lat) && Number.isFinite(lon) && lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180;
+}
+
+function knownCities(dataset: TascoDataset): string[] {
+  return [...new Set([...dataset.pois.map((poi) => poi.city).filter(Boolean), ...KNOWN_CITY_VALUES])];
+}
+
+function distanceMeters(latA: number, lonA: number, latB: number, lonB: number): number {
+  const earthRadiusMeters = 6371000;
+  const dLat = toRadians(latB - latA);
+  const dLon = toRadians(lonB - lonA);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRadians(latA)) * Math.cos(toRadians(latB)) * Math.sin(dLon / 2) ** 2;
+  return earthRadiusMeters * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function toRadians(value: number): number {
+  return (value * Math.PI) / 180;
+}
+
+function formatDistance(distance: number): string {
+  if (distance < 1000) {
+    return `${Math.round(distance)} m`;
+  }
+  const digits = distance < 10000 ? 1 : 0;
+  return `${(distance / 1000).toFixed(digits)} km`;
 }
 
 export function activeDefaultRankingWeights(): RankingWeights {
