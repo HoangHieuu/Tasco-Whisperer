@@ -13,9 +13,11 @@ The engine ranks candidates from:
 - `poi`: POI rows from the synthetic hackathon POI dataset.
 - `popular-query`: frequent/trending queries.
 - `generated`: data-derived category/attribute/location phrase candidates.
+- `predicted`: deterministic prefix-completion language-model candidates.
 - `template`: semantic templates for known Vietnamese map-search intents.
 - `semantic`: similarity over dataset-grounded semantic documents.
-- `embedding`: local deterministic embedding/kNN retrieval.
+- `embedding`: MiniLM kNN retrieval in the Node API path, with lexical
+  fallback.
 
 ### Ranking Factors
 
@@ -28,27 +30,35 @@ Each suggestion has these factors in `metadata.factors`:
 | `source` | Trust/priority of the candidate source. |
 | `popularity` | Frequency, monthly query volume, or POI popularity. |
 | `poiQuality` | POI rating, review count, and popularity. |
-| `locality` | Selected-city match or neutral location score. |
-| `personalization` | Simulated profile or local behavior boost. |
+| `locality` | Selected-city scope, coordinate distance, and time-of-day context. |
+| `personalization` | Simulated profile or server/browser behavior boost. |
 | `diversity` | Prevents generated/template/semantic sources from crowding all results. |
 
-Default weights:
+Runtime weights are loaded from `config/ranking-weights.json`, trained by
+pairwise logistic regression on robustness perturbation rows plus optional
+behavior selections. Current deployed weights are approximately:
 
 | Factor | Weight |
 | --- | ---: |
-| lexical | 0.30 |
-| intent | 0.20 |
-| source | 0.15 |
-| popularity | 0.10 |
-| poiQuality | 0.10 |
-| locality | 0.05 |
-| personalization | 0.05 |
-| diversity | 0.05 |
+| lexical | 0.362 |
+| intent | 0.263 |
+| source | 0.093 |
+| popularity | 0.059 |
+| poiQuality | 0.000 |
+| locality | 0.005 |
+| personalization | 0.005 |
+| diversity | 0.212 |
 
 The final score is the weighted sum of these factors. Optional
-`rankingWeights` can override the defaults for experiments. The ranking tuner
-and train scripts export measured comparisons, but the current runtime ranker
-is still the transparent weighted model.
+`rankingWeights` can override the defaults for experiments. The static
+hand-tuned weights remain available by setting
+`TASCO_DISABLE_LEARNED_RANKER=true` or
+`VITE_TASCO_DISABLE_LEARNED_RANKER=true`.
+
+Coordinate and time context use the same transparent `locality` factor. When
+`lat`/`lon` or `now` is active, the engine reserves enough locality weight for
+that request-specific context to affect ranking, even though the learned global
+locality weight is small.
 
 ### Personalization
 
@@ -58,6 +68,10 @@ Personalization is hackathon-safe:
 - Built-in simulated profiles include `coffee-loyal`, `danang-traveler`, and
   `commuter`.
 - The UI can record local selected-suggestion events in browser local storage.
+- The API persists disposable selected-suggestion events in
+  `data/behavior-events.local.json` by default.
+- `POST /api/behavior-events` and `POST /v1/behavior-events` accept behavior
+  events for the active `userId` or `sessionId`.
 - Profile and behavior boosts are explainable through `personalizationReason`.
 - If a city is selected, profile and behavior boosts apply only when compatible
   with that selected city.
@@ -71,6 +85,23 @@ city.
 
 This prevents a TP.HCM request from showing Đà Nẵng, Đà Lạt, Hà Nội, or Hải
 Phòng POIs.
+
+### Coordinate And Time Context
+
+When `lat` and `lon` are supplied:
+
+- the engine can infer nearest city scope if `city` is absent
+- POI candidates receive haversine distance-based `locality`
+- ranking reasons include current-location distance evidence
+
+When `now` is supplied:
+
+- 24/7, `mở cửa khuya`, and `ăn đêm` candidates can be boosted at night
+- breakfast/phở candidates can be boosted in the morning
+- POIs open at the requested time can receive enrichment-hours context
+
+Local opening hours are deterministic heuristics unless a live upstream supplies
+verified hours, so explanations keep the evidence explicit.
 
 ## Enrichment Notes
 
@@ -137,14 +168,16 @@ required for autocomplete.
 Expected local latency:
 
 - Typical local evaluation requests: tens of milliseconds.
-- Current public evaluation after the latest city-scope fix: p95 about 38 ms.
+- Current public evaluation: p95 about 30 ms.
+- Robustness evaluation: p95 about 33 ms over 192 generated perturbation cases.
+- MiniLM async server path: p95 about 31 ms after the cold model-load outlier.
 - Local API smoke requests are also in the tens-of-milliseconds range for the
   autocomplete/search paths.
 
 Practical expectation for demo/local use:
 
 - autocomplete target: under 100 ms locally
-- p95 evaluation proof: about 38 ms
+- p95 evaluation proof: about 30 ms
 - live upstream mode: local processing plus network/upstream latency
 
 If a live upstream is configured, latency depends on that provider. The facade
@@ -164,6 +197,17 @@ For `/v1/autocomplete` and `/v1/search`:
 4. City-filter live results when a city is selected.
 5. Use live results only if scoped live rows remain.
 6. Otherwise return local deterministic fallback.
+
+### Optional AI Components
+
+- MiniLM embedding retrieval falls back to lexical similarity if the artifact,
+  model, or runtime provider is missing.
+- The deterministic prefix-completion model is built from the local dataset and
+  does not call a remote service.
+- The rewrite provider path is optional. Invalid, unsafe, or unrelated provider
+  output is rejected, and deterministic results continue.
+- Accepted rewrites can be persisted to `data/alias-memory.local.json` and
+  reused without another provider call.
 
 ### POI Detail
 
@@ -217,6 +261,10 @@ Local data includes:
 - autocomplete frequencies
 - popular-query frequencies and regions
 - public evaluation labels
+- generated MiniLM embedding artifact
+- generated prediction-language-model artifact
+- learned ranking-weight config
+- local behavior-event and alias-memory JSON logs
 
 ### Live Origin
 
@@ -265,8 +313,9 @@ deterministic derivation, a mock placeholder, or a live upstream.
 - The local corpus is small and synthetic.
 - Local reviews/photos are mock placeholders, not real-world user content.
 - Local opening hours are heuristics unless supplied by live upstream.
-- The runtime ranker is a transparent weighted model, not a production
+- The runtime ranker is a transparent learned linear model, not a production
   LambdaMART/XGBoost/LightGBM deployment.
 - There is no licensed external POI corpus integrated in the default path.
+- Optional rewrite providers are disabled unless explicitly configured.
 - The default path is integration-ready for hackathon demo, not production map
   search at national scale.

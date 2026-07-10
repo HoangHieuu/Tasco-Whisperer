@@ -66,6 +66,9 @@ Important compatibility rules:
 - IDs are stable, for example `poi:POI001`.
 - Coordinates use WGS84 latitude/longitude as `{ "lat": number, "lon": number }`.
 - Vietnamese text and diacritics are preserved in display fields.
+- Local autocomplete/search rows can include optional `scoreFactors` diagnostics
+  with lexical, intent, source, popularity, POI quality, locality,
+  personalization, and diversity factors.
 
 ### Standard TASCO Error
 
@@ -131,7 +134,7 @@ including diagnostics. Use this for debugging and judging methodology. Use
 ### Request
 
 ```http
-GET /api/suggest?q=cafe%20wifi&city=TP.HCM&userId=coffee-loyal&limit=3
+GET /api/suggest?q=cafe%20wifi&city=TP.HCM&userId=coffee-loyal&lat=10.7759&lng=106.7031&now=2026-07-05T23:30:00+07:00&limit=3
 ```
 
 ### Query Parameters
@@ -142,12 +145,14 @@ GET /api/suggest?q=cafe%20wifi&city=TP.HCM&userId=coffee-loyal&limit=3
 | `city` | no | max 80 chars | Hard city scope for explicit city/POI results. |
 | `userId` | no | max 80 chars | Simulated or local profile ID. |
 | `limit` | no | integer 1-12 | Number of suggestions. Default engine limit is 8. |
-| `lat` | no | -90 to 90 | Optional latitude. Must be paired with `lng`. |
-| `lng` | no | -180 to 180 | Optional longitude. Must be paired with `lat`. |
+| `lat` | no | -90 to 90 | Optional latitude. Must be paired with `lng` or `lon`. |
+| `lng` or `lon` | no | -180 to 180 | Optional longitude. Must be paired with `lat`. |
+| `now` | no | valid date-time, max 64 chars | Optional local request time for time-of-day ranking context. |
 | `agentic` | no | true/false | Enables or disables optional agentic correction path. |
 
-Note: `/api/suggest` validates `lat/lng`, but the TASCO facade routes are the
-main integration path for location-aware ranking.
+`lat/lng` or `lat/lon` can infer nearest city when `city` is absent and can
+rank POIs by haversine distance. `now` enables time-aware boosts for 24/7,
+open-late, and breakfast/phở candidates.
 
 ### Request Body
 
@@ -166,22 +171,22 @@ None. Method must be `GET`.
   },
   "suggestions": [
     {
-      "id": "template-14",
+      "id": "generated-cafe-nearby",
       "text": "Quán cà phê gần đây",
       "normalizedText": "quan ca phe gan day",
       "type": "Discovery Search",
       "score": 0.821,
-      "source": "template",
+      "source": "generated",
       "matched": ["coffee gan day", "ca phe gan day"],
       "metadata": {
-        "reason": "mixed language nearby cafe intent",
+        "reason": "data-derived category, attribute, and location phrase",
         "factors": {
           "lexical": 1,
           "intent": 0.55,
           "source": 0.92,
           "popularity": 0.82,
           "poiQuality": 0.68,
-          "locality": 0.7,
+          "locality": 0.72,
           "personalization": 0,
           "diversity": 0.92
         }
@@ -197,6 +202,14 @@ None. Method must be `GET`.
       "triggered": false,
       "provider": "disabled",
       "reason": "deterministic result is strong enough"
+    },
+    "embedding": {
+      "provider": "lexical-fallback",
+      "neighbors": [],
+      "intentVote": {
+        "type": "Category Search",
+        "confidence": 0.86
+      }
     },
     "datasetRows": {
       "autocomplete": 24,
@@ -214,16 +227,78 @@ None. Method must be `GET`.
 - `404 not_found`: path is not `/api/suggest`.
 - `405 method_not_allowed`: method is not `GET`.
 - `400 invalid_request`: invalid parameter, for example `limit=99`,
-  unpaired coordinates, or invalid boolean.
+  unpaired coordinates, invalid `now`, or invalid boolean.
 
-## 3. GET /v1/autocomplete
+## 3. POST /api/behavior-events And /v1/behavior-events
+
+Records a selected-suggestion event for local/server-side personalization.
+Both paths use the same handler.
+
+### Request
+
+```http
+POST /api/behavior-events
+Content-Type: application/json
+
+{
+  "userId": "local-demo",
+  "query": "cafe",
+  "selectedText": "Highlands Coffee Nguyễn Huệ",
+  "selectedType": "POI Search",
+  "brand": "Highlands Coffee",
+  "category": "Quán cà phê",
+  "city": "TP.HCM",
+  "occurredAt": "2026-07-05T00:00:00.000Z"
+}
+```
+
+### Request Body
+
+| Field | Required | Validation | Meaning |
+| --- | --- | --- | --- |
+| `userId` | yes | max 80 chars | Local/simulated profile ID. |
+| `query` | yes | max 160 chars | Query that produced the selected suggestion. |
+| `selectedText` | yes | max 160 chars | Suggestion label/text selected by the user. |
+| `selectedType` | yes | supported `IntentType` | Suggestion type. |
+| `brand` | no | max 120 chars | Optional selected brand evidence. |
+| `category` | no | max 120 chars | Optional selected category evidence. |
+| `city` | no | max 80 chars | Optional selected city evidence. |
+| `occurredAt` | no | max 64 chars | ISO timestamp. Defaults to server time if omitted. |
+
+### Response Body
+
+```json
+{
+  "ok": true,
+  "stored": true,
+  "storedCount": 1,
+  "event": {
+    "userId": "local-demo",
+    "query": "cafe",
+    "selectedText": "Highlands Coffee Nguyễn Huệ",
+    "selectedType": "POI Search",
+    "brand": "Highlands Coffee",
+    "category": "Quán cà phê",
+    "city": "TP.HCM",
+    "occurredAt": "2026-07-05T00:00:00.000Z"
+  },
+  "latencyMs": 1
+}
+```
+
+### Errors
+
+- `400 invalid_request`: invalid or missing body fields.
+- `405 method_not_allowed`: method is not `POST`.
+
+## 4. GET /v1/autocomplete
 
 Low-latency TASCO-compatible autocomplete. Alias: `/autocomplete`.
 
 ### Request
 
 ```http
-GET /v1/autocomplete?q=caphe&city=TP.HCM&limit=8&sessionId=demo-1&userId=coffee-loyal&lang=vi
+GET /v1/autocomplete?q=caphe&city=TP.HCM&lat=10.7759&lon=106.7031&now=2026-07-05T23:30:00+07:00&limit=8&sessionId=demo-1&userId=coffee-loyal&lang=vi
 ```
 
 ### Query Parameters
@@ -233,6 +308,7 @@ GET /v1/autocomplete?q=caphe&city=TP.HCM&limit=8&sessionId=demo-1&userId=coffee-
 | `q` | yes | max 160 chars | Raw typed query. |
 | `lat` | no | -90 to 90 | Optional latitude. Must be paired with `lon`. |
 | `lon` or `lng` | no | -180 to 180 | Optional longitude. Must be paired with `lat`. |
+| `now` | no | valid date-time, max 64 chars | Optional local request time for time-of-day ranking context. |
 | `city` | no | max 80 chars | Hard city scope for explicit results. |
 | `limit` | no | integer 1-10 | Number of suggestions. Default 5. |
 | `lang` | no | max 16 chars, default `vi` | Response/request language hint. |
@@ -282,18 +358,18 @@ None. Method must be `GET`.
 ### Errors
 
 - `400 invalid_request`: missing `q`, bad `limit`, bad coordinate pair,
-  invalid `bbox` if used through shared parser, or too-long strings.
+  invalid `now`, invalid `bbox` if used through shared parser, or too-long strings.
 - `405 method_not_allowed`: method is not `GET`.
 - Mock errors through `mockError`.
 
-## 4. GET /v1/search
+## 5. GET /v1/search
 
 TASCO-compatible search endpoint. Aliases: `/search`, `/v1/geocode-search`.
 
 ### Request
 
 ```http
-GET /v1/search?q=coffee&lat=10.7759&lon=106.7031&radiusMeters=2000&category=Quán%20cà%20phê&city=TP.HCM&limit=5
+GET /v1/search?q=coffee&lat=10.7759&lon=106.7031&now=2026-07-05T07:30:00+07:00&radiusMeters=2000&category=Quán%20cà%20phê&city=TP.HCM&limit=5
 ```
 
 ### Query Parameters
@@ -303,12 +379,15 @@ GET /v1/search?q=coffee&lat=10.7759&lon=106.7031&radiusMeters=2000&category=Quá
 | `q` | yes | max 160 chars | Search text. |
 | `lat` | no | -90 to 90 | Optional latitude. Must be paired with `lon`. |
 | `lon` or `lng` | no | -180 to 180 | Optional longitude. Must be paired with `lat`. |
+| `now` | no | valid date-time, max 64 chars | Optional local request time for time-of-day ranking context. |
 | `radiusMeters` | no | 1-50000 | Distance filter when location context is present. |
 | `bbox` | no | `minLon,minLat,maxLon,maxLat` | Bounding-box filter. |
 | `category` | no | string | Category filter. |
 | `city` | no | max 80 chars | Hard city scope. |
 | `limit` | no | integer 1-20 | Number of results. Default 10. |
 | `lang` | no | max 16 chars, default `vi` | Language hint. |
+| `sessionId` | no | max 80 chars | Session identifier. Also used as user profile fallback if `userId` is absent. |
+| `userId` | no | max 80 chars | Simulated or local profile ID. |
 | `mockError` | no | supported enum | Forces a documented mock error. |
 
 ### Request Body
@@ -351,12 +430,12 @@ None. Method must be `GET`.
 
 ### Errors
 
-- `400 invalid_request`: missing `q`, invalid coordinates, invalid radius,
-  invalid bbox, invalid limit, or too-long strings.
+- `400 invalid_request`: missing `q`, invalid coordinates, invalid `now`,
+  invalid radius, invalid bbox, invalid limit, or too-long strings.
 - `405 method_not_allowed`: method is not `GET`.
 - Mock errors through `mockError`.
 
-## 5. GET /v1/poi/{id}
+## 6. GET /v1/poi/{id}
 
 POI detail and enrichment endpoint. Alias: `/poi/{id}`.
 
@@ -461,7 +540,7 @@ None. Method must be `GET`.
 - `405 method_not_allowed`: method is not `GET`.
 - Mock errors through `mockError`.
 
-## 6. GET /v1/reverse-geocoding
+## 7. GET /v1/reverse-geocoding
 
 Reverse geocoding endpoint. Aliases: `/reverse-geocoding`, `/v1/reverse`.
 
@@ -518,7 +597,7 @@ None. Method must be `GET`.
 - `405 method_not_allowed`: method is not `GET`.
 - Mock errors through `mockError`.
 
-## 7. GET /v1/nearby-search
+## 8. GET /v1/nearby-search
 
 Nearby POI search around a coordinate. Alias: `/nearby-search`.
 
@@ -579,7 +658,7 @@ None. Method must be `GET`.
 - `405 method_not_allowed`: method is not `GET`.
 - Mock errors through `mockError`.
 
-## 8. GET /v1/geocoding
+## 9. GET /v1/geocoding
 
 Geocode address text to places/coordinates. Alias: `/geocoding`.
 
@@ -639,7 +718,7 @@ None. Method must be `GET`.
 - `405 method_not_allowed`: method is not `GET`.
 - Mock errors through `mockError`.
 
-## 9. POST /v1/route
+## 10. POST /v1/route
 
 Route endpoint. Alias: `/route`.
 

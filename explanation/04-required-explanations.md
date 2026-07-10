@@ -2,7 +2,7 @@
 
 ## How Does Ranking Work?
 
-Ranking is a deterministic weighted-score system.
+Ranking is a transparent linear scoring system with learned runtime weights.
 
 The engine first creates candidates from multiple sources:
 
@@ -10,9 +10,10 @@ The engine first creates candidates from multiple sources:
 - POI CSV rows
 - popular-query CSV rows
 - data-derived generated patterns
+- deterministic prefix-completion predictions
 - semantic templates
 - local semantic retrieval
-- local embedding/kNN retrieval
+- local MiniLM embedding/kNN retrieval, with lexical fallback
 
 Then it predicts intent from query terms, entities, candidates, and embedding
 neighbors. Each candidate receives transparent factors:
@@ -26,27 +27,41 @@ neighbors. Each candidate receives transparent factors:
 - `personalization`
 - `diversity`
 
-Default formula:
+Runtime scoring loads `config/ranking-weights.json`, trained by pairwise
+logistic regression over robustness perturbation rows plus optional behavior
+selection rows. Current learned weights are approximately:
 
 ```text
 score =
-  lexical * 0.30 +
-  intent * 0.20 +
-  source * 0.15 +
-  popularity * 0.10 +
-  poiQuality * 0.10 +
-  locality * 0.05 +
-  personalization * 0.05 +
-  diversity * 0.05
+  lexical * 0.362 +
+  intent * 0.263 +
+  source * 0.093 +
+  popularity * 0.059 +
+  poiQuality * 0.000 +
+  locality * 0.005 +
+  personalization * 0.005 +
+  diversity * 0.212
 ```
 
+If `TASCO_DISABLE_LEARNED_RANKER=true` or
+`VITE_TASCO_DISABLE_LEARNED_RANKER=true`, the engine falls back to the static
+hand-tuned weights. Requests may also pass explicit `rankingWeights` for
+experiments.
+
 For POIs, `poiQuality` combines rating, review count, and popularity score.
-For personalized requests, simulated profiles or local behavior events can add
-boosts. The boost is shown in `metadata.personalizationReason`.
+For personalized requests, simulated profiles or server/browser behavior
+events can add boosts. The boost is shown in
+`metadata.personalizationReason`.
 
 If `city` is selected, city is a hard filter before final ranking, not just a
 small score boost. This prevents selected-city results from being polluted by
 another city.
+
+If `lat` and `lon` are supplied, the engine infers the nearest city when
+`city` is absent and computes haversine distance to POIs into the `locality`
+factor. If `now` is supplied, time-of-day context can boost 24/7/open-late
+results at night and breakfast/phở results in the morning. These reasons appear
+in `metadata.reason`.
 
 ## Where Does The Enrichment Data Come From?
 
@@ -85,7 +100,9 @@ remote LLM on every keystroke.
 Expected local latency:
 
 - target: under 100 ms for autocomplete
-- current public evaluation p95: about 38 ms
+- current public evaluation p95: about 30 ms
+- MiniLM async server-path p95: about 31 ms after the cold load outlier
+- robustness evaluation p95: about 33 ms
 - typical local requests: tens of milliseconds
 
 When a live TASCO-compatible upstream is configured, total latency is local
@@ -116,6 +133,9 @@ For autocomplete/search:
 
 Endpoint-specific fallbacks:
 
+- MiniLM retrieval: lexical fallback if the artifact/model is unavailable.
+- Agentic rewrite: deterministic rewrite/alias path if no provider endpoint is
+  configured or provider output is invalid.
 - POI detail: local POI record plus enrichment, or `404` if not found.
 - Reverse geocoding: nearest local POIs.
 - Nearby search: nearest local POIs with radius/category filters.
@@ -137,6 +157,14 @@ Default local data originates from the supplied hackathon CSV dataset in
 The dataset README states that the data is synthetic and only for hackathon
 use. Therefore, local demo data should not be described as verified production
 map data.
+
+Generated local artifacts also come from the supplied dataset:
+
+- `data/semantic-embeddings.minilm.json` for MiniLM kNN retrieval.
+- `data/prediction-lm.json` for deterministic prefix completion.
+- `config/ranking-weights.json` for the learned linear ranker.
+- `data/behavior-events.local.json` for disposable behavior feedback.
+- `data/alias-memory.local.json` for accepted rewrite memory.
 
 When a live upstream is configured, live rows originate from that upstream and
 are marked as:
@@ -160,12 +188,14 @@ For POI enrichment, field-level provenance distinguishes:
 
 ## Short Submission Answer
 
-Ranking uses transparent weighted scoring over lexical match, intent match,
-source trust, popularity, POI quality, locality, personalization, and diversity.
+Ranking uses learned, transparent linear scoring over lexical match, intent
+match, source trust, popularity, POI quality, locality, personalization, and
+diversity. It now includes MiniLM semantic retrieval, deterministic prefix
+prediction, behavior feedback, coordinate locality, and time-of-day context.
 Enrichment comes from known POI dataset fields, deterministic derivations,
 explicitly marked mock placeholders, or optional live upstream data. Expected
-local autocomplete latency is under 100 ms, with current p95 evaluation latency
-around 38 ms. If the upstream fails or returns unusable rows, the facade returns
-local deterministic fallback results and marks `meta.source=local-fallback`.
-Default local data originates from the provided synthetic hackathon CSV files;
-live data originates only from a configured TASCO-compatible upstream.
+local autocomplete latency is under 100 ms, with current public-eval p95 around
+30 ms. If the upstream or optional AI provider fails, the facade returns local
+deterministic fallback results and marks `meta.source=local-fallback`. Default
+local data originates from the provided synthetic hackathon CSV files; live data
+originates only from a configured TASCO-compatible upstream.
