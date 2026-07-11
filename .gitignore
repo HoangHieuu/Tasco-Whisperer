@@ -17,8 +17,10 @@ scripts/bin/harness-cli.exe
 
 outputs/
 tasco-product-video/
+tmp/pdfs/pitch-playbook/
 
-explanation/
+explanation/*
+!explanation/05-multi-agent-mobility-system.md
 
 .cursor/plans/
 
