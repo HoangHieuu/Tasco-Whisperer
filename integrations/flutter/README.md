@@ -95,3 +95,58 @@ POI detail preserves enriched fields returned by
 map so Flutter screens can inspect field-level provenance, confidence,
 attributes, and live/local reconciliation notes without hard-coding UI
 dependencies into the service layer.
+
+## Multi-Agent Journey Usage
+
+Complex requests use the asynchronous agent API instead of the autocomplete
+method. T Maps supplies route context, renders streamed progress, and remains
+the executor for actions that the user explicitly confirms:
+
+```dart
+final created = await adapter.createAgentTask(
+  query: 'Find an EV charger on my route to Đà Nẵng, near coffee, open now, with less than a 10-minute detour.',
+  sessionId: searchSessionId,
+  userId: currentUserId,
+  now: DateTime.now(),
+  currentLocation: TascoCoordinates(
+    lat: currentLocation.latitude,
+    lon: currentLocation.longitude,
+  ),
+  vehicleType: 'ev',
+  connectorTypes: const ['CCS2'],
+  locale: 'en',
+);
+
+await for (final event in adapter.agentTaskEvents(created.taskId)) {
+  // event.event is `agent-event` or `snapshot`.
+  // Render the typed evidence trace; do not execute action payloads here.
+}
+
+final task = await adapter.agentTask(created.taskId);
+final action = task.proposedAction;
+if (action != null && await showUserConfirmation(action.label)) {
+  await adapter.confirmAgentAction(taskId: task.id, actionId: action.id);
+  try {
+    await routingClient.addStop(
+      LatLng(action.place.coordinates.lat, action.place.coordinates.lon),
+    );
+    await adapter.reportAgentActionResult(
+      taskId: task.id,
+      actionId: action.id,
+      success: true,
+      message: 'T Maps added the approved stop.',
+    );
+  } catch (error) {
+    await adapter.reportAgentActionResult(
+      taskId: task.id,
+      actionId: action.id,
+      success: false,
+      message: error.toString(),
+    );
+  }
+}
+```
+
+The adapter never starts navigation by itself. Confirmation authorizes the
+typed command, while the existing T Maps routing client remains responsible
+for applying it and reporting the result.

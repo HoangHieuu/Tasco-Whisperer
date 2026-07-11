@@ -163,6 +163,122 @@ class TascoWhispererAdapter {
     return TascoRouteResponse.fromJson(body);
   }
 
+  Future<TascoAgentTaskCreated> createAgentTask({
+    required String query,
+    required String sessionId,
+    required DateTime now,
+    TascoCoordinates? currentLocation,
+    TascoAgentPlaceReference? origin,
+    TascoAgentPlaceReference? destination,
+    String? userId,
+    String vehicleType = 'car',
+    List<String> connectorTypes = const [],
+    String locale = 'vi-VN',
+  }) async {
+    final body = await _postJson('/v1/agent/tasks', {
+      'query': query,
+      'context': {
+        if (currentLocation != null)
+          'currentLocation': currentLocation.toJson(),
+        if (origin != null) 'origin': origin.toJson(),
+        if (destination != null) 'destination': destination.toJson(),
+        'now': now.toIso8601String(),
+        'locale': locale,
+        'sessionId': sessionId,
+        if (userId != null) 'userId': userId,
+        'vehicle': {
+          'type': vehicleType,
+          if (connectorTypes.isNotEmpty) 'connectorTypes': connectorTypes,
+        },
+      },
+      'executionMode': 'plan-and-propose',
+    });
+    return TascoAgentTaskCreated.fromJson(body);
+  }
+
+  Future<TascoAgentTask> agentTask(String taskId) async {
+    final body = await _getJson(
+      '/v1/agent/tasks/${Uri.encodeComponent(taskId)}',
+      const {},
+    );
+    return TascoAgentTask.fromJson(body);
+  }
+
+  Stream<TascoAgentStreamEvent> agentTaskEvents(String taskId) async* {
+    final request = http.Request(
+      'GET',
+      _uri(
+        '/v1/agent/tasks/${Uri.encodeComponent(taskId)}/events',
+        const {},
+      ),
+    );
+    request.headers.addAll(await _headers());
+    final response = await _client.send(request);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      final body = await response.stream.bytesToString();
+      throw TascoApiException.fromJson(
+        response.statusCode,
+        body.isEmpty ? const <String, dynamic>{} : jsonDecode(body),
+      );
+    }
+    String? eventName;
+    String? eventId;
+    final dataLines = <String>[];
+    await for (final line
+        in response.stream.transform(utf8.decoder).transform(const LineSplitter())) {
+      if (line.isEmpty) {
+        if (dataLines.isNotEmpty) {
+          yield TascoAgentStreamEvent(
+            id: eventId,
+            event: eventName ?? 'message',
+            data: _object(jsonDecode(dataLines.join('\n'))),
+          );
+        }
+        eventName = null;
+        eventId = null;
+        dataLines.clear();
+      } else if (line.startsWith('event:')) {
+        eventName = line.substring(6).trim();
+      } else if (line.startsWith('id:')) {
+        eventId = line.substring(3).trim();
+      } else if (line.startsWith('data:')) {
+        dataLines.add(line.substring(5).trimLeft());
+      }
+    }
+  }
+
+  Future<TascoAgentTask> confirmAgentAction({
+    required String taskId,
+    required String actionId,
+  }) async {
+    final body = await _postJson(
+      '/v1/agent/tasks/${Uri.encodeComponent(taskId)}/actions/${Uri.encodeComponent(actionId)}/confirm',
+      const {},
+    );
+    return TascoAgentTask.fromJson(body);
+  }
+
+  Future<TascoAgentTask> reportAgentActionResult({
+    required String taskId,
+    required String actionId,
+    required bool success,
+    required String message,
+  }) async {
+    final body = await _postJson(
+      '/v1/agent/tasks/${Uri.encodeComponent(taskId)}/actions/${Uri.encodeComponent(actionId)}/result',
+      {'success': success, 'message': message},
+    );
+    return TascoAgentTask.fromJson(body);
+  }
+
+  Future<TascoAgentTask> cancelAgentTask(String taskId) async {
+    final body = await _postJson(
+      '/v1/agent/tasks/${Uri.encodeComponent(taskId)}/cancel',
+      const {},
+    );
+    return TascoAgentTask.fromJson(body);
+  }
+
   void close() {
     if (_ownsClient) {
       _client.close();
@@ -279,6 +395,127 @@ class TascoSearchSuggestionDto {
       coordinates: coordinates,
     );
   }
+}
+
+class TascoAgentPlaceReference {
+  const TascoAgentPlaceReference({
+    this.id,
+    required this.label,
+    required this.coordinates,
+  });
+
+  final String? id;
+  final String label;
+  final TascoCoordinates coordinates;
+
+  Map<String, dynamic> toJson() => {
+    if (id != null) 'id': id,
+    'label': label,
+    'coordinates': coordinates.toJson(),
+  };
+}
+
+class TascoAgentTaskCreated {
+  const TascoAgentTaskCreated({
+    required this.taskId,
+    required this.status,
+    required this.taskUrl,
+    required this.eventsUrl,
+  });
+
+  final String taskId;
+  final String status;
+  final String taskUrl;
+  final String eventsUrl;
+
+  factory TascoAgentTaskCreated.fromJson(Map<String, dynamic> json) {
+    return TascoAgentTaskCreated(
+      taskId: _string(json['taskId']) ?? '',
+      status: _string(json['status']) ?? 'received',
+      taskUrl: _string(json['taskUrl']) ?? '',
+      eventsUrl: _string(json['eventsUrl']) ?? '',
+    );
+  }
+}
+
+class TascoAgentTask {
+  const TascoAgentTask({
+    required this.id,
+    required this.status,
+    required this.events,
+    this.finalMessage,
+    this.proposedAction,
+    this.raw = const <String, dynamic>{},
+  });
+
+  final String id;
+  final String status;
+  final List<Map<String, dynamic>> events;
+  final String? finalMessage;
+  final TascoAgentAction? proposedAction;
+  final Map<String, dynamic> raw;
+
+  factory TascoAgentTask.fromJson(Map<String, dynamic> json) {
+    final action = _object(json['proposedAction']);
+    return TascoAgentTask(
+      id: _string(json['id']) ?? '',
+      status: _string(json['status']) ?? 'failed',
+      events: _list(json['events']),
+      finalMessage: _string(json['finalMessage']),
+      proposedAction: action.isEmpty ? null : TascoAgentAction.fromJson(action),
+      raw: json,
+    );
+  }
+}
+
+class TascoAgentAction {
+  const TascoAgentAction({
+    required this.id,
+    required this.type,
+    required this.label,
+    required this.status,
+    required this.confirmationRequired,
+    required this.expiresAt,
+    required this.place,
+  });
+
+  final String id;
+  final String type;
+  final String label;
+  final String status;
+  final bool confirmationRequired;
+  final DateTime? expiresAt;
+  final TascoAgentPlaceReference place;
+
+  factory TascoAgentAction.fromJson(Map<String, dynamic> json) {
+    final payload = _object(json['payload']);
+    final place = _object(payload['place']);
+    return TascoAgentAction(
+      id: _string(json['id']) ?? '',
+      type: _string(json['type']) ?? '',
+      label: _string(json['label']) ?? '',
+      status: _string(json['status']) ?? 'proposed',
+      confirmationRequired: json['confirmationRequired'] == true,
+      expiresAt: DateTime.tryParse(_string(json['expiresAt']) ?? ''),
+      place: TascoAgentPlaceReference(
+        id: _string(place['id']),
+        label: _string(place['label']) ?? '',
+        coordinates: TascoCoordinates.fromJson(_object(place['coordinates'])),
+      ),
+    );
+  }
+}
+
+class TascoAgentStreamEvent {
+  const TascoAgentStreamEvent({
+    this.id,
+    required this.event,
+    required this.data,
+  });
+
+  final String? id;
+  final String event;
+  final Map<String, dynamic> data;
 }
 
 class TascoPlaceResult {
