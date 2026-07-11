@@ -16,6 +16,12 @@ The project implements the concrete API surface documented for the hackathon:
 - `POST /v1/route`, alias `/route`
 - `GET /health`
 
+It also exposes a Tasco Whisperer extension under `POST /v1/agent/tasks` for
+bounded multi-agent mobility journeys. Task snapshots, SSE events,
+clarifications, cancellations, confirmation-gated actions, and client
+execution results are documented in the project OpenAPI file. These extension
+routes do not replace or alter the organizer's autocomplete/search contracts.
+
 The backend facade can call a live TASCO-compatible upstream first and falls
 back to deterministic local data when the upstream is absent, empty, or
 unavailable. The browser UI uses the facade for autocomplete and runs frontend
