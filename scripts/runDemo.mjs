@@ -1,4 +1,8 @@
 import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { loadEnvFile } from 'node:process';
+
+loadLocalEnvironment();
 
 const host = process.env.TASCO_DEMO_HOST || '127.0.0.1';
 const apiPort = process.env.TASCO_DEMO_API_PORT || '8787';
@@ -62,5 +66,15 @@ function validatePort(value, name) {
   const numeric = Number(value);
   if (!Number.isInteger(numeric) || numeric < 1 || numeric > 65535) {
     throw new Error(`${name} must be an integer between 1 and 65535`);
+  }
+}
+
+function loadLocalEnvironment() {
+  // Shell-provided values retain precedence. `.env.local` is loaded first so
+  // it can override the shared `.env` template when both exist.
+  for (const path of ['.env.local', '.env']) {
+    if (existsSync(path)) {
+      loadEnvFile(path);
+    }
   }
 }

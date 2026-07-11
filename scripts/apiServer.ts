@@ -1,5 +1,7 @@
 import { randomUUID } from 'node:crypto';
-import { createServer, type IncomingMessage } from 'node:http';
+import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
+import { agentEventsTaskId, handleMobilityAgentApiRequest, isMobilityAgentPath } from '../src/lib/mobilityAgentApi';
+import type { MobilityAgentRuntime } from '../src/lib/mobilityAgent';
 import { handleBehaviorEventApiRequest, handleSuggestApiRequestAsync, isBehaviorEventApiPath } from '../src/lib/suggestApi';
 import { handleTascoFacadeRequest, isTascoFacadePath, type TascoLiveClient, type TascoRuntimeOptions } from '../src/lib/tascoFacade';
 import type { TascoDataset } from '../src/lib/types';
@@ -11,7 +13,12 @@ const CORS_HEADERS = {
   'access-control-max-age': '86400',
 };
 
-export function createTascoApiServer(dataset: TascoDataset, liveClient?: TascoLiveClient, runtime: TascoRuntimeOptions = {}) {
+export function createTascoApiServer(
+  dataset: TascoDataset,
+  liveClient?: TascoLiveClient,
+  runtime: TascoRuntimeOptions = {},
+  mobilityAgent?: MobilityAgentRuntime,
+) {
   return createServer(async (request, response) => {
     const started = performance.now();
     const requestId = randomUUID();
@@ -24,13 +31,21 @@ export function createTascoApiServer(dataset: TascoDataset, liveClient?: TascoLi
       return;
     }
 
+    const pathname = new URL(request.url ?? '/', 'http://localhost').pathname;
+    const eventsTaskId = agentEventsTaskId(pathname);
+    if (eventsTaskId && mobilityAgent) {
+      streamAgentEvents(response, mobilityAgent, eventsTaskId, requestId);
+      return;
+    }
+
     const apiRequest = {
       method: request.method ?? 'GET',
       url: request.url ?? '/',
       body: await readJsonBody(request),
     };
-    const pathname = new URL(apiRequest.url, 'http://localhost').pathname;
-    const result = isBehaviorEventApiPath(pathname)
+    const result = isMobilityAgentPath(pathname) && mobilityAgent
+      ? handleMobilityAgentApiRequest(mobilityAgent, apiRequest)
+      : isBehaviorEventApiPath(pathname)
       ? handleBehaviorEventApiRequest(apiRequest, {
           behaviorRuntime: runtime.behaviorRuntime,
         })
@@ -66,6 +81,46 @@ export function createTascoApiServer(dataset: TascoDataset, liveClient?: TascoLi
       }),
     );
   });
+}
+
+function streamAgentEvents(response: ServerResponse, runtime: MobilityAgentRuntime, taskId: string, requestId: string): void {
+  const task = runtime.getTask(taskId);
+  if (!task) {
+    response.writeHead(404, { ...CORS_HEADERS, 'content-type': 'application/json; charset=utf-8', 'x-request-id': requestId });
+    response.end(JSON.stringify({ error: { code: 'not_found', message: 'Agent task not found.' } }));
+    return;
+  }
+  response.writeHead(200, {
+    ...CORS_HEADERS,
+    'content-type': 'text/event-stream; charset=utf-8',
+    'cache-control': 'no-cache, no-transform',
+    connection: 'keep-alive',
+    'x-accel-buffering': 'no',
+    'x-request-id': requestId,
+  });
+  for (const event of task.events) writeSse(response, event.sequence, 'agent-event', event);
+  writeSse(response, task.events.length, 'snapshot', task);
+  if (isStreamTerminal(task.status) || task.status === 'ready_for_confirmation' || task.status === 'needs_clarification') {
+    response.end();
+    return;
+  }
+  const unsubscribe = runtime.subscribe(taskId, (event, nextTask) => {
+    writeSse(response, event.sequence, 'agent-event', event);
+    writeSse(response, event.sequence, 'snapshot', nextTask);
+    if (isStreamTerminal(nextTask.status) || nextTask.status === 'ready_for_confirmation' || nextTask.status === 'needs_clarification') {
+      unsubscribe?.();
+      response.end();
+    }
+  });
+  response.on('close', () => unsubscribe?.());
+}
+
+function writeSse(response: ServerResponse, id: number, event: string, data: unknown): void {
+  response.write(`id: ${id}\nevent: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+}
+
+function isStreamTerminal(status: string): boolean {
+  return ['completed', 'degraded', 'failed', 'cancelled'].includes(status);
 }
 
 async function readJsonBody(request: IncomingMessage) {

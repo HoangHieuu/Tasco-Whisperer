@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
+import { loadEnvFile } from 'node:process';
 import { createTascoApiServer } from './apiServer';
 import { createFileBehaviorStore } from './behaviorStore';
 import { loadDatasetFromDisk } from './loadDataset';
@@ -7,6 +8,14 @@ import { createTascoApiClient } from '../src/lib/tascoApiClient';
 import { parseAliasMemory, serializeAliasMemory, upsertAliasMemory, type AliasMemoryObservation } from '../src/lib/aliasMemory';
 import { createSemanticRuntimeProvider, defaultSemanticArtifactPath } from '../src/lib/semanticRuntime';
 import type { AgenticRewriteProvider } from '../src/lib/types';
+import { MobilityAgentRuntime } from '../src/lib/mobilityAgent';
+import { createMobilityLiveTools } from '../src/lib/mobilityLiveTools';
+import type { MobilityDemoData } from '../src/lib/mobilityAgentTypes';
+import { createOpenRouterThreeAgentSystem } from '../src/lib/mobilityReasoningProvider';
+
+for (const path of ['.env.local', '.env']) {
+  if (existsSync(path)) loadEnvFile(path);
+}
 
 const args = new Map(
   process.argv.slice(2).flatMap((arg, index, allArgs) => {
@@ -30,6 +39,7 @@ const aliasMemoryPath = args.get('aliasMemoryPath') ?? process.env.TASCO_ALIAS_M
 const aliasMemory = existsSync(aliasMemoryPath) ? parseAliasMemory(readFileSync(aliasMemoryPath, 'utf8')) : [];
 const behaviorLogPath = args.get('behaviorLogPath') ?? process.env.TASCO_BEHAVIOR_LOG_PATH ?? 'data/behavior-events.local.json';
 const behaviorRuntime = createFileBehaviorStore({ path: behaviorLogPath });
+const mobilityData = JSON.parse(readFileSync('data/agentic-mobility-demo.json', 'utf8')) as MobilityDemoData;
 const persistAcceptedRewrite = (observation: AliasMemoryObservation) => {
   const nextRecords = upsertAliasMemory(aliasMemory, observation);
   aliasMemory.splice(0, aliasMemory.length, ...nextRecords);
@@ -56,13 +66,30 @@ const liveClient = createTascoApiClient({
   locale: process.env.TASCO_LOCALE,
   timezone: process.env.TASCO_TIMEZONE,
 });
+const mobilityLiveTools = createMobilityLiveTools({
+  peliasBaseUrl: process.env.TASCO_DISABLE_LIVE_MAPS === 'true' ? undefined : process.env.TASCO_PELIAS_BASE_URL?.trim() || 'https://tasco-maps.dnpwater.vn/geocode',
+  valhallaBaseUrl: process.env.TASCO_DISABLE_LIVE_MAPS === 'true' ? undefined : process.env.TASCO_VALHALLA_BASE_URL?.trim() || 'https://tasco-maps.dnpwater.vn/route',
+});
+const mobilityAgentKey = process.env.TASCO_MOBILITY_AGENT_API_KEY?.trim();
+const mobilityAgentModel = process.env.TASCO_MOBILITY_AGENT_MODEL?.trim() || 'openai/gpt-4o-mini';
+const threeAgentSystem = mobilityAgentKey ? createOpenRouterThreeAgentSystem({
+  apiKey: mobilityAgentKey,
+  model: mobilityAgentModel,
+  baseURL: process.env.TASCO_MOBILITY_AGENT_ENDPOINT?.replace(/\/responses\/?$/, ''),
+  timeoutMs: Number(process.env.TASCO_MOBILITY_AGENT_TIMEOUT_MS) || 60_000,
+}) : undefined;
+const mobilityAgent = new MobilityAgentRuntime(mobilityData, {
+  liveTools: mobilityLiveTools,
+  agentSystem: threeAgentSystem,
+  behaviorEventsForUser: (userId) => behaviorRuntime.eventsForUser(userId),
+});
 const server = createTascoApiServer(dataset, liveClient, {
   semanticProvider,
   aliasMemory,
   agenticProvider: rewriteProvider,
   agenticRuntime,
   behaviorRuntime,
-});
+}, mobilityAgent);
 
 server.listen(port, host, () => {
   console.log(`Tasco Whisperer API listening on http://${host}:${port}`);
@@ -71,6 +98,8 @@ server.listen(port, host, () => {
   console.log(`Behavior events loaded: ${behaviorRuntime.count()} records from ${behaviorLogPath}`);
   console.log(`Semantic embedding artifact: ${args.get('semanticArtifact') ?? process.env.TASCO_SEMANTIC_ARTIFACT ?? defaultSemanticArtifactPath()}`);
   console.log(rewriteProvider ? `Agentic rewrite provider configured: ${rewriteProvider}` : 'Agentic rewrite provider: local deterministic fallback.');
+  console.log(mobilityLiveTools ? 'Mobility map tools: live TASCO Pelias/Valhalla first, labeled local fallback second.' : 'Mobility map tools: labeled local fallback only.');
+  console.log(threeAgentSystem ? `Real three-agent model configured through OpenRouter: ${threeAgentSystem.model}` : 'Real three-agent model is NOT configured; agent tasks will fail clearly until .env contains a key.');
 });
 
 process.on('SIGTERM', () => server.close());

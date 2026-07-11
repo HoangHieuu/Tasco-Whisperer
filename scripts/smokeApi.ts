@@ -2,10 +2,17 @@ import { createTascoApiServer } from './apiServer';
 import { loadDatasetFromDisk } from './loadDataset';
 import type { BehaviorEvent, SuggestResponse } from '../src/lib/types';
 import type { TascoAutocompleteResponse, TascoPlacesResponse, TascoPoiResponse, TascoRouteResponse, TascoSearchResponse } from '../src/lib/tascoFacade';
+import mobilityDemoData from '../data/agentic-mobility-demo.json';
+import { MobilityAgentRuntime } from '../src/lib/mobilityAgent';
+import { createScriptedThreeAgentTestProvider } from '../src/lib/mobilityAgentTestProvider';
+import type { AgentTaskSnapshot, MobilityDemoData } from '../src/lib/mobilityAgentTypes';
 
 const host = '127.0.0.1';
 const dataset = loadDatasetFromDisk();
 const behaviorEvents: BehaviorEvent[] = [];
+const mobilityAgent = new MobilityAgentRuntime(mobilityDemoData as MobilityDemoData, {
+  agentSystem: createScriptedThreeAgentTestProvider(),
+});
 const server = createTascoApiServer(dataset, undefined, {
   behaviorRuntime: {
     eventsForUser(userId?: string) {
@@ -16,7 +23,7 @@ const server = createTascoApiServer(dataset, undefined, {
       return { storedCount: behaviorEvents.length };
     },
   },
-});
+}, mobilityAgent);
 
 const address = await new Promise<{ port: number }>((resolve, reject) => {
   server.once('error', reject);
@@ -180,6 +187,28 @@ try {
     throw new Error('Expected all TASCO facade fallback endpoints to return useful local results');
   }
 
+  const agentCreateResponse = await fetch(`${baseUrl}/v1/agent/tasks`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      query: 'Find an EV charger on my route to Đà Nẵng, near coffee, open now, with less than a 10-minute detour.',
+      context: {
+        currentLocation: { lat: 10.7769, lon: 106.7009 },
+        now: '2026-07-11T20:00:00+07:00',
+        locale: 'en',
+        sessionId: 'api-smoke-agent',
+        vehicle: { type: 'ev', connectorTypes: ['CCS2'] },
+      },
+      executionMode: 'plan-and-propose',
+    }),
+  });
+  if (agentCreateResponse.status !== 202) throw new Error(`Expected 202 from agent task creation, got ${agentCreateResponse.status}`);
+  const agentCreated = await agentCreateResponse.json() as { taskId: string };
+  const agentTask = await waitForAgentTask(`${baseUrl}/v1/agent/tasks/${encodeURIComponent(agentCreated.taskId)}`);
+  if (agentTask.status !== 'ready_for_confirmation' || agentTask.plan?.version !== 2 || agentTask.verification?.decision !== 'pass' || new Set(agentTask.modelCalls.map((call) => call.agent)).size !== 3) {
+    throw new Error(`Expected verified replanned agent task, got ${agentTask.status} plan=${agentTask.plan?.version}`);
+  }
+
   console.log(
     JSON.stringify(
       {
@@ -194,6 +223,8 @@ try {
           '/v1/geocoding',
           '/v1/route',
           '/health',
+          '/v1/agent/tasks',
+          '/v1/agent/tasks/{id}/events',
         ],
         status: response.status,
         intent: body.intent.type,
@@ -222,6 +253,16 @@ try {
         behaviorEventStatus: behaviorResponse.status,
         behaviorPersonalization: personalizedHighlands.metadata.personalizationReason,
         invalidLimitStatus: invalidResponse.status,
+        mobilityAgent: {
+          status: agentTask.status,
+          planVersion: agentTask.plan?.version,
+          replans: agentTask.budgets.replansUsed,
+          toolCalls: agentTask.budgets.toolCallsUsed,
+          modelCalls: agentTask.modelCalls.length,
+          modelAgents: [...new Set(agentTask.modelCalls.map((call) => call.agent))],
+          winner: agentTask.candidates[0]?.primary.label,
+          action: agentTask.proposedAction?.status,
+        },
       },
       null,
       2,
@@ -229,4 +270,15 @@ try {
   );
 } finally {
   server.close();
+}
+
+async function waitForAgentTask(url: string): Promise<AgentTaskSnapshot> {
+  const deadline = Date.now() + 2_000;
+  while (Date.now() < deadline) {
+    const response = await fetch(url);
+    const task = await response.json() as AgentTaskSnapshot;
+    if (['ready_for_confirmation', 'needs_clarification', 'completed', 'degraded', 'failed'].includes(task.status)) return task;
+    await new Promise((resolve) => setTimeout(resolve, 5));
+  }
+  throw new Error('Mobility agent smoke task timed out');
 }
