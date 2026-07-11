@@ -1,0 +1,84 @@
+{
+  "knownLocations": [
+    {
+      "id": "city:ho-chi-minh",
+      "label": "TP.HCM",
+      "coordinates": { "lat": 10.7769, "lon": 106.7009 },
+      "aliases": ["tp.hcm", "ho chi minh", "hồ chí minh", "saigon", "sài gòn"]
+    },
+    {
+      "id": "city:da-nang",
+      "label": "Đà Nẵng",
+      "coordinates": { "lat": 16.0544, "lon": 108.2022 },
+      "aliases": ["da nang", "đà nẵng", "danang"]
+    }
+  ],
+  "places": [
+    {
+      "id": "demo:charger-central-a",
+      "label": "TASCO Charge Central A",
+      "category": "ev-charger",
+      "address": "Synthetic demonstration waypoint, Central Vietnam",
+      "coordinates": { "lat": 14.235, "lon": 107.735 },
+      "source": "synthetic-demo",
+      "confidence": 0.95,
+      "openingHours": "00:00-24:00",
+      "openingHoursVerified": true,
+      "connectorTypes": ["CCS2", "Type 2"],
+      "corridorOffsetMeters": 6200,
+      "accessPenaltySeconds": 420
+    },
+    {
+      "id": "demo:charger-central-b",
+      "label": "GreenWay Fast Charge",
+      "category": "ev-charger",
+      "address": "Synthetic demonstration waypoint, Central Vietnam",
+      "coordinates": { "lat": 14.04, "lon": 107.61 },
+      "source": "synthetic-demo",
+      "confidence": 0.92,
+      "openingHours": "08:00-18:00",
+      "openingHoursVerified": true,
+      "connectorTypes": ["CCS2"],
+      "corridorOffsetMeters": 1800,
+      "accessPenaltySeconds": 240
+    },
+    {
+      "id": "demo:charger-central-c",
+      "label": "Highway EV Hub",
+      "category": "ev-charger",
+      "address": "Synthetic demonstration waypoint, Central Vietnam",
+      "coordinates": { "lat": 14.362052, "lon": 107.530158 },
+      "source": "synthetic-demo",
+      "confidence": 0.9,
+      "openingHours": "00:00-24:00",
+      "openingHoursVerified": true,
+      "connectorTypes": ["CCS2", "CHAdeMO"],
+      "corridorOffsetMeters": 2400,
+      "accessPenaltySeconds": 780
+    },
+    {
+      "id": "demo:cafe-central-a",
+      "label": "Whisper Coffee Stop",
+      "category": "cafe",
+      "address": "250 m from TASCO Charge Central A",
+      "coordinates": { "lat": 14.237, "lon": 107.736 },
+      "source": "synthetic-demo",
+      "confidence": 0.94,
+      "openingHours": "06:00-23:00",
+      "openingHoursVerified": true,
+      "relatedChargerId": "demo:charger-central-a"
+    },
+    {
+      "id": "demo:cafe-central-c",
+      "label": "Route 1 Coffee",
+      "category": "cafe",
+      "address": "550 m from Highway EV Hub",
+      "coordinates": { "lat": 14.364052, "lon": 107.531158 },
+      "source": "synthetic-demo",
+      "confidence": 0.9,
+      "openingHours": "07:00-21:00",
+      "openingHoursVerified": true,
+      "relatedChargerId": "demo:charger-central-c"
+    }
+  ]
+}

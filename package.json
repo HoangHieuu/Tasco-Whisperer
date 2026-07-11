@@ -26,12 +26,15 @@
   },
   "dependencies": {
     "@huggingface/transformers": "^4.2.0",
+    "@openrouter/ai-sdk-provider": "^3.0.0",
     "@vitejs/plugin-react": "^5.1.1",
+    "ai": "^7.0.22",
     "lucide-react": "^0.561.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "typescript": "~5.9.3",
-    "vite": "^7.2.7"
+    "vite": "^7.2.7",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^24.10.2",
