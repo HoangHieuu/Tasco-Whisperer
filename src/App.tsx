@@ -3,6 +3,7 @@ import {
   Activity,
   ArrowUpRight,
   BarChart3,
+  Bot,
   Clock3,
   Compass,
   Database,
@@ -12,6 +13,7 @@ import {
   Sparkles,
   Tags,
 } from 'lucide-react';
+import { AgentJourney } from './AgentJourney';
 import { browserDataset } from './lib/browserDataset';
 import { evaluateDataset } from './lib/evaluate';
 import { fetchFacadeCoverage, type FacadeEndpointStatus } from './lib/frontendFacadeCoverage';
@@ -58,6 +60,7 @@ interface UserLocation {
 }
 
 function App() {
+  const [mode, setMode] = useState<'autocomplete' | 'agent'>('autocomplete');
   const [query, setQuery] = useState('cafe');
   const [city, setCity] = useState('');
   const [userId, setUserId] = useState('');
@@ -192,6 +195,14 @@ function App() {
             <p>Vietnamese autocomplete for T Maps</p>
           </div>
         </div>
+        <nav className="product-mode-switch" aria-label="Product mode">
+          <button className={mode === 'autocomplete' ? 'active' : ''} type="button" onClick={() => setMode('autocomplete')}>
+            <Search size={15} /> Autocomplete
+          </button>
+          <button className={mode === 'agent' ? 'active' : ''} type="button" onClick={() => setMode('agent')}>
+            <Bot size={15} /> Agent Journey
+          </button>
+        </nav>
         <div className="topbar-actions">
           <button className={debug ? 'toggle is-on' : 'toggle'} onClick={() => setDebug((value) => !value)}>
             <Activity size={16} />
@@ -204,7 +215,7 @@ function App() {
         </div>
       </header>
 
-      <section className="workspace">
+      {mode === 'agent' ? <AgentJourney currentLocation={location} userId={userId} /> : <section className="workspace">
         <aside className="examples-panel">
           <div className="panel-heading">
             <Compass size={18} />
@@ -433,7 +444,7 @@ function App() {
             </div>
           </section>
         </aside>
-      </section>
+      </section>}
     </main>
   );
 }
