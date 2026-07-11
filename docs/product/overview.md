@@ -4,6 +4,14 @@ Tasco Whisperer is the product layer for this repository. It is an agentic
 Vietnamese autocomplete and query suggestion engine for T Maps, built for
 Agentic AI Build Week in Vietnam.
 
+The product has two deliberately separate paths: low-latency autocomplete for
+ordinary keystrokes and a bounded multi-agent mobility journey for complex,
+dependent requests. The latter uses three separate OpenRouter model agents: a
+Supervisor for grounded constraint reasoning and dynamic planning, a Mobility
+Executor with a bounded tool loop, and an independent Verifier & Action Agent.
+It replans from failed evidence and stops before any navigation-changing action
+until the user confirms.
+
 The source contract is `SPEC.md`. Future implementation work should use this
 overview plus the SPEC to create bounded story packets, validation commands,
 and durable Harness proof.
@@ -16,6 +24,8 @@ and durable Harness proof.
 - iPhone Mirroring demo script showing the real T Maps app context.
 - Agentic layer for validated hard-case query rewrites, failure analysis,
   measured tuning, and explainable suggestions.
+- Agent Journey UI and asynchronous API for multi-step mobility planning,
+  streamed tool evidence, bounded replanning, and confirmation-gated actions.
 - Generalized query-intelligence roadmap for compact Vietnamese segmentation,
   Telex/VNI cleanup, model-backed semantic retrieval, persistent alias memory,
   behavior feedback, measured ranking weights, and optional hard-case LLM

@@ -264,6 +264,8 @@ and supports these route families:
 - `GET /v1/nearby-search`
 - `GET /v1/geocoding`
 - `POST /v1/route`
+- `POST /v1/agent/tasks` plus task state, SSE events, clarification, confirmation,
+  action-result, and cancellation routes
 - `GET /health`
 
 Examples:
@@ -287,6 +289,35 @@ npm run api:dev -- --host 127.0.0.1 --port 8787
 Supported server-only credentials are `TASCO_API_KEY` and
 `TASCO_BEARER_TOKEN`. Never put these values in committed files, browser code,
 or `VITE_*` variables.
+
+### Multi-agent mobility journey
+
+The **Agent Journey** tab is a separate bounded runtime for complex requests;
+ordinary autocomplete never waits for it. It uses three genuine, separately
+prompted model agents: a Supervisor that interprets constraints and creates a
+dynamic plan, a Mobility Executor that chooses and sequences allowlisted tools,
+and an independent Verifier & Action Agent that inspects evidence, requests
+replanning, or prepares a confirmation-gated action.
+
+The runtime records every real model call and model-selected tool action in its
+SSE trace. It enforces a 20-tool budget, two replans, schema validation, explicit
+source/confidence labels, and confirmation before route mutation. OpenRouter is
+required for production agent execution. Copy
+`.env.example` to the ignored `.env` file and fill in:
+
+```dotenv
+TASCO_MOBILITY_AGENT_ENDPOINT=https://openrouter.ai/api/v1
+TASCO_MOBILITY_AGENT_MODEL=openai/gpt-4o-mini
+TASCO_MOBILITY_AGENT_API_KEY=sk-or-v1-your-key
+```
+
+Both `npm run demo` and `npm run api:dev` load `.env` automatically. The key
+stays on the Node server and is never included in the Vite browser bundle.
+
+If OpenRouter is absent, the agent task fails clearly instead of pretending that
+fixed code is an agent. TASCO Pelias and Valhalla are used live first. Map-tool
+outages may fall back to `data/agentic-mobility-demo.json` and deterministic
+route estimates, visibly labeled `synthetic-demo` or `derived-estimate`.
 
 ### Flutter adapter
 
