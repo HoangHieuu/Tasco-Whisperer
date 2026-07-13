@@ -15,6 +15,7 @@ describe('frontend TASCO facade adapter', () => {
             {
               id: 'poi:poi-1',
               type: 'poi',
+              suggestionType: 'Nearby Search',
               name: 'Highlands Coffee Nguyễn Huệ',
               label: 'Highlands Coffee Nguyễn Huệ',
               address: 'Nguyễn Huệ, Quận 1, TP.HCM',
@@ -72,6 +73,7 @@ describe('frontend TASCO facade adapter', () => {
     expect(response.suggestions[0]).toEqual(
       expect.objectContaining({
         text: 'Highlands Coffee Nguyễn Huệ',
+        type: 'Nearby Search',
         source: 'poi',
         score: 0.93,
       }),

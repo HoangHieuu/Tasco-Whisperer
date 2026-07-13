@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+data/*.local.json
+data/behavior-events*.json
+data/alias-memory*.json
+outputs/
+tasco-product-video/
+reports/
+tmp/

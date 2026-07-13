@@ -568,6 +568,20 @@ components:
           type: string
         type:
           type: string
+        suggestionType:
+          type: string
+          description: Autocomplete intent assigned by Tasco Whisperer. Present on locally generated autocomplete rows.
+          enum:
+            - Brand Search
+            - Category Search
+            - POI Search
+            - Discovery Search
+            - Nearby Search
+            - Address Suggestion
+            - Coordinate Search
+            - Navigation
+            - Attribute Search
+            - Ambiguous
         name:
           type: string
         label:

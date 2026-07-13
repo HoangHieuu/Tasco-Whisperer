@@ -53,6 +53,70 @@ describe('suggest', () => {
     );
   });
 
+  it('keeps a nearby cafe query category-consistent', () => {
+    const response = suggest(testDataset, { q: 'caphe gan day', limit: 12 });
+    const visible = response.suggestions.map((suggestion) => `${suggestion.text} ${suggestion.metadata.category ?? ''}`).join(' ');
+
+    expect(response.expandedQuery).toBe('ca phe gan day');
+    expect(response.intent.type).toBe('Nearby Search');
+    expect(response.suggestions[0].type).toBe('Nearby Search');
+    expect(visible).toMatch(/cà phê|Coffee/i);
+    expect(visible).not.toMatch(/Bệnh viện|ATM|xăng/i);
+  });
+
+  it('completes an incomplete nearby cafe query and expands matching POIs', () => {
+    const response = suggest(testDataset, { q: 'caphe gan', limit: 12 });
+    const visible = response.suggestions.map((suggestion) => `${suggestion.text} ${suggestion.metadata.category ?? ''}`).join(' ');
+
+    expect(response.expandedQuery).toBe('ca phe gan day');
+    expect(response.intent.type).toBe('Nearby Search');
+    expect(response.diagnostics.expansions.join(' ')).toContain('contextual-completion');
+    expect(response.suggestions.map((suggestion) => suggestion.text)).toContain('Highlands Coffee Nguyễn Huệ');
+    expect(response.suggestions.every((suggestion) => suggestion.type === 'Nearby Search')).toBe(true);
+    expect(visible).not.toMatch(/Bệnh viện|ATM|xăng/i);
+  });
+
+  it('returns and prioritizes every matching city POI when nearby location context is available', () => {
+    const response = suggest(testDataset, { q: 'caphe gan', city: 'TP.HCM', limit: 12 });
+    const cityPois = testDataset.pois.filter((poi) => poi.city === 'TP.HCM' && poi.category === 'Quán cà phê');
+    const returnedPoiIds = response.suggestions.map((suggestion) => suggestion.poiId).filter(Boolean);
+
+    expect(response.intent.type).toBe('Nearby Search');
+    expect(response.suggestions[0].poiId).toBe('POI001');
+    expect(cityPois.every((poi) => returnedPoiIds.includes(poi.poiId))).toBe(true);
+    expect(response.suggestions.filter((suggestion) => suggestion.metadata.city).every((suggestion) => suggestion.metadata.city === 'TP.HCM')).toBe(true);
+  });
+
+  it('composes a compact category with a partial brand prefix', () => {
+    const response = suggest(testDataset, { q: 'caphe high', limit: 12 });
+
+    expect(response.expandedQuery).toBe('ca phe high');
+    expect(response.intent.type).toBe('Brand Search');
+    expect(response.diagnostics.entities).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ kind: 'category', value: 'cà phê' }),
+        expect.objectContaining({ kind: 'brand', value: 'Highlands Coffee' }),
+      ]),
+    );
+    expect(response.suggestions[0]).toEqual(
+      expect.objectContaining({
+        text: 'Highlands Coffee Nguyễn Huệ',
+        type: 'Brand Search',
+        poiId: 'POI001',
+      }),
+    );
+    expect(response.suggestions.map((suggestion) => suggestion.text).join(' ')).not.toMatch(/Bệnh viện|ATM|xăng/i);
+  });
+
+  it('hard-scopes partial brand results to the selected city', () => {
+    const inCity = suggest(testDataset, { q: 'caphe high', city: 'TP.HCM', limit: 12 });
+    const unavailableCity = suggest(testDataset, { q: 'caphe high', city: 'Hà Nội', limit: 12 });
+
+    expect(inCity.suggestions.map((suggestion) => suggestion.text)).toEqual(['Highlands Coffee Nguyễn Huệ']);
+    expect(inCity.suggestions[0].type).toBe('Brand Search');
+    expect(unavailableCity.suggestions).toEqual([]);
+  });
+
   it('keeps compact-prefix deterministic fallback when agentic correction is disabled', () => {
     const response = suggest(testDataset, { q: 'caphe', limit: 5, agentic: false });
 

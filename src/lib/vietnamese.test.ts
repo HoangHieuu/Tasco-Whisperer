@@ -48,6 +48,29 @@ describe('Vietnamese query intelligence', () => {
     expect(segmentCompactQuery('benhv', knowledge)).toBe('benh vien');
   });
 
+  it('segments compact Vietnamese words inside a multi-token query', () => {
+    expect(segmentCompactQuery('caphe gan day', knowledge)).toBe('ca phe gan day');
+    expect(proposeVietnameseRewrites('caphe gan day', knowledge).map((rewrite) => rewrite.rewrite)).toContain('ca phe gan day');
+  });
+
+  it('completes an incomplete nearby suffix after a supported category', () => {
+    expect(segmentCompactQuery('caphe gan', knowledge)).toBe('ca phe gan day');
+    expect(segmentCompactQuery('ca phe gan', knowledge)).toBe('ca phe gan day');
+    expect(proposeVietnameseRewrites('caphe gan', knowledge)).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          rewrite: 'ca phe gan day',
+          source: 'contextual-completion',
+        }),
+      ]),
+    );
+  });
+
+  it('segments a compact category when followed by a supported entity prefix', () => {
+    expect(segmentCompactQuery('caphe high', knowledge)).toBe('ca phe high');
+    expect(proposeVietnameseRewrites('caphe high', knowledge).map((rewrite) => rewrite.rewrite)).toContain('ca phe high');
+  });
+
   it('splits compact abbreviation, typo, address, and mixed-language variants into reusable query tokens', () => {
     expect(segmentCompactQuery('ksd', knowledge, testDataset.abbreviations)).toBe('ks d');
     expect(segmentCompactQuery('coffeenear', knowledge, testDataset.abbreviations)).toBe('coffee near');

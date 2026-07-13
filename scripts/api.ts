@@ -26,8 +26,8 @@ const args = new Map(
   }),
 );
 
-const host = args.get('host') ?? '127.0.0.1';
-const port = Number(args.get('port') ?? '8787');
+const host = args.get('host') ?? process.env.HOST ?? process.env.TASCO_DEMO_HOST ?? '127.0.0.1';
+const port = Number(args.get('port') ?? process.env.PORT ?? process.env.TASCO_DEMO_API_PORT ?? '8787');
 const tascoBaseUrl = args.get('tascoBaseUrl') ?? process.env.TASCO_API_BASE_URL;
 
 if (!Number.isInteger(port) || port < 1 || port > 65535) {

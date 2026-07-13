@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { suggest } from './engine';
-import { buildEmbeddingIndex, searchEmbeddingIndex, semanticSimilarity, voteIntentFromNeighbors } from './semantic';
+import { buildEmbeddingIndex, hasStrongSemanticEvidence, searchEmbeddingIndex, semanticSimilarity, voteIntentFromNeighbors } from './semantic';
 import { testDataset } from './testDataset';
 import type { TascoDataset } from './types';
 
@@ -9,6 +9,11 @@ describe('semantic retrieval', () => {
     expect(semanticSimilarity('cafe song ao', 'quán cà phê check-in đẹp để chụp hình')).toBeGreaterThan(
       semanticSimilarity('cafe song ao', 'ATM Vietcombank gần nhất'),
     );
+  });
+
+  it('does not treat short Vietnamese prefixes as category evidence', () => {
+    expect(hasStrongSemanticEvidence('ca phe gan day', 'Bệnh viện Bạch Mai cấp cứu ở Đống Đa')).toBe(false);
+    expect(hasStrongSemanticEvidence('ca phe gan day', 'Quán cà phê gần đây')).toBe(true);
   });
 
   it('adds vector candidates from dataset evidence without a hand-authored template', () => {

@@ -10,7 +10,7 @@ export interface VietnameseRewrite {
   rewrite: string;
   confidence: number;
   reason: string;
-  source: 'syllable-segmentation' | 'telex-vni-decoder';
+  source: 'syllable-segmentation' | 'contextual-completion' | 'telex-vni-decoder';
 }
 
 const COMMON_DOMAIN_PHRASES = [
@@ -180,11 +180,14 @@ export function proposeVietnameseRewrites(
   for (const candidate of [normalized, telexDecoded]) {
     const segmented = segmentCompactQuery(candidate, knowledge, abbreviations);
     if (segmented && segmented !== normalized && !rewrites.some((rewrite) => normalizeText(rewrite.rewrite) === segmented)) {
+      const isCompletion = /\bgan$/.test(candidate) && /\bgan day$/.test(segmented);
       rewrites.push({
         rewrite: segmented,
-        confidence: compact(segmented) === compact(candidate) ? 0.9 : 0.84,
-        reason: `Vietnamese compact syllable segmentation: ${candidate} -> ${segmented}`,
-        source: 'syllable-segmentation',
+        confidence: isCompletion ? 0.86 : 0.9,
+        reason: isCompletion
+          ? `Vietnamese contextual prefix completion: ${candidate} -> ${segmented}`
+          : `Vietnamese compact syllable segmentation: ${candidate} -> ${segmented}`,
+        source: isCompletion ? 'contextual-completion' : 'syllable-segmentation',
       });
     }
   }
@@ -198,8 +201,105 @@ export function segmentCompactQuery(
   abbreviations: AbbreviationRecord[] = [],
 ): string | undefined {
   const normalized = normalizeText(query);
+  if (normalized.includes(' ')) {
+    let changed = false;
+    const segmentedTokens = normalized.split(' ').map((token) => {
+      const segmented = segmentCompactToken(token, knowledge, abbreviations);
+      if (segmented && segmented !== token) {
+        changed = true;
+        return segmented;
+      }
+      return token;
+    });
+    const segmented = segmentedTokens.join(' ').replace(/\s+/g, ' ').trim();
+    const evidencePhrases = [
+      ...knowledge.phrases,
+      ...abbreviations.map((item) => normalizeText(item.expandedForm)),
+    ];
+    const contextualCompletion = completeTrailingProximityPrefix(segmented, knowledge);
+    if (contextualCompletion) {
+      return contextualCompletion;
+    }
+    if (!changed) {
+      return undefined;
+    }
+    return evidencePhrases.some((phrase) => phrase === segmented || phrase.startsWith(`${segmented} `)) ||
+      hasMultiPhraseCover(segmented, evidencePhrases) ||
+      hasSupportedTrailingEntityPrefix(segmented, knowledge)
+      ? segmented
+      : undefined;
+  }
+
+  return segmentCompactToken(normalized, knowledge, abbreviations);
+}
+
+function hasSupportedTrailingEntityPrefix(
+  value: string,
+  knowledge: VietnameseQueryKnowledge,
+): boolean {
+  const tokens = value.split(' ').filter(Boolean);
+  const trailing = tokens.at(-1);
+  if (!trailing || trailing.length < 3) {
+    return false;
+  }
+  const categoryPrefix = tokens.slice(0, -1).join(' ');
+  const supportedCategory = categoryPrefix.includes(' ')
+    ? knowledge.phrases.includes(categoryPrefix)
+    : knowledge.tokens.has(categoryPrefix);
+  if (!supportedCategory) {
+    return false;
+  }
+  return knowledge.phrases.some((phrase) =>
+    phrase.split(' ').some((token) => token.length > trailing.length && token.startsWith(trailing))
+  );
+}
+
+function completeTrailingProximityPrefix(
+  value: string,
+  knowledge: VietnameseQueryKnowledge,
+): string | undefined {
+  const tokens = value.split(' ').filter(Boolean);
+  const trailing = tokens.at(-1);
+  if (!trailing || trailing.length < 3 || !'gan'.startsWith(trailing)) {
+    return undefined;
+  }
+  const categoryPrefix = tokens.slice(0, -1).join(' ');
+  if (!categoryPrefix) {
+    return undefined;
+  }
+  const supportedCategory = categoryPrefix.includes(' ')
+    ? knowledge.phrases.includes(categoryPrefix)
+    : knowledge.tokens.has(categoryPrefix);
+  return supportedCategory ? `${categoryPrefix} gan day` : undefined;
+}
+
+function hasMultiPhraseCover(value: string, phrases: string[]): boolean {
+  const tokens = value.split(' ').filter(Boolean);
+  const phraseTokens = phrases
+    .map((phrase) => phrase.split(' ').filter(Boolean))
+    .filter((parts) => parts.length >= 2);
+  const best = Array<number>(tokens.length + 1).fill(-1);
+  best[0] = 0;
+  for (let start = 0; start < tokens.length; start += 1) {
+    if (best[start] < 0) {
+      continue;
+    }
+    for (const parts of phraseTokens) {
+      if (parts.every((token, index) => tokens[start + index] === token)) {
+        best[start + parts.length] = Math.max(best[start + parts.length], best[start] + 1);
+      }
+    }
+  }
+  return best[tokens.length] >= 2;
+}
+
+function segmentCompactToken(
+  normalized: string,
+  knowledge: VietnameseQueryKnowledge,
+  abbreviations: AbbreviationRecord[],
+): string | undefined {
   const compactQuery = compact(normalized);
-  if (!compactQuery || normalized.includes(' ') || compactQuery.length < 3) {
+  if (!compactQuery || compactQuery.length < 3) {
     return undefined;
   }
 

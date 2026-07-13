@@ -1,6 +1,6 @@
 # Robustness Evaluation Report
 
-Generated: 2026-07-09T10:17:00.589Z
+Generated: 2026-07-11T17:38:49.261Z
 
 This report is generated only from the provided hackathon CSVs. It adds
 metamorphic variants such as accentless, compact, uppercase, spacing,
@@ -12,7 +12,7 @@ rows without importing any outside dataset.
 - Cases: 192
 - Top-3 recall: 100%
 - Top-5 recall: 100%
-- P95 latency: 43 ms
+- P95 latency: 28 ms
 
 | Transform | Cases | Top-3 | Top-5 |
 | --- | ---: | ---: | ---: |

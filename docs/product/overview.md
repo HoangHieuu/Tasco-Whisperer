@@ -85,7 +85,10 @@ lexical fallback, and validated local/hosted rewrite-agent provider runtime
 wiring. It also ranks with current-location haversine locality, coordinate-based
 city inference, and enrichment-hours time context for 24/7, open-late, and
 breakfast phở use cases. The README, generated example gallery, one-command local launcher, and
-browser/API smoke proof now package the project for submission.
+browser/API smoke proof now package the project for submission. A public Vercel
+UI is connected to a persistent single-instance Railway API. The hosted API
+uses the explicit lexical semantic fallback to fit the current service memory;
+local MiniLM evaluation remains the model-backed proof path.
 
 ## Agentic Learning Direction
 

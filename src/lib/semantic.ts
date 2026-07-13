@@ -214,9 +214,7 @@ export function semanticSimilarity(query: string, document: string): number {
 export function hasStrongSemanticEvidence(query: string, document: string): boolean {
   const queryTokens = [...tokenSet(expandSemanticText(query))].filter((token) => token.length >= 3);
   const documentTokens = tokenSet(expandSemanticText(document));
-  const hits = queryTokens.filter((token) =>
-    documentTokens.has(token) || [...documentTokens].some((docToken) => docToken.startsWith(token) || token.startsWith(docToken)),
-  );
+  const hits = queryTokens.filter((token) => [...documentTokens].some((docToken) => semanticTokenMatches(token, docToken)));
   return hits.length >= Math.min(2, queryTokens.length);
 }
 
@@ -243,11 +241,19 @@ function weightedTokenOverlap(queryTokens: Set<string>, documentTokens: Set<stri
       continue;
     }
     possible += token.length >= 5 ? 1.25 : 1;
-    if (documentTokens.has(token) || [...documentTokens].some((docToken) => docToken.startsWith(token) || token.startsWith(docToken))) {
+    if ([...documentTokens].some((docToken) => semanticTokenMatches(token, docToken))) {
       hits += token.length >= 5 ? 1.25 : 1;
     }
   }
   return possible ? hits / possible : 0;
+}
+
+function semanticTokenMatches(queryToken: string, documentToken: string): boolean {
+  if (queryToken === documentToken) {
+    return true;
+  }
+  return Math.min(queryToken.length, documentToken.length) >= 4 &&
+    (documentToken.startsWith(queryToken) || queryToken.startsWith(documentToken));
 }
 
 function tokenSet(value: string): Set<string> {

@@ -89,6 +89,9 @@ export function generatedPatternCandidates(
     : detectedAttributes;
   const cities = detectCities(dataset, query, entities);
   const brands = entities.filter((entity) => entity.kind === 'brand').map((entity) => entity.value);
+  const explicitVietnameseNearbyCafe =
+    categories.some((categorySignal) => categorySignal.key === 'cafe') &&
+    /\bgan(?:\s+(?:day|nhat))?$/.test(understanding.normalized);
   const candidates: GeneratedPatternCandidate[] = [];
 
   for (const categorySignal of categories) {
@@ -103,7 +106,7 @@ export function generatedPatternCandidates(
           candidates.push(
             candidate(
               text,
-              generatedTypeForAttribute(categorySignal, attributeSignal),
+              generatedTypeForAttribute(categorySignal, attributeSignal, explicitVietnameseNearbyCafe),
               categorySignal,
               city,
               attributeSignal,
@@ -119,7 +122,7 @@ export function generatedPatternCandidates(
         candidates.push({
           id: stableId(`brand-${categorySignal.key}-${brand}`),
           text: `${categorySignal.label} ${brand} gần nhất`,
-          type: categorySignal.type === 'Category Search' ? 'Nearby Search' : categorySignal.type,
+          type: 'Brand Search',
           matched: [categorySignal.label, brand],
           baseScore: 0.84,
           frequencyScore: 0.78,
@@ -263,9 +266,13 @@ function renderCategoryAttribute(categorySignal: CategorySignal, attributeSignal
   return [`${categoryLabel} ${attributeSignal.label}${suffix}`];
 }
 
-function generatedTypeForAttribute(categorySignal: CategorySignal, attributeSignal: AttributeSignal): IntentType {
+function generatedTypeForAttribute(
+  categorySignal: CategorySignal,
+  attributeSignal: AttributeSignal,
+  preferNearbyIntent = false,
+): IntentType {
   if (attributeSignal.key === 'nearby') {
-    return categorySignal.type;
+    return preferNearbyIntent ? 'Nearby Search' : categorySignal.type;
   }
   return attributeSignal.type;
 }

@@ -16,6 +16,7 @@ import type {
   AliasMemoryRecord,
   BehaviorEventRuntime,
   FieldProvenance,
+  IntentType,
   PlaceEnrichment,
   PoiRecord,
   ScoreFactors,
@@ -26,6 +27,7 @@ import type {
 export interface PlaceResult {
   id: string;
   type: string;
+  suggestionType?: IntentType;
   name: string;
   label: string;
   address?: string;
@@ -366,7 +368,7 @@ export async function handleTascoFacadeRequest(
   }
 
   const isAutocomplete = AUTOCOMPLETE_PATHS.has(url.pathname);
-  const parsed = parseParams(url.searchParams, isAutocomplete ? 10 : 20);
+  const parsed = parseParams(url.searchParams, isAutocomplete ? 12 : 20);
   if (!parsed.ok) {
     return errorResult(400, 'invalid_request', 'Invalid TASCO facade query parameters.', parsed.errors, 'invalid request');
   }
@@ -495,7 +497,7 @@ function parseParams(
   const category = params.get('category')?.trim() || undefined;
   const city = params.get('city')?.trim() || undefined;
   const userId = params.get('userId')?.trim() || undefined;
-  const limit = optionalInteger(params.get('limit'), 'limit', 1, maxLimit, errors) ?? (maxLimit === 10 ? 5 : 10);
+  const limit = optionalInteger(params.get('limit'), 'limit', 1, maxLimit, errors) ?? (maxLimit <= 12 ? 5 : 10);
   const lang = params.get('lang')?.trim() || 'vi';
   const sessionId = params.get('sessionId')?.trim() || undefined;
   const now = optionalDateTime(params.get('now'), 'now', errors);
@@ -890,6 +892,7 @@ function suggestionToPlaceResult(dataset: TascoDataset, suggestion: Suggestion):
   return {
     id: suggestion.poiId ? `poi:${suggestion.poiId}` : `suggestion:${suggestion.id}`,
     type: suggestion.poiId ? 'poi' : suggestion.source,
+    suggestionType: suggestion.type,
     name: suggestion.text,
     label: suggestion.text,
     address: suggestion.metadata.address,

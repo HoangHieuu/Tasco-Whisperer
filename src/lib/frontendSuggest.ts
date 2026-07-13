@@ -146,8 +146,8 @@ function placeToSuggestion(
   localSuggestions: Suggestion[],
 ): Suggestion {
   const score = clampScore(place.score ?? 0.7);
-  const type = inferIntentType(place);
   const matchedLocal = findLocalSuggestion(place, localSuggestions);
+  const type = place.suggestionType ?? matchedLocal?.type ?? inferIntentType(place);
   const factors = place.scoreFactors ?? matchedLocal?.metadata.factors ?? fallbackFactors(score);
   const factorReason = place.scoreFactors || matchedLocal
     ? 'engine ranking factors'

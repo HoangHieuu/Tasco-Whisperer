@@ -17,6 +17,7 @@ import { AgentJourney } from './AgentJourney';
 import { browserDataset } from './lib/browserDataset';
 import { evaluateDataset } from './lib/evaluate';
 import { fetchFacadeCoverage, type FacadeEndpointStatus } from './lib/frontendFacadeCoverage';
+import { normalizeText } from './lib/normalize';
 import {
   fetchFrontendSuggest,
   localFrontendSuggest,
@@ -29,6 +30,8 @@ const demoQueries = [
   'vin',
   'cafe',
   'caphe',
+  'caphe gan',
+  'caphe high',
   'atm',
   'nguyen h',
   'ben th',
@@ -82,7 +85,7 @@ function App() {
         lon: location?.lon,
         now: localDateTimeWithOffset(),
         behaviorEvents,
-        limit: 8,
+        limit: autocompleteLimit(query),
       },
       { signal: controller.signal },
     )
@@ -101,7 +104,7 @@ function App() {
               lon: location?.lon,
               now: localDateTimeWithOffset(),
               behaviorEvents,
-              limit: 8,
+              limit: autocompleteLimit(query),
             },
             error instanceof Error ? error.message : 'TASCO facade request failed',
           ),
@@ -447,6 +450,11 @@ function App() {
       </section>}
     </main>
   );
+}
+
+function autocompleteLimit(query: string): number {
+  const normalized = normalizeText(query);
+  return /\bgan(?:\s+(?:day|nhat))?$/.test(normalized) ? 12 : 8;
 }
 
 function readBehaviorEvents(): BehaviorEvent[] {

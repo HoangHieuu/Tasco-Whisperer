@@ -114,6 +114,30 @@ The project includes:
 The repository already contains the generated prediction and semantic artifacts
 needed by the default demo. No external API key or LLM provider is required.
 
+## Public submission demo
+
+- Demo UI: <https://tasco-whisperer.vercel.app/>
+- API health: <https://api-production-7c48c.up.railway.app/health>
+
+The public UI is hosted on Vercel and points to the persistent Node API hosted
+on Railway. The deployment is an integration-ready Tasco Maps prototype, not a
+native production integration with the closed-source mobile app.
+
+The public autocomplete service uses the repository's deterministic semantic
+fallback because loading the MiniLM query model exceeds the memory available to
+the current demo service. This degradation is explicit in API diagnostics; the
+committed MiniLM artifact and `npm run eval:minilm` remain the reproducible local
+model-backed proof path. The ordinary autocomplete path still performs
+Vietnamese normalization, prediction, ranking, locality, personalization, and
+provenance without a remote model on every keystroke.
+
+The separate Agent Journey is configured with OpenRouter only on the Railway
+service. Its API key is never included in the Vite bundle. Active agent tasks
+are process-local and the demo backend runs as one instance, so an infrastructure
+restart can invalidate an in-progress journey; this is suitable for the
+submission demo but should move to durable workflow storage before production
+scaling.
+
 ## Setup and run
 
 Install dependencies:
@@ -411,3 +435,5 @@ docs/submission/             Example gallery and demo proof
   presentation flow beside the Tasco Maps app.
 - [`docs/submission/demo-smoke-proof.md`](docs/submission/demo-smoke-proof.md) —
   recorded local demo verification.
+- [`docs/submission/public-deploy-smoke-proof.md`](docs/submission/public-deploy-smoke-proof.md) —
+  recorded Vercel/Railway deployment verification.

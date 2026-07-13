@@ -479,19 +479,61 @@ function collectCandidates(
   }
 
   const drafts = [
-    ...fromAutocomplete(dataset, understanding),
-    ...fromPois(dataset, understanding),
+    ...fromAutocomplete(dataset, understanding, request),
+    ...fromPois(dataset, understanding, entities, request),
     ...fromPopularQueries(dataset, understanding),
     ...fromEmbedding(understanding, embeddingNeighbors, embeddingProvider),
     ...fromSemantic(dataset, understanding),
-    ...fromGeneratedPatterns(dataset, understanding, entities),
+    ...fromGeneratedPatterns(dataset, understanding, entities, request),
     ...fromPredictedCompletions(dataset, understanding),
-    ...fromTemplates(understanding),
+    ...fromTemplates(understanding, request),
   ];
-  return filterCandidatesByCity(drafts, dataset, request.city);
+  return filterCandidatesByCategory(
+    filterCandidatesByCity(drafts, dataset, request.city),
+    entities,
+  );
 }
 
-function fromAutocomplete(dataset: TascoDataset, understanding: QueryUnderstanding): CandidateDraft[] {
+function filterCandidatesByCategory(drafts: CandidateDraft[], entities: QueryEntity[]): CandidateDraft[] {
+  const categories = entities
+    .filter((entity) => entity.kind === 'category' && entity.confidence >= 0.8)
+    .map((entity) => normalizeText(entity.value));
+  if (categories.length === 0) {
+    return drafts;
+  }
+
+  return drafts.filter((draft) => {
+    if (!['semantic', 'embedding'].includes(draft.source)) {
+      return true;
+    }
+    const evidence = normalizeText([
+      draft.text,
+      draft.poi?.category,
+      draft.poi?.brand,
+      ...(draft.poi?.tags ?? []),
+    ].filter(Boolean).join(' '));
+    return categories.some((category) => categoryEvidenceMatches(evidence, category));
+  });
+}
+
+function categoryEvidenceMatches(evidence: string, category: string): boolean {
+  const evidenceTokens = normalizeText(evidence).split(' ').filter(Boolean);
+  return normalizeText(category).split(' ').filter(Boolean).every((token) =>
+    evidenceTokens.some((evidenceToken) =>
+      evidenceToken === token ||
+      (Math.min(evidenceToken.length, token.length) >= 4 &&
+        (evidenceToken.startsWith(token) || token.startsWith(evidenceToken)))
+    )
+  );
+}
+
+function fromAutocomplete(
+  dataset: TascoDataset,
+  understanding: QueryUnderstanding,
+  request: SuggestRequest,
+): CandidateDraft[] {
+  const explicitNearbyPrefix = /\bgan(?:\s+(?:day|nhat))?$/.test(understanding.normalized);
+  const hasLocationContext = Boolean(request.city || (request.lat != null && request.lon != null));
   return dataset.autocomplete.flatMap((record) => {
     const haystacks = [record.inputPrefix, record.suggestionText];
     const matched = haystacks.filter((value) => queryMatches(value, understanding));
@@ -503,25 +545,43 @@ function fromAutocomplete(dataset: TascoDataset, understanding: QueryUnderstandi
       prefixPhraseMatches(normalizeText(record.inputPrefix), understanding.expanded)
         ? 0.16
         : 0;
+    const nearbyCompletion = explicitNearbyPrefix && containsAny(normalizeText(record.suggestionText), ['gan day', 'gan nhat']);
     return {
       id: record.suggestionId,
       text: record.suggestionText,
-      type: record.suggestionType,
+      type: nearbyCompletion ? 'Nearby Search' : record.suggestionType,
       source: 'autocomplete' as const,
       matched,
-      baseScore: Math.min(1.12, record.score + exactPrefixBoost),
+      baseScore: nearbyCompletion && hasLocationContext ? 0.58 : Math.min(1.12, record.score + exactPrefixBoost),
       frequencyScore: record.queryFrequency / MAX_QUERY_FREQUENCY,
       reason: 'historical autocomplete pair',
     };
   });
 }
 
-function fromPois(dataset: TascoDataset, understanding: QueryUnderstanding): CandidateDraft[] {
+function fromPois(
+  dataset: TascoDataset,
+  understanding: QueryUnderstanding,
+  entities: QueryEntity[],
+  request: SuggestRequest,
+): CandidateDraft[] {
+  const nearbyCategory = entities.some((entity) => entity.kind === 'proximity')
+    ? entities.filter((entity) => entity.kind === 'category' && entity.confidence >= 0.8)
+    : [];
+  const hasLocationContext = Boolean(request.city || (request.lat != null && request.lon != null));
   return dataset.pois.flatMap((poi) => {
     const haystacks = [poi.poiName, poi.brand, poi.category, poi.address, poi.city, ...poi.tags].filter(Boolean);
     const matched = haystacks.filter((value) => queryMatches(value, understanding));
+    const compositeEvidence = [poi.category, poi.brand, poi.poiName, ...poi.tags].filter(Boolean).join(' ');
+    const compositeHit = queryMatches(compositeEvidence, understanding);
+    if (compositeHit && matched.length === 0) {
+      matched.push(...[poi.category, poi.brand || poi.poiName]);
+    }
     const categoryHit = tokenFallbackMatches(normalizeText(poi.category), understanding.tokens);
-    if (matched.length === 0 && !categoryHit) {
+    const nearbyCategoryHit = nearbyCategory.some((entity) =>
+      categoryEvidenceMatches(`${poi.category} ${poi.poiName} ${poi.brand}`, entity.value)
+    );
+    if (matched.length === 0 && !categoryHit && !nearbyCategoryHit) {
       return [];
     }
     const enrichedAttributes = rankingEvidenceForPoi(poi);
@@ -535,9 +595,12 @@ function fromPois(dataset: TascoDataset, understanding: QueryUnderstanding): Can
       source: 'poi' as const,
       matched: matched.length > 0 ? matched : [poi.category],
       poi,
-      baseScore: 0.76,
+      baseScore: nearbyCategoryHit ? (hasLocationContext ? 1.02 : 0.82) : 0.76,
       frequencyScore: poi.popularityScore / 100,
-      reason: `matched ${poi.category}${poi.city ? ` in ${poi.city}` : ''}${enrichmentReason}`,
+      reason: nearbyCategoryHit
+        ? `nearby category expansion matched ${poi.category}${poi.city ? ` in ${poi.city}` : ''}${enrichmentReason}`
+        : `matched ${poi.category}${poi.city ? ` in ${poi.city}` : ''}${enrichmentReason}`,
+      entityBoost: nearbyCategoryHit ? 0.1 : undefined,
     };
   });
 }
@@ -713,21 +776,55 @@ function fromGeneratedPatterns(
   dataset: TascoDataset,
   understanding: QueryUnderstanding,
   entities: QueryEntity[],
+  request: SuggestRequest,
 ): CandidateDraft[] {
   if (isUnresolvedCompactQuery(understanding)) {
     return [];
   }
-  return generatedPatternCandidates(dataset, understanding, entities).map((candidate): CandidateDraft => ({
-    id: candidate.id,
-    text: candidate.text,
-    type: candidate.type,
-    source: 'generated',
-    matched: candidate.matched,
-    baseScore: candidate.baseScore,
-    frequencyScore: candidate.frequencyScore,
-    reason: candidate.reason,
-    entityBoost: candidate.entityBoost,
-  }));
+  const locationScopedNearby =
+    entities.some((entity) => entity.kind === 'proximity') &&
+    entities.some((entity) => entity.kind === 'category') &&
+    Boolean(request.city || (request.lat != null && request.lon != null));
+  const brandEntities = entities.filter((entity) => entity.kind === 'brand');
+  const hasLocationContext = Boolean(request.city || (request.lat != null && request.lon != null));
+  const scopedBrandAvailable =
+    !request.city ||
+    brandEntities.length === 0 ||
+    dataset.pois.some((poi) =>
+      sameCity(poi.city, request.city!) &&
+      brandEntities.some((entity) => normalizeText(poi.brand) === normalizeText(entity.value))
+    );
+  return generatedPatternCandidates(dataset, understanding, entities)
+    .filter((candidate) => {
+      const brandCompletion = brandEntities.some((entity) =>
+        candidate.matched.some((matched) => normalizeText(matched) === normalizeText(entity.value))
+      );
+      if (brandCompletion && hasLocationContext) {
+        return false;
+      }
+      return scopedBrandAvailable || !brandCompletion;
+    })
+    .map((candidate): CandidateDraft => {
+    const downrankGenericCompletion = locationScopedNearby && candidate.type === 'Nearby Search';
+    const downrankBrandCompletion =
+      candidate.type === 'Brand Search' &&
+      brandEntities.some((entity) => candidate.matched.some((matched) => normalizeText(matched) === normalizeText(entity.value)));
+    return {
+      id: candidate.id,
+      text: candidate.text,
+      type: candidate.type,
+      source: 'generated',
+      matched: candidate.matched,
+      baseScore: downrankBrandCompletion
+        ? Math.min(0.4, candidate.baseScore)
+        : downrankGenericCompletion
+          ? Math.min(0.58, candidate.baseScore)
+          : candidate.baseScore,
+      frequencyScore: candidate.frequencyScore,
+      reason: candidate.reason,
+      entityBoost: downrankBrandCompletion ? 0.04 : downrankGenericCompletion ? 0.08 : candidate.entityBoost,
+    };
+  });
 }
 
 function fromPredictedCompletions(dataset: TascoDataset, understanding: QueryUnderstanding): CandidateDraft[] {
@@ -753,24 +850,31 @@ function isUnresolvedCompactQuery(understanding: QueryUnderstanding): boolean {
   );
 }
 
-function fromTemplates(understanding: QueryUnderstanding): CandidateDraft[] {
+function fromTemplates(understanding: QueryUnderstanding, request: SuggestRequest): CandidateDraft[] {
   const queryVariants = [...new Set([understanding.normalized, understanding.expanded].filter(Boolean))];
   return SEMANTIC_TEMPLATES.flatMap((template, index) => {
     if (!template.triggers.some((trigger) => queryVariants.some((query) => semanticTemplateMatches(query, trigger)))) {
       return [];
     }
+    const nearbyCafePrefix =
+      template.reason === 'mixed language nearby cafe intent' &&
+      (containsAny(understanding.normalized, ['gan day', 'gan nhat']) || understanding.normalized.endsWith(' gan'));
+    const locationScoped = nearbyCafePrefix && Boolean(request.city || (request.lat != null && request.lon != null));
     return {
       id: `template-${index}`,
       text: template.text,
-      type: template.type,
+      type:
+        nearbyCafePrefix
+          ? 'Nearby Search'
+          : template.type,
       source: 'template' as const,
       matched: template.triggers
         .filter((trigger) => queryVariants.some((query) => semanticTemplateMatches(query, trigger)))
         .slice(0, 2),
-      baseScore: 0.74,
+      baseScore: locationScoped ? 0.58 : 0.74,
       frequencyScore: 0.82,
       reason: template.reason,
-      entityBoost: template.entityBoost ?? 0.52,
+      entityBoost: locationScoped ? 0.08 : template.entityBoost ?? 0.52,
     };
   });
 }
@@ -891,7 +995,11 @@ function inferPoiSuggestionType(poi: PoiRecord, understanding: QueryUnderstandin
     return 'Address Suggestion';
   }
   if (containsAny(category, ['atm', 'cay xang', 'benh vien'])) return 'Nearby Search';
-  if (poi.brand && normalizeText(poi.brand).split(' ').some((token) => understanding.tokens.includes(token))) {
+  if (poi.brand && normalizeText(poi.brand).split(' ').some((brandToken) =>
+    understanding.tokens.some((queryToken) =>
+      queryToken.length >= 3 && (brandToken === queryToken || brandToken.startsWith(queryToken))
+    )
+  )) {
     return 'Brand Search';
   }
   if (category.split(' ').some((token) => understanding.tokens.includes(token))) {
@@ -940,6 +1048,9 @@ function predictIntent(
   }
   if (entities.some((entity) => entity.kind === 'attribute' && normalizeText(entity.value) === 'wi fi')) {
     return { type: 'Attribute Search', confidence: 0.88 };
+  }
+  if (entities.some((entity) => entity.kind === 'brand')) {
+    return { type: 'Brand Search', confidence: 0.88 };
   }
   const categoryIntent = intentFromClearCategoryEntity(understanding, entities);
   if (categoryIntent) {
@@ -1571,7 +1682,10 @@ export function extractEntities(dataset: TascoDataset, understanding: QueryUnder
   };
 
   for (const expansion of understanding.expansions) {
-    const [, value] = expansion.split('->').map((part) => part.trim());
+    const [source, value] = expansion.split('->').map((part) => part.trim());
+    if (source?.includes(':')) {
+      continue;
+    }
     if (value) add({ kind: inferEntityKind(value), value, source: 'abbreviation', confidence: 0.82 });
   }
 
@@ -1623,7 +1737,15 @@ export function extractEntities(dataset: TascoDataset, understanding: QueryUnder
       ['poi', poi.poiName] as const,
       ['street', streetFromAddress(poi.address)] as const,
     ]) {
-      if (value && semanticTemplateMatches(query, value)) {
+      const brandPrefixHit =
+        kind === 'brand' &&
+        value &&
+        normalizeText(value).split(' ').some((brandToken) =>
+          understanding.tokens.some((queryToken) =>
+            queryToken.length >= 3 && brandToken.length > queryToken.length && brandToken.startsWith(queryToken)
+          )
+        );
+      if (value && (semanticTemplateMatches(query, value) || brandPrefixHit)) {
         add({ kind, value, source: 'poi-dataset', confidence: kind === 'poi' ? 0.9 : 0.78 });
       }
     }
@@ -1634,6 +1756,7 @@ export function extractEntities(dataset: TascoDataset, understanding: QueryUnder
 
 function inferEntityKind(value: string): QueryEntity['kind'] {
   const normalized = normalizeText(value);
+  if (containsAny(normalized, ['gan day', 'gan nhat'])) return 'proximity';
   if (containsAny(normalized, ['quan 1', 'quan 7'])) return 'district';
   if (containsAny(normalized, ['ha noi', 'da nang', 'tp.hcm', 'ho chi minh'])) return 'city';
   if (containsAny(normalized, ['vietcombank', 'vincom', 'vinmec'])) return 'brand';

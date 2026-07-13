@@ -32,6 +32,57 @@ describe('handleTascoFacadeRequest', () => {
     expect(body.suggestions.map((suggestion) => suggestion.label)).toEqual(
       expect.arrayContaining(['Quán cà phê gần đây']),
     );
+    expect(body.suggestions[0].suggestionType).toBeDefined();
+  });
+
+  it('keeps nearby cafe intent and category consistency through the public facade', async () => {
+    const result = await handleTascoFacadeRequest(testDataset, {
+      method: 'GET',
+      url: '/v1/autocomplete?q=caphe%20gan%20day&limit=8',
+    });
+    const body = result.body as TascoAutocompleteResponse;
+    const visible = body.suggestions.map((suggestion) => `${suggestion.name} ${suggestion.category ?? ''}`).join(' ');
+
+    expect(result.status).toBe(200);
+    expect(body.meta.expandedQuery).toBe('ca phe gan day');
+    expect(body.suggestions[0].suggestionType).toBe('Nearby Search');
+    expect(visible).not.toMatch(/Bệnh viện|ATM|xăng/i);
+  });
+
+  it('completes caphe gan and returns location-scoped coffee POIs through the facade', async () => {
+    const result = await handleTascoFacadeRequest(testDataset, {
+      method: 'GET',
+      url: '/v1/autocomplete?q=caphe%20gan&city=TP.HCM&limit=12',
+    });
+    const body = result.body as TascoAutocompleteResponse;
+
+    expect(result.status).toBe(200);
+    expect(body.meta.expandedQuery).toBe('ca phe gan day');
+    expect(body.suggestions[0]).toEqual(
+      expect.objectContaining({
+        id: 'poi:POI001',
+        suggestionType: 'Nearby Search',
+      }),
+    );
+    expect(body.suggestions.filter((suggestion) => suggestion.coordinates).every((suggestion) => suggestion.address?.includes('TP.HCM'))).toBe(true);
+  });
+
+  it('composes caphe with a partial Highlands brand prefix through the facade', async () => {
+    const result = await handleTascoFacadeRequest(testDataset, {
+      method: 'GET',
+      url: '/v1/autocomplete?q=caphe%20high&city=TP.HCM&limit=12',
+    });
+    const body = result.body as TascoAutocompleteResponse;
+
+    expect(result.status).toBe(200);
+    expect(body.meta.expandedQuery).toBe('ca phe high');
+    expect(body.suggestions).toEqual([
+      expect.objectContaining({
+        id: 'poi:POI001',
+        label: 'Highlands Coffee Nguyễn Huệ',
+        suggestionType: 'Brand Search',
+      }),
+    ]);
   });
 
   it('honors city scope for autocomplete and does not leak other-city POI rows', async () => {

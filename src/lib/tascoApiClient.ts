@@ -191,6 +191,7 @@ function toPlaceResult(value: unknown): PlaceResult | undefined {
   return {
     id,
     type: stringField(row.type) || 'poi',
+    suggestionType: intentTypeField(row.suggestionType),
     name: stringField(row.name) || label,
     label,
     address: stringField(row.address),
@@ -207,6 +208,22 @@ function toPlaceResult(value: unknown): PlaceResult | undefined {
     enrichment: enrichmentField(row.enrichment),
     scoreFactors: scoreFactorsField(row.scoreFactors),
   };
+}
+
+function intentTypeField(value: unknown): PlaceResult['suggestionType'] {
+  const candidate = stringField(value);
+  return [
+    'Brand Search',
+    'Category Search',
+    'POI Search',
+    'Discovery Search',
+    'Nearby Search',
+    'Address Suggestion',
+    'Coordinate Search',
+    'Navigation',
+    'Attribute Search',
+    'Ambiguous',
+  ].includes(candidate ?? '') ? candidate as PlaceResult['suggestionType'] : undefined;
 }
 
 function toPoiResult(value: unknown): TascoPoiResponse['poi'] | undefined {
